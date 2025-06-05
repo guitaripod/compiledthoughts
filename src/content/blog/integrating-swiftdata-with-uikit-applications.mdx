@@ -1,0 +1,212 @@
+---
+title: 'Integrating SwiftData with UIKit Applications'
+description: 'A comprehensive guide to using SwiftData in UIKit projects, covering model definition, annotations, and practical implementation patterns'
+pubDate: 2024-08-19
+tags: ['swift', 'swiftdata', 'uikit', 'ios', 'data-persistence', 'core-data-alternative']
+---
+
+SwiftData is primarily designed for SwiftUI, but it can be effectively integrated into a UIKit-based project. Here's a detailed guide to set up SwiftData within a UIKit application, with an emphasis on the technical aspects of defining and managing your models.
+
+## 1. Model Definition with SwiftData
+
+When using SwiftData, your models are annotated with the `@Model` attribute. This annotation enables SwiftData's persistence features, making your models capable of being saved, fetched, and managed by the `ModelContainer`.
+
+### Example Model: `Memory`
+
+```swift
+import Foundation
+import SwiftData
+import UIKit
+
+@Model
+final class Memory {
+    @Attribute(.unique) var id: UUID
+    var title: String
+    var date: Date
+    var notes: String
+    @Relationship(deleteRule: .cascade) var memoryImages: [MemoryImage]
+
+    init(id: UUID = UUID(), title: String, date: Date, notes: String, images: [UIImage]) {
+        self.id = id
+        self.title = title
+        self.date = date
+        self.notes = notes
+        self.memoryImages = images.map { MemoryImage(image: $0) }
+    }
+
+    var images: [UIImage] {
+        return memoryImages.compactMap { $0.image }
+    }
+}
+```
+
+### Understanding the Annotations
+
+**@Model**: Marks the class as a SwiftData model, enabling its instances to be managed by SwiftData's `ModelContainer`. This annotation is essential for any class that you want to persist using SwiftData.
+
+**@Attribute**: This annotation is used for individual properties in your model. It defines how these properties should be stored and managed by SwiftData.
+- `.unique`: Ensures that the `id` property, which is of type `UUID`, is unique across all instances of `Memory`. This is crucial for identifying each memory distinctly within the database.
+- `.externalStorage`: This is typically used with large data types, such as binary data (e.g., images). In the `MemoryImage` model, it ensures that the image data is stored separately from the rest of the model, optimizing memory usage.
+
+**@Relationship**: Defines a relationship between models. Here, the `memoryImages` property is a relationship between `Memory` and `MemoryImage`.
+- `deleteRule: .cascade`: This means that if a `Memory` instance is deleted, all related `MemoryImage` instances are also deleted. This is essential for maintaining data integrity, ensuring that orphaned images aren't left behind when a memory is removed.
+
+### Example Model: `MemoryImage`
+
+```swift
+@Model
+final class MemoryImage {
+    @Attribute(.unique) var id: UUID
+    @Attribute(.externalStorage) var imageData: Data?
+    var memory: Memory?
+
+    init(id: UUID = UUID(), image: UIImage) {
+        self.id = id
+        self.imageData = image.pngData()
+    }
+
+    var image: UIImage? {
+        guard let data = imageData else { return nil }
+        return UIImage(data: data)
+    }
+}
+```
+
+This model represents individual images associated with a `Memory`. It holds the image data and a reference to the `Memory` it belongs to. The `@Attribute(.externalStorage)` annotation ensures that image data is efficiently managed, preventing it from consuming unnecessary memory when loaded into the app.
+
+## 2. Integrating SwiftData into the UIKit Application
+
+In a UIKit application, the `SceneDelegate` is a good place to initialize your SwiftData `ModelContainer`. The `ModelContainer` is responsible for managing the lifecycle of your models, including creating, reading, updating, and deleting instances.
+
+Here's how you might set it up:
+
+```swift
+import UIKit
+import SwiftData
+
+final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+    var window: UIWindow?
+    var modelContainer: ModelContainer!
+
+    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+        guard let windowScene = (scene as? UIWindowScene) else { return }
+
+        do {
+            modelContainer = try ModelContainer(for: Memory.self, MemoryImage.self)
+        } catch {
+            fatalError("Failed to create ModelContainer: \(error)")
+        }
+
+        window = UIWindow(windowScene: windowScene)
+        let networkService = NetworkService()
+        let settings = Settings()
+        let vm = RecordMemoryVM(
+            networkService: networkService,
+            settings: settings
+        )
+        window?.rootViewController = RecordMemoryVC(model: vm)
+        window?.makeKeyAndVisible()
+    }
+}
+```
+
+## 3. Updating ViewModels to Use SwiftData
+
+ViewModels in a UIKit app typically handle data fetching and business logic. By leveraging SwiftData, you can simplify data management within these ViewModels.
+
+```swift
+import Foundation
+import SwiftData
+import UIKit
+
+final class MemoriesListVM {
+
+    enum Section: Hashable {
+        case main
+    }
+
+    private let modelContext: ModelContext
+
+    init(modelContext: ModelContext) {
+        self.modelContext = modelContext
+    }
+
+    func loadMemories() {
+        do {
+            let descriptor = FetchDescriptor<Memory>(
+                sortBy: [SortDescriptor(\.date, order: .reverse)]
+            )
+            memories = try modelContext.fetch(descriptor)
+        } catch {
+            print("Failed to fetch memories: \(error)")
+        }
+    }
+
+    func createSnapshot() -> NSDiffableDataSourceSnapshot<Section, Memory> {
+        var snapshot = NSDiffableDataSourceSnapshot<Section, Memory>()
+        snapshot.appendSections([.main])
+        snapshot.appendItems(memories)
+        return snapshot
+    }
+
+    func memoryAt(indexPath: IndexPath) -> Memory {
+        memories[indexPath.row]
+    }
+
+    private var memories: [Memory] = []
+}
+```
+
+In this example:
+- `modelContext.fetch(descriptor)`: Fetches instances of `Memory` from the SwiftData container, sorting them by date in descending order. This is where the real benefit of SwiftData's integration comes in, allowing you to focus on your application logic without worrying about the intricacies of data management.
+
+## 4. Using SwiftData in ViewControllers
+
+Finally, update your ViewControllers to use the modified ViewModels and interact with the data as needed.
+
+```swift
+import UIKit
+import SwiftData
+
+final class RecordMemoryVC: ViewController {
+
+    private let viewModel: MemoriesListVM
+
+    init(viewModel: MemoriesListVM) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    private func presentMemoriesListVC() {
+        guard
+            let sceneDelegate = SceneDelegate.shared(),
+            let modelContext = sceneDelegate.modelContainer?.mainContext
+        else {
+            print("Error: ModelContext not found")
+            return
+        }
+
+        let memoriesListVM = MemoriesListVM(modelContext: modelContext)
+        let memoriesListVC = MemoriesListVC(viewModel: memoriesListVM)
+        let nc = NavigationController(root: memoriesListVC)
+        present(nc, animated: true)
+    }
+}
+```
+
+## Bonus: Xcode Live Preview with SwiftData
+
+```swift
+#Preview {
+    let config = ModelConfiguration(isStoredInMemoryOnly: true)
+    let container = try! ModelContainer(for: Memory.self, configurations: config)
+    let viewModel = MemoriesListVM(modelContext: container.mainContext)
+    return MemoriesListVC(viewModel: viewModel)
+}
+```
+
+## Conclusion
+
+By understanding the annotations provided by SwiftData, such as `@Model`, `@Attribute`, and `@Relationship`, and how they relate to persistence and data integrity, you can effectively integrate SwiftData into your UIKit application. This approach enables the efficient management of data while maintaining the flexibility and control offered by UIKit.
+
+SwiftData's declarative approach to data modeling, combined with UIKit's mature UI framework, provides a powerful foundation for building robust iOS applications with sophisticated data requirements.
