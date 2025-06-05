@@ -88,19 +88,35 @@ const ogImage = new URL(image, Astro.url);
 
 <!-- Dark mode script -->
 <script is:inline>
-  const theme = (() => {
+  const getThemePreference = () => {
     if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
       return localStorage.getItem('theme');
     }
-    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      return 'dark';
-    }
-    return 'light';
-  })();
+    return 'system';
+  };
 
-  if (theme === 'dark') {
+  const isDarkMode = (theme) => {
+    if (theme === 'system') {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+    return theme === 'dark';
+  };
+
+  const theme = getThemePreference();
+  
+  if (isDarkMode(theme)) {
     document.documentElement.classList.add('dark');
   } else {
     document.documentElement.classList.remove('dark');
   }
+  
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+    if (getThemePreference() === 'system') {
+      if (e.matches) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    }
+  });
 </script>
