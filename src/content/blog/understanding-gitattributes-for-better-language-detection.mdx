@@ -1,0 +1,125 @@
+---
+title: "Understanding .gitattributes for Better Language Detection"
+description: "Learn how to use .gitattributes to control GitHub's language statistics and improve repository classification with practical examples and best practices."
+pubDate: "2025-06-05"
+tags: ["git", "github", "development-tools", "documentation"]
+---
+
+Have you ever noticed that GitHub sometimes incorrectly identifies your project's primary programming language? Or perhaps your repository is showing up as mostly HTML when it's actually a JavaScript project? The solution lies in a powerful but often overlooked Git feature: `.gitattributes`.
+
+## What is .gitattributes?
+
+The `.gitattributes` file is Git's way of defining attributes for specific file paths in your repository. While Git uses it for various purposes like line ending normalization and merge strategies, GitHub extends its functionality to control language detection and repository statistics.
+
+## The Problem: Misleading Language Statistics
+
+GitHub uses a tool called [Linguist](https://github.com/github/linguist) to detect languages in your repository and generate those colorful language bars you see on every repo. However, Linguist can sometimes get confused:
+
+- **Documentation files** like README.md might be counted as "Markdown" 
+- **Generated files** like compiled CSS or bundled JavaScript can skew statistics
+- **Vendor dependencies** in `node_modules` or similar directories can dominate
+- **Configuration files** might be misclassified as the primary language
+
+## The Solution: Strategic .gitattributes Configuration
+
+In a recent commit to this blog, I added a simple but effective `.gitattributes` file:
+
+```
+*.mdx linguist-documentation
+```
+
+This single line tells GitHub's Linguist that all `.mdx` files should be treated as documentation rather than code. Let's break down what this accomplishes:
+
+### The `linguist-documentation` Attribute
+
+When you mark files with `linguist-documentation`, GitHub:
+- **Excludes them from language statistics** - They won't affect your repository's primary language detection
+- **Hides them in diffs by default** - Large documentation changes won't clutter pull request views
+- **Still indexes them for search** - Your documentation remains discoverable
+
+For a blog like this one, where `.mdx` files contain the actual blog posts, this prevents GitHub from thinking the repository is primarily "MDX" when it's actually an Astro/TypeScript project.
+
+## Common .gitattributes Patterns
+
+Here are some practical patterns you can use in your projects:
+
+### Marking Documentation
+```gitattributes
+*.md linguist-documentation
+*.mdx linguist-documentation
+*.rst linguist-documentation
+docs/ linguist-documentation
+```
+
+### Excluding Generated Files
+```gitattributes
+dist/ linguist-generated
+build/ linguist-generated
+*.min.js linguist-generated
+*.bundle.js linguist-generated
+```
+
+### Excluding Vendor Code
+```gitattributes
+vendor/ linguist-vendored
+node_modules/ linguist-vendored
+third_party/ linguist-vendored
+```
+
+### Detecting Specific Languages
+```gitattributes
+*.blade.php linguist-language=PHP
+Dockerfile.* linguist-language=Dockerfile
+```
+
+## Real-World Example: This Blog
+
+Before adding the `.gitattributes` file, GitHub might have shown this repository as:
+- 60% MDX (blog posts)
+- 30% TypeScript (actual code)
+- 10% Other files
+
+After the change, it correctly identifies it as primarily a TypeScript/Astro project, which better represents the actual codebase structure.
+
+## Best Practices
+
+1. **Place .gitattributes in your repository root** - This ensures it applies to the entire project
+2. **Use wildcards strategically** - `*.ext` patterns are more maintainable than listing individual files
+3. **Test your changes** - Push to GitHub and check the language statistics after a few minutes
+4. **Document your decisions** - Add comments in complex `.gitattributes` files to explain unusual configurations
+5. **Consider case sensitivity** - Use patterns like `*.[Dd]ockerfile` for files that might have different casings
+
+## Advanced Usage
+
+You can combine multiple attributes for more precise control:
+
+```gitattributes
+# Mark as documentation AND specify language for syntax highlighting
+*.api.md linguist-documentation linguist-language=YAML
+
+# Generated files that should be excluded completely
+dist/** linguist-generated=true
+
+# Vendor files in a specific language
+vendor/jquery.js linguist-vendored linguist-language=JavaScript
+```
+
+## Implementation Steps
+
+To implement `.gitattributes` in your project:
+
+1. **Analyze your current language statistics** on GitHub
+2. **Identify problematic files** that are skewing the results
+3. **Create a `.gitattributes` file** in your repository root
+4. **Add appropriate patterns** using the attributes above
+5. **Commit and push** the changes
+6. **Wait a few minutes** for GitHub to reprocess your repository
+7. **Verify the results** in your repository's language statistics
+
+## Conclusion
+
+The `.gitattributes` file is a small but powerful tool for maintaining accurate repository metadata. By properly classifying your files, you help both GitHub and other developers understand your project's true nature at a glance.
+
+Whether you're building a documentation-heavy project, working with generated files, or managing a polyglot codebase, `.gitattributes` gives you the control you need to present your repository accurately.
+
+Next time you notice your repository's language statistics don't match reality, remember this simple solution. A few lines in `.gitattributes` can make your project's purpose crystal clear to anyone who discovers it.
