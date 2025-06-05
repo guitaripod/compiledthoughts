@@ -14,7 +14,7 @@ const codeId = `code-${Math.random().toString(36).substr(2, 9)}`;
 
 <div class="code-block relative group my-6" data-collapsible={collapsible} data-initial-lines={initialLines} data-code-id={codeId}>
   {filename && (
-    <div class="filename px-4 py-2 bg-gray-800 dark:bg-gray-900 text-gray-300 text-sm rounded-t-lg border-b border-gray-700">
+    <div class="filename px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 text-sm rounded-t-lg border-b border-gray-200 dark:border-gray-700">
       {filename}
     </div>
   )}
@@ -84,7 +84,7 @@ const codeId = `code-${Math.random().toString(36).substr(2, 9)}`;
     left: 0;
     right: 0;
     height: 80px;
-    background: linear-gradient(to bottom, transparent, rgba(31, 41, 55, 0.95));
+    background: linear-gradient(to bottom, transparent, rgba(249, 250, 251, 0.95));
     pointer-events: none;
   }
 

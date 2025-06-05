@@ -50,7 +50,7 @@
 
   /* Code block styles */
   pre {
-    @apply rounded-lg overflow-x-auto;
+    @apply rounded-lg overflow-x-auto bg-gray-50 dark:bg-gray-900;
   }
 
   pre:has(.copy-button) {
@@ -58,11 +58,11 @@
   }
 
   .copy-button {
-    @apply absolute top-2 right-2 px-2 py-1 text-xs bg-gray-700 text-gray-300 rounded hover:bg-gray-600 transition-colors;
+    @apply absolute top-2 right-2 px-2 py-1 text-xs bg-gray-600 dark:bg-gray-700 text-gray-200 dark:text-gray-300 rounded hover:bg-gray-500 dark:hover:bg-gray-600 transition-colors;
   }
 
   .copy-button.copied {
-    @apply bg-green-600 text-white;
+    @apply bg-green-600 dark:bg-green-700 text-white;
   }
 
   /* Progress bar */
@@ -85,11 +85,26 @@
   }
 
   .pagefind-ui__search-input {
-    @apply bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600;
+    @apply bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100;
   }
 
   .pagefind-ui__search-clear {
     @apply text-gray-500 dark:text-gray-400;
+  }
+
+  /* Improve dark mode text contrast */
+  .dark {
+    @apply text-gray-200;
+  }
+
+  /* Ensure inline code has proper contrast */
+  .dark code {
+    @apply bg-gray-700 text-gray-50;
+  }
+
+  /* Pre code blocks should inherit background */
+  .dark pre code {
+    @apply bg-transparent;
   }
 
   /* Mermaid diagrams */
