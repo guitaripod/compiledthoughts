@@ -20,7 +20,7 @@ Go offers several advantages for CLI development:
 
 Start with Go's built-in `flag` package:
 
-```go:main.go
+```go
 package main
 
 import (
@@ -51,7 +51,7 @@ func main() {
 
 For more complex applications, [Cobra](https://github.com/spf13/cobra) provides a powerful framework:
 
-```go:cmd/root.go {7-15}
+```go
 package cmd
 
 import (
@@ -77,7 +77,7 @@ func Execute() error {
 
 Organize functionality with subcommands:
 
-```go:cmd/serve.go
+```go
 package cmd
 
 import (
@@ -111,7 +111,7 @@ func init() {
 
 Integrate Viper for configuration:
 
-```go:config/config.go {12-20}
+```go
 package config
 
 import (
@@ -152,7 +152,7 @@ func Load() (*Config, error) {
 
 Create interactive experiences with [promptui](https://github.com/manifoldco/promptui):
 
-```go:prompt/prompt.go
+```go
 package prompt
 
 import (
@@ -184,7 +184,7 @@ func GetPassword() (string, error) {
 
 Show progress for long-running operations:
 
-```go:progress/spinner.go {8-15}
+```go
 package progress
 
 import (
@@ -206,7 +206,7 @@ func WithSpinner(message string, fn func() error) error {
 
 Make output more readable with colors:
 
-```go:output/colors.go
+```go
 package output
 
 import (
@@ -234,7 +234,7 @@ func PrintError(format string, args ...interface{}) {
 
 Implement proper error handling:
 
-```go:errors/errors.go
+```go
 package errors
 
 import (
@@ -270,7 +270,7 @@ func HandleError(err error) {
 
 Write tests for your CLI:
 
-```go:cmd/serve_test.go {6-12}
+```go
 package cmd
 
 import (
@@ -296,7 +296,7 @@ func TestServeCommand(t *testing.T) {
 
 Build for multiple platforms:
 
-```bash:build.sh
+```bash
 #!/bin/bash
 
 PLATFORMS=("windows/amd64" "darwin/amd64" "darwin/arm64" "linux/amd64")
@@ -335,7 +335,7 @@ Complete documentation is available at https://mycli.example.com`,
 
 ### 2. Use Context for Cancellation
 
-```go:cmd/process.go
+```go
 func processCommand(cmd *cobra.Command, args []string) error {
     ctx, cancel := context.WithCancel(context.Background())
     defer cancel()

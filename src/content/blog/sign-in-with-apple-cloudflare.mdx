@@ -88,7 +88,7 @@ worker/
 
 Create `schema.sql` for user data storage:
 
-```sql:schema.sql
+```sql
 -- Users table for storing Apple Sign-in user data
 CREATE TABLE IF NOT EXISTS users (
     id TEXT PRIMARY KEY,
@@ -137,7 +137,7 @@ CREATE TABLE IF NOT EXISTS user_achievements (
 
 Define your data structures in `types.ts`:
 
-```typescript:types.ts
+```typescript
 export interface Env {
   DB: D1Database;
   APPLE_TEAM_ID: string;
@@ -175,7 +175,7 @@ export interface AppleTokenPayload {
 
 The core of the authentication system is in `auth.ts`:
 
-```typescript:auth.ts
+```typescript
 import { Env, AppleTokenPayload } from './types';
 
 export class AppleAuth {
@@ -293,7 +293,7 @@ export class AppleAuth {
 
 The main worker logic in `index.ts`:
 
-```typescript:index.ts
+```typescript
 import { Env, SyncData } from './types';
 import { AppleAuth } from './auth';
 import { SyncService } from './sync';
@@ -374,7 +374,7 @@ async function handleSync(request: Request, env: Env, corsHeaders: Record<string
 
 Set up `wrangler.toml`:
 
-```toml:wrangler.toml
+```toml
 name = "your-app-worker"
 main = "src/index.ts"
 compatibility_date = "2024-01-01"
@@ -396,7 +396,7 @@ database_id = "your-database-id-here"
 
 Create a Swift class to handle Apple Sign In:
 
-```swift:AuthenticationManager.swift
+```swift
 import Foundation
 import AuthenticationServices
 import CryptoKit
@@ -524,7 +524,7 @@ extension AuthenticationManager: ASAuthorizationControllerPresentationContextPro
 
 Handle data synchronization with the Cloudflare Worker:
 
-```swift:SyncManager.swift
+```swift
 import Foundation
 
 class SyncManager {
@@ -675,7 +675,7 @@ npx wrangler deploy
 ### Update iOS Configuration
 
 1. **Add Entitlements**: Create `YourApp.entitlements`:
-```xml:YourApp.entitlements
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">

@@ -11,7 +11,7 @@ Cloudflare Pages has become a go-to platform for deploying static sites and JAMs
 
 Start with an optimized `wrangler.toml` configuration:
 
-```toml:wrangler.toml
+```toml
 name = "my-site"
 compatibility_date = "2024-01-25"
 
@@ -36,7 +36,7 @@ vars = { ENVIRONMENT = "preview" }
 
 Optimize build times with proper caching:
 
-```json:package.json {7-9}
+```json
 {
   "scripts": {
     "build": "npm run build:cache && npm run build:site",
@@ -54,7 +54,7 @@ Optimize build times with proper caching:
 
 Create a smart build script:
 
-```javascript:scripts/smart-build.js {15-25}
+```javascript
 const fs = require('fs');
 const crypto = require('crypto');
 const { execSync } = require('child_process');
@@ -97,7 +97,7 @@ if (shouldRebuild()) {
 
 Optimize caching with `_headers` file:
 
-```text:public/_headers
+```text
 /*
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY
@@ -127,7 +127,7 @@ Optimize caching with `_headers` file:
 
 Configure redirects efficiently:
 
-```text:public/_redirects
+```text
 # Domain redirects
 https://www.example.com/* https://example.com/:splat 301
 
@@ -145,7 +145,7 @@ https://www.example.com/* https://example.com/:splat 301
 
 Leverage Cloudflare Workers for dynamic functionality:
 
-```javascript:functions/api/[path].js {5-15}
+```javascript
 export async function onRequest(context) {
   const { request, env, params } = context;
   
@@ -168,7 +168,7 @@ export async function onRequest(context) {
 
 Track build performance:
 
-```javascript:scripts/build-metrics.js
+```javascript
 const fs = require('fs');
 
 class BuildMetrics {
@@ -224,7 +224,7 @@ module.exports = BuildMetrics;
 
 Manage environment variables securely:
 
-```bash:scripts/env-check.sh
+```bash
 #!/bin/bash
 
 # Check required environment variables
@@ -246,7 +246,7 @@ export MINIFY_HTML=${MINIFY_HTML:-"true"}
 
 Optimize assets before deployment:
 
-```javascript:scripts/optimize-assets.js {10-20}
+```javascript
 const imagemin = require('imagemin');
 const imageminWebp = require('imagemin-webp');
 const sharp = require('sharp');
@@ -277,7 +277,7 @@ optimizeImages();
 
 Automate post-deployment tasks:
 
-```yaml:.github/workflows/deploy.yml {15-25}
+```yaml
 name: Deploy to Cloudflare Pages
 
 on:
@@ -314,7 +314,7 @@ jobs:
 
 Enforce performance budgets:
 
-```javascript:scripts/performance-budget.js
+```javascript
 const fs = require('fs');
 const path = require('path');
 
@@ -375,7 +375,7 @@ checkBudget();
 
 Set up monitoring:
 
-```javascript:functions/metrics.js
+```javascript
 export async function onRequest(context) {
   const { request, env } = context;
   
