@@ -51,18 +51,35 @@
         NodeFilter.SHOW_TEXT,
         {
           acceptNode: function(node) {
-            // Skip nodes inside code blocks, headings, and links
-            const parent = node.parentElement;
-            if (!parent) return NodeFilter.FILTER_REJECT;
-            
-            const tagName = parent.tagName?.toLowerCase();
-            if (['code', 'pre', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'a'].includes(tagName)) {
-              return NodeFilter.FILTER_REJECT;
-            }
-            
-            // Skip if parent already has bionic spans
-            if (parent.querySelector('.bionic-text')) {
-              return NodeFilter.FILTER_REJECT;
+            // Skip nodes inside code blocks, headings, links, and interactive elements
+            let element = node.parentElement;
+            while (element) {
+              const tagName = element.tagName?.toLowerCase();
+              
+              // Skip if any ancestor is a restricted element
+              if (['code', 'pre', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'a', 'button', 'input', 'select', 'textarea', 'label'].includes(tagName)) {
+                return NodeFilter.FILTER_REJECT;
+              }
+              
+              // Skip if inside a code block wrapper or button text
+              if (element.classList.contains('code-block') || 
+                  element.classList.contains('code-wrapper') ||
+                  element.classList.contains('expand-button') ||
+                  element.classList.contains('collapse-button') ||
+                  element.classList.contains('copy-button') ||
+                  element.classList.contains('expand-text') ||
+                  element.classList.contains('copy-text') ||
+                  element.classList.contains('font-size-btn') ||
+                  element.classList.contains('font-size-controls')) {
+                return NodeFilter.FILTER_REJECT;
+              }
+              
+              // Skip if ancestor already has bionic spans
+              if (element.querySelector('.bionic-text')) {
+                return NodeFilter.FILTER_REJECT;
+              }
+              
+              element = element.parentElement;
             }
             
             return NodeFilter.FILTER_ACCEPT;
