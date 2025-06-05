@@ -3,6 +3,7 @@ import BaseLayout from './BaseLayout.astro';
 import ProgressBar from '@components/ProgressBar.astro';
 import TableOfContents from '@components/TableOfContents.astro';
 import BionicToggle from '@components/BionicToggle.astro';
+import EnhanceCodeBlocks from '@components/EnhanceCodeBlocks.astro';
 import { calculateReadingTime } from '@utils/reading-time';
 import { generateTableOfContents } from '@utils/toc';
 import type { CollectionEntry } from 'astro:content';
@@ -117,6 +118,8 @@ const formattedUpdatedDate = updatedDate?.toLocaleDateString('en-US', {
       </div>
     </div>
   </article>
+  
+  <EnhanceCodeBlocks />
 </BaseLayout>
 
 <script>

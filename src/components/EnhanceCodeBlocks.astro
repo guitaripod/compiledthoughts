@@ -1,0 +1,297 @@
+---
+// This component enhances Shiki-rendered code blocks with collapsible functionality
+---
+
+<script>
+  function enhanceCodeBlocks() {
+    // Find all Shiki code blocks
+    const codeBlocks = document.querySelectorAll('.astro-code');
+    
+    codeBlocks.forEach((pre, index) => {
+      // Skip if already enhanced
+      if (pre.dataset.enhanced) return;
+      pre.dataset.enhanced = 'true';
+      
+      const codeId = `code-${Math.random().toString(36).substr(2, 9)}`;
+      const initialLines = 5;
+      
+      // Wrap the pre element
+      const wrapper = document.createElement('div');
+      wrapper.className = 'enhanced-code-block relative group my-6';
+      wrapper.dataset.codeId = codeId;
+      
+      // Insert wrapper before pre and move pre inside
+      pre.parentNode.insertBefore(wrapper, pre);
+      wrapper.appendChild(pre);
+      
+      // Add copy button
+      const copyButton = document.createElement('button');
+      copyButton.className = 'copy-button opacity-0 group-hover:opacity-100 transition-opacity';
+      copyButton.innerHTML = '<span class="copy-text">Copy</span>';
+      copyButton.setAttribute('aria-label', 'Copy code');
+      
+      const code = pre.querySelector('code');
+      const codeText = code.textContent || '';
+      
+      copyButton.addEventListener('click', async () => {
+        const copyText = copyButton.querySelector('.copy-text');
+        try {
+          await navigator.clipboard.writeText(codeText);
+          copyText.textContent = 'Copied!';
+          copyButton.classList.add('copied');
+          
+          setTimeout(() => {
+            copyText.textContent = 'Copy';
+            copyButton.classList.remove('copied');
+          }, 2000);
+        } catch (err) {
+          console.error('Failed to copy:', err);
+        }
+      });
+      
+      wrapper.appendChild(copyButton);
+      
+      // Calculate if collapsible is needed
+      const lineHeight = parseFloat(window.getComputedStyle(code).lineHeight);
+      const padding = parseFloat(window.getComputedStyle(pre).paddingTop) + parseFloat(window.getComputedStyle(pre).paddingBottom);
+      const maxHeight = (lineHeight * initialLines) + padding;
+      const totalHeight = pre.scrollHeight;
+      
+      if (totalHeight <= maxHeight + 20) {
+        // Content is short enough, no need for collapsing
+        return;
+      }
+      
+      // Add collapsible functionality
+      pre.classList.add('collapsible-pre');
+      pre.style.setProperty('--max-height', `${maxHeight}px`);
+      
+      // Create expand/collapse wrapper
+      const expandWrapper = document.createElement('div');
+      expandWrapper.className = 'expand-collapse-wrapper';
+      expandWrapper.innerHTML = `
+        <div class="shadow-fade"></div>
+        <button class="expand-button" aria-label="Expand code">
+          <svg class="expand-icon" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+          </svg>
+          <span class="expand-text">Show more</span>
+        </button>
+      `;
+      
+      // Insert inside the pre element
+      pre.style.position = 'relative';
+      pre.appendChild(expandWrapper);
+      
+      // Create collapse CTA
+      const collapseCta = document.createElement('div');
+      collapseCta.className = 'collapse-cta';
+      collapseCta.style.display = 'none';
+      collapseCta.innerHTML = `
+        <button class="collapse-button">
+          <svg class="collapse-icon" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" />
+          </svg>
+          <span>Collapse</span>
+        </button>
+      `;
+      
+      wrapper.parentNode.insertBefore(collapseCta, wrapper.nextSibling);
+      
+      const expandButton = expandWrapper.querySelector('.expand-button');
+      const collapseButton = collapseCta.querySelector('.collapse-button');
+      
+      // Expand functionality
+      expandButton.addEventListener('click', () => {
+        pre.classList.add('expanded');
+        expandWrapper.classList.add('hidden');
+        collapseCta.style.display = 'flex';
+        
+        // Smooth scroll to show expanded code
+        setTimeout(() => {
+          const rect = pre.getBoundingClientRect();
+          if (rect.top < 0) {
+            window.scrollBy({
+              top: rect.top - 20,
+              behavior: 'smooth'
+            });
+          }
+        }, 100);
+      });
+      
+      // Collapse functionality
+      collapseButton.addEventListener('click', () => {
+        pre.classList.remove('expanded');
+        expandWrapper.classList.remove('hidden');
+        collapseCta.style.display = 'none';
+        
+        // Scroll to code block if it's above viewport
+        const rect = wrapper.getBoundingClientRect();
+        if (rect.top < 0) {
+          wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  }
+  
+  // Run on page load and navigation
+  document.addEventListener('DOMContentLoaded', enhanceCodeBlocks);
+  document.addEventListener('astro:after-swap', enhanceCodeBlocks);
+</script>
+
+<style is:global>
+  .enhanced-code-block {
+    position: relative;
+  }
+
+  .enhanced-code-block pre {
+    margin: 0;
+    position: relative;
+  }
+
+  .collapsible-pre {
+    max-height: var(--max-height, 200px);
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+  }
+
+  .collapsible-pre.expanded {
+    max-height: none;
+  }
+
+  .expand-collapse-wrapper {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+
+  .expand-collapse-wrapper.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .shadow-fade {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 150px;
+    background: linear-gradient(to bottom, 
+      transparent 0%, 
+      rgba(30, 41, 59, 0) 20%,
+      rgba(30, 41, 59, 0.8) 60%,
+      rgba(30, 41, 59, 0.95) 80%,
+      rgba(30, 41, 59, 1) 100%);
+    pointer-events: none;
+  }
+
+  :global(.dark) .shadow-fade {
+    background: linear-gradient(to bottom, 
+      transparent 0%, 
+      rgba(30, 41, 59, 0) 20%,
+      rgba(30, 41, 59, 0.8) 60%,
+      rgba(30, 41, 59, 0.95) 80%,
+      rgba(30, 41, 59, 1) 100%);
+  }
+
+  .expand-button {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 16px;
+    background: rgba(59, 130, 246, 0.9);
+    color: white;
+    border-radius: 9999px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(4px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    pointer-events: auto;
+    cursor: pointer;
+    border: none;
+  }
+
+  .expand-button:hover {
+    background: rgba(59, 130, 246, 1);
+    transform: translateX(-50%) translateY(-2px);
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+  }
+
+  .expand-icon {
+    transition: transform 0.3s ease;
+  }
+
+  .expand-button.collapse .expand-icon {
+    transform: rotate(180deg);
+  }
+
+  .collapse-cta {
+    position: sticky;
+    bottom: 16px;
+    display: flex;
+    justify-content: center;
+    margin-top: -32px;
+    margin-bottom: 16px;
+    z-index: 10;
+  }
+
+  .collapse-button {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 20px;
+    background: rgba(156, 163, 175, 0.9);
+    color: rgba(17, 24, 39, 0.9);
+    border-radius: 9999px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  :global(.dark) .collapse-button {
+    background: rgba(75, 85, 99, 0.9);
+    color: rgba(243, 244, 246, 0.9);
+  }
+
+  .collapse-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  }
+
+  :global(.dark) .collapse-button:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Copy button styles for enhanced blocks */
+  .enhanced-code-block .copy-button {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    padding: 4px 8px;
+    font-size: 12px;
+    background: rgba(107, 114, 128, 0.7);
+    color: rgba(243, 244, 246, 0.9);
+    border-radius: 4px;
+    transition: all 0.2s ease;
+  }
+
+  .enhanced-code-block .copy-button:hover {
+    background: rgba(107, 114, 128, 0.9);
+  }
+
+  .enhanced-code-block .copy-button.copied {
+    background: rgba(34, 197, 94, 0.9);
+    color: white;
+  }
+</style>
