@@ -1,0 +1,84 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  const uniqueTags = [...new Set(posts.flatMap(post => post.data.tags))];
+  
+  return uniqueTags.map(tag => ({
+    params: { tag },
+    props: {
+      posts: posts
+        .filter(post => !post.data.draft && post.data.tags.includes(tag))
+        .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()),
+    },
+  }));
+}
+
+const { tag } = Astro.params;
+const { posts } = Astro.props;
+---
+
+<BaseLayout
+  title={`Posts tagged "${tag}" - Compiled Thoughts`}
+  description={`All blog posts tagged with ${tag}`}
+>
+  <div class="py-8">
+    <div class="mb-8">
+      <a
+        href="/tags"
+        class="inline-flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 mb-4"
+      >
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+        All tags
+      </a>
+      
+      <h1 class="text-4xl font-bold text-gray-900 dark:text-gray-100">
+        Posts tagged <span class="text-blue-600 dark:text-blue-400">#{tag}</span>
+      </h1>
+      <p class="mt-2 text-gray-600 dark:text-gray-400">
+        {posts.length} {posts.length === 1 ? 'post' : 'posts'} found
+      </p>
+    </div>
+    
+    <div class="space-y-8">
+      {posts.map((post) => {
+        const formattedDate = post.data.pubDate.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        });
+        
+        return (
+          <article class="group">
+            <a href={`/blog/${post.slug}`} class="block">
+              <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                {post.data.title}
+              </h2>
+              <p class="mt-2 text-gray-600 dark:text-gray-400">
+                {post.data.description}
+              </p>
+              <div class="mt-2 flex items-center gap-4 text-sm text-gray-500 dark:text-gray-500">
+                <time datetime={post.data.pubDate.toISOString()}>
+                  {formattedDate}
+                </time>
+                <div class="flex gap-2">
+                  {post.data.tags
+                    .filter(t => t !== tag)
+                    .slice(0, 2)
+                    .map(otherTag => (
+                      <span>#{otherTag}</span>
+                    ))
+                  }
+                </div>
+              </div>
+            </a>
+          </article>
+        );
+      })}
+    </div>
+  </div>
+</BaseLayout>

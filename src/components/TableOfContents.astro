@@ -1,0 +1,84 @@
+---
+import type { TocItem } from '@utils/toc';
+
+export interface Props {
+  items: TocItem[];
+}
+
+const { items } = Astro.props;
+---
+
+<nav class="toc" aria-label="Table of contents">
+  <h2 class="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-4">
+    On this page
+  </h2>
+  <ul class="space-y-2 text-sm">
+    {items.map((item) => (
+      <li style={`padding-left: ${(item.depth - 2) * 1}rem`}>
+        <a
+          href={`#${item.slug}`}
+          class="toc-link block py-1"
+          data-toc-link
+        >
+          {item.text}
+        </a>
+      </li>
+    ))}
+  </ul>
+</nav>
+
+<script>
+  function initTableOfContents() {
+    const tocLinks = document.querySelectorAll('[data-toc-link]');
+    if (tocLinks.length === 0) return;
+    
+    // Get all headings
+    const headings = Array.from(document.querySelectorAll('h2[id], h3[id]'));
+    
+    // Set up intersection observer
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const id = entry.target.getAttribute('id');
+          const tocLink = document.querySelector(`[href="#${id}"]`);
+          
+          if (entry.isIntersecting) {
+            // Remove active class from all links
+            tocLinks.forEach(link => link.classList.remove('active'));
+            // Add active class to current link
+            if (tocLink) tocLink.classList.add('active');
+          }
+        });
+      },
+      {
+        rootMargin: '-80px 0px -70% 0px',
+        threshold: 1
+      }
+    );
+    
+    // Observe all headings
+    headings.forEach(heading => observer.observe(heading));
+    
+    // Smooth scroll behavior
+    tocLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = link.getAttribute('href').slice(1);
+        const targetElement = document.getElementById(targetId);
+        
+        if (targetElement) {
+          const offset = 80; // Header height
+          const targetPosition = targetElement.offsetTop - offset;
+          
+          window.scrollTo({
+            top: targetPosition,
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+  }
+  
+  document.addEventListener('DOMContentLoaded', initTableOfContents);
+  document.addEventListener('astro:after-swap', initTableOfContents);
+</script>

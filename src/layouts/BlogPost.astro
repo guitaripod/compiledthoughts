@@ -1,0 +1,163 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import ProgressBar from '@components/ProgressBar.astro';
+import TableOfContents from '@components/TableOfContents.astro';
+import BionicToggle from '@components/BionicToggle.astro';
+import { calculateReadingTime } from '@utils/reading-time';
+import { generateTableOfContents } from '@utils/toc';
+import type { CollectionEntry } from 'astro:content';
+
+export interface Props {
+  post: CollectionEntry<'blog'>;
+}
+
+const { post } = Astro.props;
+const { title, description, pubDate, updatedDate, tags = [], image } = post.data;
+
+const readingTime = calculateReadingTime(post.body);
+const toc = generateTableOfContents(post.body);
+
+const formattedPubDate = pubDate.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+
+const formattedUpdatedDate = updatedDate?.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  image={image}
+  article={true}
+  publishedTime={pubDate.toISOString()}
+  tags={tags}
+>
+  <ProgressBar />
+  
+  <article class="py-8">
+    <header class="mb-8">
+      <h1 class="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+        {title}
+      </h1>
+      
+      <div class="flex flex-wrap items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+        <time datetime={pubDate.toISOString()}>
+          {formattedPubDate}
+        </time>
+        
+        {updatedDate && (
+          <span>
+            (Updated: <time datetime={updatedDate.toISOString()}>{formattedUpdatedDate}</time>)
+          </span>
+        )}
+        
+        <span>{readingTime} min read</span>
+        
+        <div class="flex items-center gap-2">
+          <BionicToggle />
+          <div class="font-size-controls flex items-center gap-1">
+            <button
+              class="font-size-btn px-2 py-1 text-xs rounded hover:bg-gray-100 dark:hover:bg-gray-800"
+              data-size="small"
+              aria-label="Small font size"
+            >
+              S
+            </button>
+            <button
+              class="font-size-btn px-2 py-1 text-xs rounded hover:bg-gray-100 dark:hover:bg-gray-800"
+              data-size="medium"
+              aria-label="Medium font size"
+            >
+              M
+            </button>
+            <button
+              class="font-size-btn px-2 py-1 text-xs rounded hover:bg-gray-100 dark:hover:bg-gray-800"
+              data-size="large"
+              aria-label="Large font size"
+            >
+              L
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      {tags.length > 0 && (
+        <div class="mt-4 flex flex-wrap gap-2">
+          {tags.map((tag) => (
+            <a
+              href={`/tags/${tag}`}
+              class="inline-block px-3 py-1 text-sm bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+            >
+              #{tag}
+            </a>
+          ))}
+        </div>
+      )}
+    </header>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <div class="lg:col-span-3 lg:order-2">
+        {toc.length > 0 && (
+          <aside class="sticky top-20">
+            <TableOfContents items={toc} />
+          </aside>
+        )}
+      </div>
+      
+      <div class="lg:col-span-9 lg:order-1">
+        <div class="prose prose-gray dark:prose-invert max-w-none">
+          <slot />
+        </div>
+      </div>
+    </div>
+  </article>
+</BaseLayout>
+
+<script>
+  function initFontSizeControls() {
+    const buttons = document.querySelectorAll('.font-size-btn');
+    const body = document.body;
+    
+    // Check localStorage for saved preference
+    const savedSize = localStorage.getItem('fontSize') || 'medium';
+    body.classList.remove('font-small', 'font-medium', 'font-large');
+    body.classList.add(`font-${savedSize}`);
+    
+    // Update active button
+    buttons.forEach(btn => {
+      if (btn.getAttribute('data-size') === savedSize) {
+        btn.classList.add('bg-gray-200', 'dark:bg-gray-700');
+      }
+    });
+    
+    buttons.forEach(button => {
+      button.addEventListener('click', () => {
+        const size = button.getAttribute('data-size');
+        
+        // Remove all size classes
+        body.classList.remove('font-small', 'font-medium', 'font-large');
+        
+        // Add new size class
+        body.classList.add(`font-${size}`);
+        
+        // Save preference
+        localStorage.setItem('fontSize', size);
+        
+        // Update active state
+        buttons.forEach(btn => {
+          btn.classList.remove('bg-gray-200', 'dark:bg-gray-700');
+        });
+        button.classList.add('bg-gray-200', 'dark:bg-gray-700');
+      });
+    });
+  }
+  
+  document.addEventListener('DOMContentLoaded', initFontSizeControls);
+  document.addEventListener('astro:after-swap', initFontSizeControls);
+</script>

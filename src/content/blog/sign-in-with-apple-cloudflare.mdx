@@ -1,0 +1,728 @@
+---
+title: 'How to Implement Sign in with Apple Using Cloudflare Workers: A Complete Guide'
+description: 'Learn how to build a complete authentication system using Sign in with Apple on iOS with a Cloudflare Workers backend for token validation and user data synchronization'
+pubDate: 2025-06-05
+tags: ['apple', 'authentication', 'cloudflare', 'workers', 'ios', 'swift', 'serverless']
+---
+
+Apple's Sign in with Apple provides a secure, privacy-focused authentication solution for iOS apps. This guide shows you how to build a complete authentication system using Sign in with Apple on iOS with a Cloudflare Workers backend for token validation and user data synchronization.
+
+## Why This Architecture?
+
+Traditional authentication backends require managing servers, but Cloudflare Workers offer a serverless solution that scales automatically and provides excellent performance globally. Combined with D1 (Cloudflare's SQL database), you get a complete backend solution without server management overhead.
+
+## Architecture Overview
+
+Our implementation consists of three main components:
+
+1. **iOS App**: Handles Sign in with Apple authentication locally
+2. **Cloudflare Worker**: Validates Apple tokens and manages user data
+3. **D1 Database**: Stores user profiles, progress, and sync data
+
+```
+iOS App ↔ Cloudflare Worker ↔ D1 Database
+        ↗ Apple ID Servers (token validation)
+```
+
+## Part 1: Apple Developer Portal Setup
+
+### 1. Configure Your App ID
+
+First, enable Sign in with Apple for your app:
+
+1. Visit [Apple Developer Portal](https://developer.apple.com/account)
+2. Navigate to **Certificates, Identifiers & Profiles → Identifiers**
+3. Select your app identifier
+4. Enable **"Sign In with Apple"** capability
+5. Configure as **"Enable as a primary App ID"**
+
+### 2. Create a Service ID
+
+For server-side token validation, create a Service ID:
+
+1. In Identifiers, click **+ button**
+2. Select **"Services IDs"**
+3. Enter description: `"Your App Web Service"`
+4. Enter identifier: `"com.yourcompany.yourapp.webservice"`
+5. Enable **"Sign In with Apple"**
+6. Configure domains:
+   - **Domain**: `your-worker.your-subdomain.workers.dev`
+   - **Return URL**: `https://your-worker.your-subdomain.workers.dev/auth/callback`
+
+### 3. Generate Private Key
+
+Create a private key for token signing:
+
+1. Navigate to **Keys** section
+2. Click **+ button**
+3. Enter key name: `"Your App Sign in with Apple"`
+4. Enable **"Sign In with Apple"**
+5. Configure with your App ID
+6. **Download the .p8 file** and store it securely
+7. Note the **Key ID** shown after creation
+
+### 4. Note Your Team ID
+
+Find your Team ID in the top right of the developer portal or in the Membership section.
+
+## Part 2: Cloudflare Worker Implementation
+
+### Project Structure
+
+Create a new directory for your worker:
+
+```
+worker/
+├── src/
+│   ├── index.ts      # Main request handler
+│   ├── auth.ts       # Apple token validation
+│   ├── sync.ts       # User data synchronization
+│   └── types.ts      # TypeScript interfaces
+├── schema.sql        # Database schema
+├── package.json      # Dependencies
+├── tsconfig.json     # TypeScript config
+└── wrangler.toml     # Cloudflare configuration
+```
+
+### Database Schema
+
+Create `schema.sql` for user data storage:
+
+```sql:schema.sql
+-- Users table for storing Apple Sign-in user data
+CREATE TABLE IF NOT EXISTS users (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    email TEXT NOT NULL,
+    appleId TEXT NOT NULL UNIQUE,
+    totalXP INTEGER DEFAULT 0,
+    currentLevel INTEGER DEFAULT 1,
+    streakDays INTEGER DEFAULT 0,
+    lastActiveDate TEXT,
+    createdAt TEXT NOT NULL DEFAULT (datetime('now')),
+    updatedAt TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+-- Progress tracking for lessons/content
+CREATE TABLE IF NOT EXISTS progress (
+    id TEXT PRIMARY KEY,
+    userId TEXT NOT NULL,
+    beliefSystemId TEXT NOT NULL,
+    lessonId TEXT,
+    status TEXT NOT NULL CHECK (status IN ('not_started', 'in_progress', 'completed')),
+    score INTEGER,
+    earnedXP INTEGER DEFAULT 0,
+    completedAt TEXT,
+    createdAt TEXT NOT NULL DEFAULT (datetime('now')),
+    updatedAt TEXT NOT NULL DEFAULT (datetime('now')),
+    FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- User achievements tracking
+CREATE TABLE IF NOT EXISTS user_achievements (
+    id TEXT PRIMARY KEY,
+    userId TEXT NOT NULL,
+    achievementId TEXT NOT NULL,
+    progress INTEGER DEFAULT 0,
+    isCompleted BOOLEAN DEFAULT FALSE,
+    completedAt TEXT,
+    createdAt TEXT NOT NULL DEFAULT (datetime('now')),
+    updatedAt TEXT NOT NULL DEFAULT (datetime('now')),
+    FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE,
+    UNIQUE(userId, achievementId)
+);
+```
+
+### TypeScript Types
+
+Define your data structures in `types.ts`:
+
+```typescript:types.ts
+export interface Env {
+  DB: D1Database;
+  APPLE_TEAM_ID: string;
+  APPLE_CLIENT_ID: string;
+  APPLE_KEY_ID: string;
+  APPLE_PRIVATE_KEY: string;
+}
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  appleId: string;
+  totalXP: number;
+  currentLevel: number;
+  streakDays: number;
+  lastActiveDate: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AppleTokenPayload {
+  iss: string;        // Issuer (Apple)
+  aud: string;        // Audience (your client ID)
+  exp: number;        // Expiration time
+  iat: number;        // Issued at time
+  sub: string;        // Subject (Apple user ID)
+  email?: string;     // User email (optional)
+  email_verified?: string;
+  auth_time: number;
+}
+```
+
+### Apple Token Validation
+
+The core of the authentication system is in `auth.ts`:
+
+```typescript:auth.ts
+import { Env, AppleTokenPayload } from './types';
+
+export class AppleAuth {
+  private env: Env;
+
+  constructor(env: Env) {
+    this.env = env;
+  }
+
+  async verifyIdentityToken(identityToken: string): Promise<AppleTokenPayload | null> {
+    try {
+      // 1. Decode token header to get key ID
+      const [headerBase64] = identityToken.split('.');
+      const headerJson = atob(headerBase64);
+      const header = JSON.parse(headerJson);
+      const keyId = header.kid;
+
+      // 2. Fetch Apple's public keys
+      const keysResponse = await fetch('https://appleid.apple.com/auth/keys');
+      const keys = await keysResponse.json();
+      
+      // 3. Find matching public key
+      const publicKey = keys.keys.find((key: any) => key.kid === keyId);
+      if (!publicKey) {
+        console.error('Public key not found');
+        return null;
+      }
+
+      // 4. Import the public key for verification
+      const jwk = {
+        kty: publicKey.kty,
+        n: publicKey.n,
+        e: publicKey.e,
+        alg: publicKey.alg,
+        use: publicKey.use,
+      };
+
+      const key = await crypto.subtle.importKey(
+        'jwk',
+        jwk,
+        { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' },
+        false,
+        ['verify']
+      );
+
+      // 5. Verify token signature
+      const [, payloadBase64, signatureBase64] = identityToken.split('.');
+      const signatureBuffer = this.base64UrlToBuffer(signatureBase64);
+      const dataToVerify = new TextEncoder().encode(`${headerBase64}.${payloadBase64}`);
+
+      const isValid = await crypto.subtle.verify(
+        'RSASSA-PKCS1-v1_5',
+        key,
+        signatureBuffer,
+        dataToVerify
+      );
+
+      if (!isValid) {
+        console.error('Token signature invalid');
+        return null;
+      }
+
+      // 6. Decode and validate payload
+      const payloadJson = atob(payloadBase64.replace(/-/g, '+').replace(/_/g, '/'));
+      const payload: AppleTokenPayload = JSON.parse(payloadJson);
+
+      // 7. Validate token claims
+      const now = Math.floor(Date.now() / 1000);
+      
+      if (payload.iss !== 'https://appleid.apple.com') {
+        console.error('Invalid issuer');
+        return null;
+      }
+
+      if (payload.aud !== this.env.APPLE_CLIENT_ID) {
+        console.error('Invalid audience');
+        return null;
+      }
+
+      if (payload.exp < now) {
+        console.error('Token expired');
+        return null;
+      }
+
+      return payload;
+    } catch (error) {
+      console.error('Error verifying Apple identity token:', error);
+      return null;
+    }
+  }
+
+  private base64UrlToBuffer(base64url: string): ArrayBuffer {
+    const base64 = base64url.replace(/-/g, '+').replace(/_/g, '/');
+    const padding = '='.repeat((4 - (base64.length % 4)) % 4);
+    const base64WithPadding = base64 + padding;
+    const binaryString = atob(base64WithPadding);
+    const bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+    return bytes.buffer;
+  }
+
+  extractUserInfo(payload: AppleTokenPayload) {
+    return {
+      appleId: payload.sub,
+      email: payload.email,
+      emailVerified: payload.email_verified === 'true',
+    };
+  }
+}
+```
+
+### Main Request Handler
+
+The main worker logic in `index.ts`:
+
+```typescript:index.ts
+import { Env, SyncData } from './types';
+import { AppleAuth } from './auth';
+import { SyncService } from './sync';
+
+export default {
+  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
+    const url = new URL(request.url);
+    
+    // CORS headers for web compatibility
+    const corsHeaders = {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    };
+    
+    // Handle CORS preflight
+    if (request.method === 'OPTIONS') {
+      return new Response(null, { headers: corsHeaders });
+    }
+    
+    try {
+      // Route: User data synchronization
+      if (url.pathname === '/sync' && request.method === 'POST') {
+        return await handleSync(request, env, corsHeaders);
+      }
+      
+      // Route: Health check
+      if (url.pathname === '/health' && request.method === 'GET') {
+        return new Response(JSON.stringify({ status: 'ok' }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+      
+      return new Response('Not Found', { status: 404, headers: corsHeaders });
+    } catch (error) {
+      console.error('Worker error:', error);
+      return new Response(
+        JSON.stringify({ error: 'Internal Server Error' }), 
+        { 
+          status: 500, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      );
+    }
+  },
+};
+
+async function handleSync(request: Request, env: Env, corsHeaders: Record<string, string>): Promise<Response> {
+  // Use Apple user ID from header for authentication
+  const appleUserId = request.headers.get('X-Apple-User-Id');
+  if (!appleUserId) {
+    return new Response(
+      JSON.stringify({ error: 'Missing X-Apple-User-Id header' }), 
+      { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+  
+  try {
+    const syncData: SyncData = await request.json();
+    const syncService = new SyncService(env);
+    const syncedData = await syncService.syncData(appleUserId, syncData);
+    
+    return new Response(
+      JSON.stringify(syncedData), 
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  } catch (error) {
+    console.error('Sync error:', error);
+    return new Response(
+      JSON.stringify({ error: 'Sync failed', details: error instanceof Error ? error.message : 'Unknown error' }), 
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+}
+```
+
+### Configuration
+
+Set up `wrangler.toml`:
+
+```toml:wrangler.toml
+name = "your-app-worker"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+# D1 Database binding
+[[d1_databases]]
+binding = "DB"
+database_name = "your-app-database"
+database_id = "your-database-id-here"
+
+# Environment variables are set as secrets via wrangler secret put
+# APPLE_TEAM_ID, APPLE_CLIENT_ID, APPLE_KEY_ID, APPLE_PRIVATE_KEY
+```
+
+## Part 3: iOS App Implementation
+
+### AuthenticationManager
+
+Create a Swift class to handle Apple Sign In:
+
+```swift:AuthenticationManager.swift
+import Foundation
+import AuthenticationServices
+import CryptoKit
+
+protocol AuthenticationManagerDelegate: AnyObject {
+    func authenticationDidComplete(with result: Result<AppleIDCredential, Error>)
+}
+
+class AuthenticationManager: NSObject {
+    weak var delegate: AuthenticationManagerDelegate?
+    
+    // MARK: - Public Methods
+    
+    func signInWithApple() {
+        let appleIDProvider = ASAuthorizationAppleIDProvider()
+        let request = appleIDProvider.createRequest()
+        request.requestedScopes = [.fullName, .email]
+        
+        // Use nonce for security
+        let nonce = randomNonceString()
+        request.nonce = sha256(nonce)
+        
+        let authorizationController = ASAuthorizationController(authorizationRequests: [request])
+        authorizationController.delegate = self
+        authorizationController.presentationContextProvider = self
+        authorizationController.performRequests()
+    }
+    
+    func signOut() {
+        UserDefaults.standard.removeObject(forKey: "appleUserId")
+        UserDefaults.standard.removeObject(forKey: "appleUserEmail")
+        UserDefaults.standard.removeObject(forKey: "appleUserFullName")
+        UserDefaults.standard.removeObject(forKey: "appleIdentityToken")
+    }
+    
+    var isSignedIn: Bool {
+        return UserDefaults.standard.string(forKey: "appleUserId") != nil
+    }
+    
+    // MARK: - Private Methods
+    
+    private func randomNonceString(length: Int = 32) -> String {
+        precondition(length > 0)
+        let charset: [Character] = Array("0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._")
+        var result = ""
+        var remainingLength = length
+        
+        while remainingLength > 0 {
+            let randoms: [UInt8] = (0..<16).map { _ in
+                var random: UInt8 = 0
+                let errorCode = SecRandomCopyBytes(kSecRandomDefault, 1, &random)
+                if errorCode != errSecSuccess {
+                    fatalError("Unable to generate nonce. SecRandomCopyBytes failed with OSStatus \(errorCode)")
+                }
+                return random
+            }
+            
+            randoms.forEach { random in
+                if remainingLength == 0 {
+                    return
+                }
+                
+                if random < charset.count {
+                    result.append(charset[Int(random)])
+                    remainingLength -= 1
+                }
+            }
+        }
+        
+        return result
+    }
+    
+    private func sha256(_ input: String) -> String {
+        let inputData = Data(input.utf8)
+        let hashedData = SHA256.hash(data: inputData)
+        let hashString = hashedData.compactMap {
+            String(format: "%02x", $0)
+        }.joined()
+        
+        return hashString
+    }
+}
+
+// MARK: - ASAuthorizationControllerDelegate
+
+extension AuthenticationManager: ASAuthorizationControllerDelegate {
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
+        if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential {
+            // Store user information
+            UserDefaults.standard.set(appleIDCredential.user, forKey: "appleUserId")
+            
+            if let email = appleIDCredential.email {
+                UserDefaults.standard.set(email, forKey: "appleUserEmail")
+            }
+            
+            if let fullName = appleIDCredential.fullName {
+                let displayName = PersonNameComponentsFormatter().string(from: fullName)
+                UserDefaults.standard.set(displayName, forKey: "appleUserFullName")
+            }
+            
+            if let identityToken = appleIDCredential.identityToken,
+               let tokenString = String(data: identityToken, encoding: .utf8) {
+                UserDefaults.standard.set(tokenString, forKey: "appleIdentityToken")
+            }
+            
+            delegate?.authenticationDidComplete(with: .success(appleIDCredential))
+        }
+    }
+    
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
+        delegate?.authenticationDidComplete(with: .failure(error))
+    }
+}
+
+// MARK: - ASAuthorizationControllerPresentationContextProviding
+
+extension AuthenticationManager: ASAuthorizationControllerPresentationContextProviding {
+    func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
+        return UIApplication.shared.windows.first!
+    }
+}
+```
+
+### SyncManager
+
+Handle data synchronization with the Cloudflare Worker:
+
+```swift:SyncManager.swift
+import Foundation
+
+class SyncManager {
+    private let baseURL = "https://your-worker.your-subdomain.workers.dev"
+    
+    func syncUserData(completion: @escaping (Result<SyncResponse, Error>) -> Void) {
+        guard let appleUserId = UserDefaults.standard.string(forKey: "appleUserId") else {
+            completion(.failure(SyncError.notAuthenticated))
+            return
+        }
+        
+        guard let url = URL(string: "\(baseURL)/sync") else {
+            completion(.failure(SyncError.invalidURL))
+            return
+        }
+        
+        // Prepare sync data
+        let syncData = SyncData(
+            user: getCurrentUser(),
+            progress: getLocalProgress(),
+            achievements: getLocalAchievements(),
+            lastSyncDate: UserDefaults.standard.string(forKey: "lastSyncDate")
+        )
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue(appleUserId, forHTTPHeaderField: "X-Apple-User-Id")
+        
+        do {
+            request.httpBody = try JSONEncoder().encode(syncData)
+        } catch {
+            completion(.failure(error))
+            return
+        }
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            
+            guard let data = data else {
+                completion(.failure(SyncError.noData))
+                return
+            }
+            
+            do {
+                let syncResponse = try JSONDecoder().decode(SyncResponse.self, from: data)
+                
+                // Update local data with server response
+                self.updateLocalData(with: syncResponse)
+                
+                // Update last sync date
+                UserDefaults.standard.set(Date().iso8601String, forKey: "lastSyncDate")
+                
+                completion(.success(syncResponse))
+            } catch {
+                completion(.failure(error))
+            }
+        }.resume()
+    }
+    
+    private func getCurrentUser() -> User? {
+        // Implement based on your local user data structure
+        // Return current user data from local storage/database
+        return nil
+    }
+    
+    private func getLocalProgress() -> [Progress] {
+        // Implement based on your local progress data structure
+        return []
+    }
+    
+    private func getLocalAchievements() -> [UserAchievement] {
+        // Implement based on your local achievements data structure
+        return []
+    }
+    
+    private func updateLocalData(with syncResponse: SyncResponse) {
+        // Implement local data updates based on server response
+        // This should merge server data with local data using conflict resolution
+    }
+}
+
+// MARK: - Data Models
+
+struct SyncData: Codable {
+    let user: User?
+    let progress: [Progress]
+    let achievements: [UserAchievement]
+    let lastSyncDate: String?
+}
+
+struct SyncResponse: Codable {
+    let user: User
+    let progress: [Progress]
+    let achievements: [UserAchievement]
+    let lastSyncDate: String?
+}
+
+enum SyncError: Error {
+    case notAuthenticated
+    case invalidURL
+    case noData
+}
+
+extension Date {
+    var iso8601String: String {
+        return ISO8601DateFormatter().string(from: self)
+    }
+}
+```
+
+## Part 4: Deployment and Configuration
+
+### Deploy the Worker
+
+1. **Create D1 Database**:
+```bash
+cd worker
+npx wrangler d1 create your-app-database
+```
+
+2. **Update wrangler.toml** with the database ID from the output
+
+3. **Initialize Database Schema**:
+```bash
+npx wrangler d1 execute your-app-database --file=./schema.sql
+```
+
+4. **Set Environment Secrets**:
+```bash
+# Set your Apple private key (contents of .p8 file)
+npx wrangler secret put APPLE_PRIVATE_KEY
+
+# Set other Apple configuration
+npx wrangler secret put APPLE_TEAM_ID
+npx wrangler secret put APPLE_CLIENT_ID
+npx wrangler secret put APPLE_KEY_ID
+```
+
+5. **Deploy Worker**:
+```bash
+npx wrangler deploy
+```
+
+### Update iOS Configuration
+
+1. **Add Entitlements**: Create `YourApp.entitlements`:
+```xml:YourApp.entitlements
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>com.apple.developer.applesignin</key>
+    <array>
+        <string>Default</string>
+    </array>
+</dict>
+</plist>
+```
+
+2. **Update SyncManager** with your worker URL:
+```swift
+private let baseURL = "https://your-worker.your-subdomain.workers.dev"
+```
+
+## Part 5: Security Best Practices
+
+### Token Security
+- Always validate tokens on the server side
+- Never trust client-provided authentication data
+- Implement proper token expiration handling
+- Use secure storage for sensitive data
+
+### Privacy Considerations
+- Only request necessary user data scopes
+- Respect user privacy choices
+- Implement proper data retention policies
+- Handle email hiding scenarios gracefully
+
+### Error Handling
+- Implement comprehensive error handling for network failures
+- Handle authentication state changes gracefully
+- Provide meaningful error messages to users
+- Log security-relevant events for monitoring
+
+## Conclusion
+
+This implementation provides a complete, production-ready Sign in with Apple solution using Cloudflare Workers. The architecture offers several advantages:
+
+- **Serverless scaling**: Automatically handles traffic spikes
+- **Global performance**: Cloudflare's edge network ensures low latency
+- **Cost-effective**: Pay only for what you use
+- **Security**: Built-in DDoS protection and secure token validation
+- **Privacy-focused**: Minimal data collection, respecting user privacy
+
+The combination of Apple's privacy-first authentication with Cloudflare's edge computing platform creates a powerful, scalable backend solution that can grow with your application while maintaining excellent performance and security standards.
+
+For production deployments, consider implementing additional features like rate limiting, monitoring, and backup strategies to ensure a robust authentication system for your users.

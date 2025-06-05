@@ -1,0 +1,120 @@
+---
+---
+
+<button
+  id="bionic-toggle"
+  type="button"
+  class="flex items-center space-x-2 px-3 py-1.5 text-sm rounded-lg text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-colors"
+  aria-label="Toggle bionic reading"
+>
+  <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+  </svg>
+  <span>Bionic Reading</span>
+</button>
+
+<script>
+  function initBionicToggle() {
+    const toggle = document.getElementById('bionic-toggle');
+    const articleContent = document.querySelector('.prose');
+    
+    if (!toggle || !articleContent) return;
+    
+    // Check localStorage for bionic reading preference
+    const bionicEnabled = localStorage.getItem('bionicReading') === 'true';
+    if (bionicEnabled) {
+      enableBionicReading();
+      toggle.classList.add('bg-blue-100', 'dark:bg-blue-900', 'text-blue-700', 'dark:text-blue-300');
+    }
+    
+    toggle.addEventListener('click', () => {
+      const isEnabled = articleContent.classList.contains('bionic-reading');
+      
+      if (isEnabled) {
+        disableBionicReading();
+        toggle.classList.remove('bg-blue-100', 'dark:bg-blue-900', 'text-blue-700', 'dark:text-blue-300');
+        localStorage.setItem('bionicReading', 'false');
+      } else {
+        enableBionicReading();
+        toggle.classList.add('bg-blue-100', 'dark:bg-blue-900', 'text-blue-700', 'dark:text-blue-300');
+        localStorage.setItem('bionicReading', 'true');
+      }
+    });
+    
+    function enableBionicReading() {
+      articleContent.classList.add('bionic-reading');
+      
+      // Process all text nodes in the article
+      const walker = document.createTreeWalker(
+        articleContent,
+        NodeFilter.SHOW_TEXT,
+        {
+          acceptNode: function(node) {
+            // Skip nodes inside code blocks, headings, and links
+            const parent = node.parentElement;
+            if (!parent) return NodeFilter.FILTER_REJECT;
+            
+            const tagName = parent.tagName?.toLowerCase();
+            if (['code', 'pre', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'a'].includes(tagName)) {
+              return NodeFilter.FILTER_REJECT;
+            }
+            
+            // Skip if parent already has bionic spans
+            if (parent.querySelector('.bionic-text')) {
+              return NodeFilter.FILTER_REJECT;
+            }
+            
+            return NodeFilter.FILTER_ACCEPT;
+          }
+        }
+      );
+      
+      const textNodes = [];
+      let node;
+      while (node = walker.nextNode()) {
+        textNodes.push(node);
+      }
+      
+      textNodes.forEach(textNode => {
+        const text = textNode.textContent;
+        if (!text || text.trim() === '') return;
+        
+        const words = text.split(/(\s+)/);
+        const bionicText = words.map(word => {
+          if (word.trim() === '') return word;
+          
+          // Calculate 40% of word length
+          const boldLength = Math.max(1, Math.ceil(word.length * 0.4));
+          const boldPart = word.slice(0, boldLength);
+          const normalPart = word.slice(boldLength);
+          
+          return `<span class="bionic-text"><b>${boldPart}</b>${normalPart}</span>`;
+        }).join('');
+        
+        const span = document.createElement('span');
+        span.innerHTML = bionicText;
+        textNode.parentNode.replaceChild(span, textNode);
+      });
+    }
+    
+    function disableBionicReading() {
+      articleContent.classList.remove('bionic-reading');
+      
+      // Remove all bionic spans
+      const bionicSpans = articleContent.querySelectorAll('.bionic-text');
+      bionicSpans.forEach(span => {
+        const parent = span.parentNode;
+        const text = span.textContent;
+        const textNode = document.createTextNode(text);
+        parent.replaceChild(textNode, span);
+      });
+      
+      // Normalize text nodes
+      articleContent.normalize();
+    }
+  }
+  
+  document.addEventListener('DOMContentLoaded', initBionicToggle);
+  document.addEventListener('astro:after-swap', initBionicToggle);
+</script>

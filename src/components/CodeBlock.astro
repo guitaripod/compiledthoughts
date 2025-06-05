@@ -1,0 +1,100 @@
+---
+export interface Props {
+  code: string;
+  lang?: string;
+  filename?: string;
+  highlights?: number[];
+}
+
+const { code, lang, filename, highlights = [] } = Astro.props;
+---
+
+<div class="code-block relative group my-6">
+  {filename && (
+    <div class="filename px-4 py-2 bg-gray-800 dark:bg-gray-900 text-gray-300 text-sm rounded-t-lg border-b border-gray-700">
+      {filename}
+    </div>
+  )}
+  <div class="relative">
+    <pre class={`language-${lang || 'text'} ${filename ? 'rounded-t-none' : ''}`}>
+      <code class={`language-${lang || 'text'}`} data-highlights={highlights.join(',')}>
+        {code}
+      </code>
+    </pre>
+    <button
+      class="copy-button opacity-0 group-hover:opacity-100 transition-opacity"
+      data-code={code}
+      aria-label="Copy code"
+    >
+      <span class="copy-text">Copy</span>
+    </button>
+  </div>
+</div>
+
+<style>
+  .filename {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+  }
+</style>
+
+<script>
+  function initCodeBlocks() {
+    const copyButtons = document.querySelectorAll('.copy-button');
+    
+    copyButtons.forEach(button => {
+      button.addEventListener('click', async () => {
+        const code = button.getAttribute('data-code');
+        const copyText = button.querySelector('.copy-text');
+        
+        try {
+          await navigator.clipboard.writeText(code);
+          copyText.textContent = 'Copied!';
+          button.classList.add('copied');
+          
+          setTimeout(() => {
+            copyText.textContent = 'Copy';
+            button.classList.remove('copied');
+          }, 2000);
+        } catch (err) {
+          console.error('Failed to copy:', err);
+        }
+      });
+    });
+    
+    // Apply line highlights
+    const codeBlocks = document.querySelectorAll('code[data-highlights]');
+    codeBlocks.forEach(block => {
+      const highlights = block.getAttribute('data-highlights').split(',').map(Number);
+      if (highlights.length === 0 || highlights[0] === 0) return;
+      
+      const lines = block.innerHTML.split('\n');
+      const highlightedLines = lines.map((line, index) => {
+        const lineNumber = index + 1;
+        if (highlights.includes(lineNumber)) {
+          return `<span class="highlight-line">${line}</span>`;
+        }
+        return line;
+      });
+      
+      block.innerHTML = highlightedLines.join('\n');
+    });
+  }
+  
+  document.addEventListener('DOMContentLoaded', initCodeBlocks);
+  document.addEventListener('astro:after-swap', initCodeBlocks);
+</script>
+
+<style is:global>
+  .highlight-line {
+    display: inline-block;
+    width: 100%;
+    background-color: rgba(59, 130, 246, 0.1);
+    border-left: 3px solid rgb(59, 130, 246);
+    padding-left: 0.5rem;
+    margin-left: -0.5rem;
+  }
+  
+  .dark .highlight-line {
+    background-color: rgba(59, 130, 246, 0.2);
+  }
+</style>

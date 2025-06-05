@@ -1,0 +1,374 @@
+---
+title: 'Building CLIs in Go'
+description: 'A comprehensive guide to creating powerful command-line interfaces using Go, from basic flag parsing to advanced features'
+pubDate: 2024-01-20
+tags: ['go', 'golang', 'cli', 'command-line', 'development-tools']
+---
+
+Go's simplicity, performance, and excellent standard library make it an ideal choice for building command-line interfaces (CLIs). Let's explore how to create robust, user-friendly CLI applications that your users will love.
+
+## Why Go for CLIs?
+
+Go offers several advantages for CLI development:
+- Single binary distribution
+- Cross-platform compilation
+- Fast startup times
+- Excellent concurrency support
+- Rich standard library
+
+## Basic Command-Line Parsing
+
+Start with Go's built-in `flag` package:
+
+```go:main.go
+package main
+
+import (
+    "flag"
+    "fmt"
+    "os"
+)
+
+func main() {
+    var (
+        name    = flag.String("name", "World", "name to greet")
+        verbose = flag.Bool("verbose", false, "enable verbose output")
+        count   = flag.Int("count", 1, "number of greetings")
+    )
+    
+    flag.Parse()
+    
+    for i := 0; i < *count; i++ {
+        fmt.Printf("Hello, %s!\n", *name)
+        if *verbose {
+            fmt.Printf("Greeting #%d completed\n", i+1)
+        }
+    }
+}
+```
+
+## Using Cobra for Advanced CLIs
+
+For more complex applications, [Cobra](https://github.com/spf13/cobra) provides a powerful framework:
+
+```go:cmd/root.go {7-15}
+package cmd
+
+import (
+    "github.com/spf13/cobra"
+)
+
+var rootCmd = &cobra.Command{
+    Use:   "mycli",
+    Short: "A brief description of your CLI",
+    Long: `A longer description that spans multiple lines
+and likely contains examples and usage of using your application.`,
+    Run: func(cmd *cobra.Command, args []string) {
+        // Root command logic here
+    },
+}
+
+func Execute() error {
+    return rootCmd.Execute()
+}
+```
+
+## Subcommands Structure
+
+Organize functionality with subcommands:
+
+```go:cmd/serve.go
+package cmd
+
+import (
+    "fmt"
+    "github.com/spf13/cobra"
+)
+
+var (
+    port int
+    host string
+)
+
+var serveCmd = &cobra.Command{
+    Use:   "serve",
+    Short: "Start the server",
+    RunE: func(cmd *cobra.Command, args []string) error {
+        fmt.Printf("Starting server on %s:%d\n", host, port)
+        // Server logic here
+        return nil
+    },
+}
+
+func init() {
+    rootCmd.AddCommand(serveCmd)
+    serveCmd.Flags().IntVarP(&port, "port", "p", 8080, "port to listen on")
+    serveCmd.Flags().StringVarP(&host, "host", "H", "localhost", "host to bind to")
+}
+```
+
+## Configuration Management
+
+Integrate Viper for configuration:
+
+```go:config/config.go {12-20}
+package config
+
+import (
+    "fmt"
+    "github.com/spf13/viper"
+)
+
+type Config struct {
+    Database DatabaseConfig `mapstructure:"database"`
+    Server   ServerConfig   `mapstructure:"server"`
+}
+
+func Load() (*Config, error) {
+    viper.SetConfigName("config")
+    viper.SetConfigType("yaml")
+    viper.AddConfigPath(".")
+    viper.AddConfigPath("$HOME/.mycli")
+    
+    viper.SetEnvPrefix("MYCLI")
+    viper.AutomaticEnv()
+    
+    if err := viper.ReadInConfig(); err != nil {
+        if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
+            return nil, err
+        }
+    }
+    
+    var cfg Config
+    if err := viper.Unmarshal(&cfg); err != nil {
+        return nil, err
+    }
+    
+    return &cfg, nil
+}
+```
+
+## Interactive Prompts
+
+Create interactive experiences with [promptui](https://github.com/manifoldco/promptui):
+
+```go:prompt/prompt.go
+package prompt
+
+import (
+    "fmt"
+    "github.com/manifoldco/promptui"
+)
+
+func SelectOption() (string, error) {
+    prompt := promptui.Select{
+        Label: "Select an option",
+        Items: []string{"Development", "Staging", "Production"},
+    }
+    
+    _, result, err := prompt.Run()
+    return result, err
+}
+
+func GetPassword() (string, error) {
+    prompt := promptui.Prompt{
+        Label: "Password",
+        Mask:  '*',
+    }
+    
+    return prompt.Run()
+}
+```
+
+## Progress Indicators
+
+Show progress for long-running operations:
+
+```go:progress/spinner.go {8-15}
+package progress
+
+import (
+    "time"
+    "github.com/briandowns/spinner"
+)
+
+func WithSpinner(message string, fn func() error) error {
+    s := spinner.New(spinner.CharSets[14], 100*time.Millisecond)
+    s.Suffix = " " + message
+    s.Start()
+    defer s.Stop()
+    
+    return fn()
+}
+```
+
+## Colored Output
+
+Make output more readable with colors:
+
+```go:output/colors.go
+package output
+
+import (
+    "fmt"
+    "github.com/fatih/color"
+)
+
+var (
+    Success = color.New(color.FgGreen).SprintFunc()
+    Error   = color.New(color.FgRed).SprintFunc()
+    Warning = color.New(color.FgYellow).SprintFunc()
+    Info    = color.New(color.FgCyan).SprintFunc()
+)
+
+func PrintSuccess(format string, args ...interface{}) {
+    fmt.Println(Success("✓"), fmt.Sprintf(format, args...))
+}
+
+func PrintError(format string, args ...interface{}) {
+    fmt.Println(Error("✗"), fmt.Sprintf(format, args...))
+}
+```
+
+## Error Handling
+
+Implement proper error handling:
+
+```go:errors/errors.go
+package errors
+
+import (
+    "fmt"
+    "os"
+)
+
+type ExitError struct {
+    Code    int
+    Message string
+}
+
+func (e ExitError) Error() string {
+    return e.Message
+}
+
+func HandleError(err error) {
+    if err == nil {
+        return
+    }
+    
+    if exitErr, ok := err.(ExitError); ok {
+        fmt.Fprintf(os.Stderr, "Error: %s\n", exitErr.Message)
+        os.Exit(exitErr.Code)
+    }
+    
+    fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+    os.Exit(1)
+}
+```
+
+## Testing CLI Commands
+
+Write tests for your CLI:
+
+```go:cmd/serve_test.go {6-12}
+package cmd
+
+import (
+    "bytes"
+    "testing"
+    "github.com/stretchr/testify/assert"
+)
+
+func TestServeCommand(t *testing.T) {
+    cmd := rootCmd
+    buf := new(bytes.Buffer)
+    cmd.SetOut(buf)
+    cmd.SetErr(buf)
+    cmd.SetArgs([]string{"serve", "--port", "9090"})
+    
+    err := cmd.Execute()
+    assert.NoError(t, err)
+    assert.Contains(t, buf.String(), "9090")
+}
+```
+
+## Distribution
+
+Build for multiple platforms:
+
+```bash:build.sh
+#!/bin/bash
+
+PLATFORMS=("windows/amd64" "darwin/amd64" "darwin/arm64" "linux/amd64")
+
+for platform in "${PLATFORMS[@]}"
+do
+    platform_split=(${platform//\// })
+    GOOS=${platform_split[0]}
+    GOARCH=${platform_split[1]}
+    output_name='mycli-'$GOOS'-'$GOARCH
+    
+    if [ $GOOS = "windows" ]; then
+        output_name+='.exe'
+    fi
+    
+    env GOOS=$GOOS GOARCH=$GOARCH go build -o dist/$output_name
+done
+```
+
+## Best Practices
+
+### 1. Provide Help Text
+
+```go
+var rootCmd = &cobra.Command{
+    Use:   "mycli [command]",
+    Short: "A powerful CLI tool",
+    Long: `mycli is a CLI tool that helps you manage your infrastructure.
+    
+Complete documentation is available at https://mycli.example.com`,
+    Example: `  mycli serve --port 8080
+  mycli deploy production
+  mycli config set key value`,
+}
+```
+
+### 2. Use Context for Cancellation
+
+```go:cmd/process.go
+func processCommand(cmd *cobra.Command, args []string) error {
+    ctx, cancel := context.WithCancel(context.Background())
+    defer cancel()
+    
+    sigChan := make(chan os.Signal, 1)
+    signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
+    
+    go func() {
+        <-sigChan
+        fmt.Println("\nInterrupted, cleaning up...")
+        cancel()
+    }()
+    
+    return process(ctx, args)
+}
+```
+
+### 3. Version Information
+
+```go
+var versionCmd = &cobra.Command{
+    Use:   "version",
+    Short: "Print version information",
+    Run: func(cmd *cobra.Command, args []string) {
+        fmt.Printf("mycli version %s\n", version)
+        fmt.Printf("Built: %s\n", buildDate)
+        fmt.Printf("Commit: %s\n", commit)
+    },
+}
+```
+
+## Conclusion
+
+Building CLIs in Go is a rewarding experience. The language's simplicity combined with excellent libraries like Cobra, Viper, and others make it possible to create professional-grade command-line tools quickly. Focus on user experience, provide clear documentation, and leverage Go's strengths to build CLIs that developers will enjoy using.
+
+Remember: a good CLI is predictable, discoverable, and follows platform conventions. Happy coding!

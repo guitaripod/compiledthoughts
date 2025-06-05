@@ -1,0 +1,112 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-size-base: 1rem;
+    --font-size-md: 1.125rem;
+    --font-size-lg: 1.25rem;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
+  /* Inter font */
+  @font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 100 900;
+    font-display: swap;
+    src: url('/fonts/inter-var.woff2') format('woff2-variations');
+  }
+
+  body {
+    @apply transition-colors duration-200;
+  }
+
+  /* Font size adjustment */
+  body.font-small {
+    font-size: 0.875rem;
+  }
+
+  body.font-medium {
+    font-size: 1rem;
+  }
+
+  body.font-large {
+    font-size: 1.125rem;
+  }
+
+  /* Bionic reading styles */
+  .bionic-reading b {
+    font-weight: 800;
+  }
+
+  /* Code block styles */
+  pre {
+    @apply rounded-lg overflow-x-auto;
+  }
+
+  pre:has(.copy-button) {
+    @apply relative;
+  }
+
+  .copy-button {
+    @apply absolute top-2 right-2 px-2 py-1 text-xs bg-gray-700 text-gray-300 rounded hover:bg-gray-600 transition-colors;
+  }
+
+  .copy-button.copied {
+    @apply bg-green-600 text-white;
+  }
+
+  /* Progress bar */
+  .reading-progress {
+    @apply fixed top-0 left-0 h-1 bg-blue-500 transition-all duration-150 z-50;
+  }
+
+  /* Table of contents */
+  .toc-link {
+    @apply text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors;
+  }
+
+  .toc-link.active {
+    @apply text-blue-600 dark:text-blue-400 font-medium;
+  }
+
+  /* Search */
+  .pagefind-ui {
+    @apply text-gray-900 dark:text-gray-100;
+  }
+
+  .pagefind-ui__search-input {
+    @apply bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600;
+  }
+
+  .pagefind-ui__search-clear {
+    @apply text-gray-500 dark:text-gray-400;
+  }
+
+  /* Mermaid diagrams */
+  .mermaid {
+    @apply my-8 flex justify-center;
+  }
+}
+
+@layer utilities {
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}

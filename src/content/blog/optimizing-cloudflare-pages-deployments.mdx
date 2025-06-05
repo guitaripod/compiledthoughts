@@ -1,0 +1,414 @@
+---
+title: 'Optimizing Cloudflare Pages Deployments'
+description: 'Learn advanced techniques to optimize your Cloudflare Pages deployments for maximum performance and efficiency'
+pubDate: 2024-01-25
+tags: ['cloudflare', 'deployment', 'performance', 'static-sites', 'devops']
+---
+
+Cloudflare Pages has become a go-to platform for deploying static sites and JAMstack applications. Let's explore advanced optimization techniques to make your deployments faster, more efficient, and cost-effective.
+
+## Understanding Build Configuration
+
+Start with an optimized `wrangler.toml` configuration:
+
+```toml:wrangler.toml
+name = "my-site"
+compatibility_date = "2024-01-25"
+
+[build]
+command = "npm run build"
+directory = "dist"
+
+[build.environment]
+NODE_VERSION = "20"
+
+[[build.plugins]]
+package = "@cloudflare/pages-plugin-static-assets"
+
+[env.production]
+vars = { ENVIRONMENT = "production" }
+
+[env.preview]
+vars = { ENVIRONMENT = "preview" }
+```
+
+## Build Caching Strategies
+
+Optimize build times with proper caching:
+
+```json:package.json {7-9}
+{
+  "scripts": {
+    "build": "npm run build:cache && npm run build:site",
+    "build:cache": "node scripts/check-cache.js",
+    "build:site": "astro build",
+    "postbuild": "npm run optimize",
+    "optimize": "npm run optimize:html && npm run optimize:images",
+    "optimize:html": "html-minifier-terser dist/**/*.html",
+    "optimize:images": "imagemin dist/images/* --out-dir=dist/images"
+  }
+}
+```
+
+## Advanced Build Script
+
+Create a smart build script:
+
+```javascript:scripts/smart-build.js {15-25}
+const fs = require('fs');
+const crypto = require('crypto');
+const { execSync } = require('child_process');
+
+const CACHE_FILE = '.build-cache.json';
+
+function getFileHash(filePath) {
+  const content = fs.readFileSync(filePath);
+  return crypto.createHash('md5').update(content).digest('hex');
+}
+
+function shouldRebuild() {
+  if (!fs.existsSync(CACHE_FILE)) return true;
+  
+  const cache = JSON.parse(fs.readFileSync(CACHE_FILE));
+  const currentHashes = {};
+  
+  // Check source files
+  const sourceFiles = execSync('git ls-files src/')
+    .toString()
+    .split('\n')
+    .filter(Boolean);
+  
+  for (const file of sourceFiles) {
+    currentHashes[file] = getFileHash(file);
+  }
+  
+  return JSON.stringify(cache) !== JSON.stringify(currentHashes);
+}
+
+if (shouldRebuild()) {
+  console.log('Changes detected, rebuilding...');
+  execSync('npm run build:site', { stdio: 'inherit' });
+} else {
+  console.log('No changes detected, using cache');
+}
+```
+
+## Headers Configuration
+
+Optimize caching with `_headers` file:
+
+```text:public/_headers
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  X-XSS-Protection: 1; mode=block
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/images/*
+  Cache-Control: public, max-age=86400, s-maxage=31536000
+
+/*.js
+  Cache-Control: public, max-age=31536000, immutable
+  Content-Type: application/javascript; charset=utf-8
+
+/*.css
+  Cache-Control: public, max-age=31536000, immutable
+  Content-Type: text/css; charset=utf-8
+
+/sw.js
+  Cache-Control: no-cache
+```
+
+## Redirects Optimization
+
+Configure redirects efficiently:
+
+```text:public/_redirects
+# Domain redirects
+https://www.example.com/* https://example.com/:splat 301
+
+# Old URLs
+/blog/old-post /blog/new-post 301
+
+# API proxy (avoid unless necessary)
+/api/* https://api.example.com/:splat 200
+
+# Catch-all for SPAs
+/* /index.html 200
+```
+
+## Edge Functions
+
+Leverage Cloudflare Workers for dynamic functionality:
+
+```javascript:functions/api/[path].js {5-15}
+export async function onRequest(context) {
+  const { request, env, params } = context;
+  
+  // Add security headers
+  const response = await fetch(request);
+  const newHeaders = new Headers(response.headers);
+  
+  newHeaders.set('X-Custom-Header', 'value');
+  newHeaders.set('Cache-Control', 'public, max-age=300');
+  
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers: newHeaders
+  });
+}
+```
+
+## Build Performance Monitoring
+
+Track build performance:
+
+```javascript:scripts/build-metrics.js
+const fs = require('fs');
+
+class BuildMetrics {
+  constructor() {
+    this.startTime = Date.now();
+    this.metrics = {
+      buildTime: 0,
+      bundleSize: 0,
+      fileCount: 0,
+      timestamp: new Date().toISOString()
+    };
+  }
+
+  finish() {
+    this.metrics.buildTime = Date.now() - this.startTime;
+    this.calculateBundleSize();
+    this.saveMetrics();
+  }
+
+  calculateBundleSize() {
+    const distSize = this.getDirSize('./dist');
+    this.metrics.bundleSize = distSize;
+    this.metrics.fileCount = this.countFiles('./dist');
+  }
+
+  getDirSize(dir) {
+    // Implementation to calculate directory size
+  }
+
+  saveMetrics() {
+    const metricsFile = '.build-metrics.json';
+    let history = [];
+    
+    if (fs.existsSync(metricsFile)) {
+      history = JSON.parse(fs.readFileSync(metricsFile));
+    }
+    
+    history.push(this.metrics);
+    
+    // Keep last 50 builds
+    if (history.length > 50) {
+      history = history.slice(-50);
+    }
+    
+    fs.writeFileSync(metricsFile, JSON.stringify(history, null, 2));
+  }
+}
+
+module.exports = BuildMetrics;
+```
+
+## Environment Variables
+
+Manage environment variables securely:
+
+```bash:scripts/env-check.sh
+#!/bin/bash
+
+# Check required environment variables
+required_vars=("API_KEY" "DATABASE_URL" "SITE_URL")
+
+for var in "${required_vars[@]}"; do
+  if [ -z "${!var}" ]; then
+    echo "Error: $var is not set"
+    exit 1
+  fi
+done
+
+# Set defaults for optional variables
+export BUILD_CACHE=${BUILD_CACHE:-"true"}
+export MINIFY_HTML=${MINIFY_HTML:-"true"}
+```
+
+## Asset Optimization
+
+Optimize assets before deployment:
+
+```javascript:scripts/optimize-assets.js {10-20}
+const imagemin = require('imagemin');
+const imageminWebp = require('imagemin-webp');
+const sharp = require('sharp');
+const glob = require('glob');
+
+async function optimizeImages() {
+  const images = glob.sync('dist/**/*.{jpg,jpeg,png}');
+  
+  for (const image of images) {
+    // Generate WebP version
+    await sharp(image)
+      .webp({ quality: 85 })
+      .toFile(image.replace(/\.(jpg|jpeg|png)$/, '.webp'));
+    
+    // Generate AVIF version for modern browsers
+    await sharp(image)
+      .avif({ quality: 80 })
+      .toFile(image.replace(/\.(jpg|jpeg|png)$/, '.avif'));
+  }
+  
+  console.log(`Optimized ${images.length} images`);
+}
+
+optimizeImages();
+```
+
+## Deployment Hooks
+
+Automate post-deployment tasks:
+
+```yaml:.github/workflows/deploy.yml {15-25}
+name: Deploy to Cloudflare Pages
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Build and Deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          npm ci
+          npm run build
+          npx wrangler pages deploy dist --project-name=my-site
+      
+      - name: Purge Cache
+        run: |
+          curl -X POST "https://api.cloudflare.com/client/v4/zones/${{ secrets.ZONE_ID }}/purge_cache" \
+            -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            --data '{"purge_everything":true}'
+      
+      - name: Warm Cache
+        run: |
+          node scripts/warm-cache.js
+```
+
+## Performance Budget
+
+Enforce performance budgets:
+
+```javascript:scripts/performance-budget.js
+const fs = require('fs');
+const path = require('path');
+
+const BUDGETS = {
+  'index.html': 50 * 1024, // 50KB
+  'main.js': 200 * 1024,   // 200KB
+  'main.css': 50 * 1024,   // 50KB
+  total: 1024 * 1024       // 1MB total
+};
+
+function checkBudget() {
+  let totalSize = 0;
+  const violations = [];
+
+  Object.entries(BUDGETS).forEach(([file, limit]) => {
+    if (file === 'total') return;
+    
+    const filePath = path.join('dist', file);
+    if (fs.existsSync(filePath)) {
+      const size = fs.statSync(filePath).size;
+      totalSize += size;
+      
+      if (size > limit) {
+        violations.push({
+          file,
+          size,
+          limit,
+          excess: size - limit
+        });
+      }
+    }
+  });
+
+  if (totalSize > BUDGETS.total) {
+    violations.push({
+      file: 'total',
+      size: totalSize,
+      limit: BUDGETS.total,
+      excess: totalSize - BUDGETS.total
+    });
+  }
+
+  if (violations.length > 0) {
+    console.error('Performance budget violations:');
+    violations.forEach(v => {
+      console.error(`- ${v.file}: ${v.size} bytes (limit: ${v.limit}, excess: ${v.excess})`);
+    });
+    process.exit(1);
+  }
+
+  console.log('✓ All performance budgets met');
+}
+
+checkBudget();
+```
+
+## Monitoring Integration
+
+Set up monitoring:
+
+```javascript:functions/metrics.js
+export async function onRequest(context) {
+  const { request, env } = context;
+  
+  // Log request metrics
+  const metrics = {
+    timestamp: Date.now(),
+    url: request.url,
+    method: request.method,
+    cf: request.cf,
+    headers: Object.fromEntries(request.headers)
+  };
+  
+  // Send to analytics service
+  await fetch('https://analytics.example.com/collect', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(metrics)
+  });
+  
+  return fetch(request);
+}
+```
+
+## Best Practices Summary
+
+1. **Use Build Caching**: Cache dependencies and build artifacts
+2. **Optimize Assets**: Compress images, minify code, use modern formats
+3. **Set Proper Headers**: Configure caching and security headers
+4. **Monitor Performance**: Track build times and bundle sizes
+5. **Use Edge Functions Wisely**: Only for truly dynamic content
+6. **Implement CI/CD**: Automate deployments with proper testing
+7. **Version Your Assets**: Use content hashing for cache busting
+
+## Conclusion
+
+Optimizing Cloudflare Pages deployments requires attention to build performance, asset optimization, and proper configuration. By implementing these techniques, you'll achieve faster builds, better performance, and happier users. Remember to monitor your metrics and continuously improve your deployment pipeline.
