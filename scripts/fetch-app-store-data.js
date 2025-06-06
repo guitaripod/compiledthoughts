@@ -26,84 +26,70 @@ const APP_ENHANCEMENTS = {
     features: [
       'Real-time space data',
       'Stunning 4K visualizations',
-      'Educational astronomy content'
-    ]
+      'Educational astronomy content',
+    ],
   },
-  'SForesight': {
+  SForesight: {
     id: 'sforesight',
     tagline: 'ML-Powered SF Symbol Search',
     primaryColor: '#3B82F6',
     features: [
       'ML-powered semantic search',
       'Instant symbol preview',
-      'Export in multiple formats'
-    ]
+      'Export in multiple formats',
+    ],
   },
   'Double Kick': {
     id: 'double-kick',
     tagline: 'Understand Any Menu, Anywhere',
     primaryColor: '#DC2626',
-    features: [
-      'Instant menu translation',
-      'Dietary restriction alerts',
-      'Cuisine insights'
-    ]
+    features: ['Instant menu translation', 'Dietary restriction alerts', 'Cuisine insights'],
   },
-  'Psywave': {
+  Psywave: {
     id: 'psywave',
     tagline: 'AI-Powered Playlist Generation',
     primaryColor: '#8B5CF6',
     features: [
       'ML-powered music analysis',
       'Mood-based playlist generation',
-      'Apple Music integration'
-    ]
+      'Apple Music integration',
+    ],
   },
   'Dream Eater': {
     id: 'dream-eater',
     tagline: 'ML-Powered Dream Journaling',
     primaryColor: '#6366F1',
-    features: [
-      'Dream pattern analysis',
-      'AI-powered insights',
-      'Private & secure journaling'
-    ]
+    features: ['Dream pattern analysis', 'AI-powered insights', 'Private & secure journaling'],
   },
   'Master of Inventory': {
     id: 'master-of-inventory',
     tagline: 'Professional Inventory Management',
     primaryColor: '#10B981',
-    features: [
-      'Barcode scanning',
-      'Multi-location tracking',
-      'Detailed analytics'
-    ]
+    features: ['Barcode scanning', 'Multi-location tracking', 'Detailed analytics'],
   },
   'Master of Flags': {
     id: 'master-of-flags',
     tagline: 'Learn World Flags',
     primaryColor: '#EF4444',
-    features: [
-      'All country flags',
-      'Interactive quizzes',
-      'Progress tracking'
-    ]
-  }
+    features: ['All country flags', 'Interactive quizzes', 'Progress tracking'],
+  },
 };
 
 function fetchJSON(url) {
   return new Promise((resolve, reject) => {
-    https.get(url, (res) => {
-      let data = '';
-      res.on('data', (chunk) => data += chunk);
-      res.on('end', () => {
-        try {
-          resolve(JSON.parse(data));
-        } catch (e) {
-          reject(e);
-        }
-      });
-    }).on('error', reject);
+    https
+      .get(url, (res) => {
+        let data = '';
+        res.on('data', (chunk) => (data += chunk));
+        res.on('end', () => {
+          try {
+            resolve(JSON.parse(data));
+          } catch (e) {
+            reject(e);
+          }
+        });
+      })
+      .on('error', reject);
   });
 }
 
@@ -112,73 +98,95 @@ function mapDeviceTosPlatform(app) {
   if (app.kind === 'mac-software') {
     return ['Mac'];
   }
-  
+
   // Check supported devices array
   if (app.supportedDevices && Array.isArray(app.supportedDevices)) {
     // Check for Apple TV
-    if (app.supportedDevices.some(d => d.includes('AppleTV'))) {
+    if (app.supportedDevices.some((d) => d.includes('AppleTV'))) {
       return ['Apple TV'];
     }
-    
+
     // Check for iOS devices
     const platforms = [];
-    const hasIPhone = app.supportedDevices.some(d => d.includes('iPhone'));
-    const hasIPad = app.supportedDevices.some(d => d.includes('iPad'));
-    
+    const hasIPhone = app.supportedDevices.some((d) => d.includes('iPhone'));
+    const hasIPad = app.supportedDevices.some((d) => d.includes('iPad'));
+
     if (hasIPhone) platforms.push('iPhone');
     if (hasIPad) platforms.push('iPad');
-    
+
     if (platforms.length > 0) return platforms;
   }
-  
+
   // Fallback: check screenshot URLs for iOS apps
   const platforms = [];
   if (app.ipadScreenshotUrls && app.ipadScreenshotUrls.length > 0) platforms.push('iPad');
   if (app.screenshotUrls && app.screenshotUrls.length > 0) platforms.push('iPhone');
-  
+
   return platforms.length > 0 ? platforms : ['iPhone', 'iPad'];
 }
 
 async function fetchAppStoreData() {
   const url = `https://itunes.apple.com/lookup?id=${DEVELOPER_ID}&entity=software&limit=200&country=us`;
-  
+
   console.log('Fetching data from iTunes Search API...');
   const data = await fetchJSON(url);
-  
+
   if (!data.results || data.results.length === 0) {
     throw new Error('No apps found for developer');
   }
-  
+
   // First result is developer info, rest are apps
   const apps = data.results.slice(1);
-  
-  return apps.map(app => {
+
+  return apps.map((app) => {
     const appName = app.trackName;
     const enhancement = APP_ENHANCEMENTS[appName] || {};
-    const urlSlug = enhancement.id || appName.toLowerCase()
-      .replace(/\s+/g, '-')
-      .replace(/[^a-z0-9-]/g, '');
-    
+    const urlSlug =
+      enhancement.id ||
+      appName
+        .toLowerCase()
+        .replace(/\s+/g, '-')
+        .replace(/[^a-z0-9-]/g, '');
+
     // Extract a cleaner description (first 2 sentences)
     const fullDesc = app.description || '';
-    const sentences = fullDesc.split(/[.!?]+/).filter(s => s.trim());
+    const sentences = fullDesc.split(/[.!?]+/).filter((s) => s.trim());
     const cleanDesc = sentences.slice(0, 2).join('. ') + (sentences.length > 0 ? '.' : '');
-    
+
     // Ensure App Store URL uses US location
-    const appStoreUrl = app.trackViewUrl || `https://apps.apple.com/us/app/${urlSlug}/id${app.trackId}`;
-    
+    let appStoreUrl =
+      app.trackViewUrl || `https://apps.apple.com/us/app/${urlSlug}/id${app.trackId}`;
+    appStoreUrl = appStoreUrl.replace(
+      'https://apps.apple.com/app/',
+      'https://apps.apple.com/us/app/'
+    );
+
+    // Add platform parameter for iOS apps
+    const platforms = mapDeviceTosPlatform(app);
+    if (platforms.includes('iPhone') || platforms.includes('iPad')) {
+      // Add ?platform=iphone for iOS apps
+      if (!appStoreUrl.includes('?')) {
+        appStoreUrl += '?platform=iphone';
+      } else if (!appStoreUrl.includes('platform=')) {
+        appStoreUrl += '&platform=iphone';
+      }
+    }
+
     return {
       id: urlSlug,
       name: appName,
-      tagline: enhancement.tagline || sentences[0]?.substring(0, 60) || 'Innovative app for Apple platforms',
+      tagline:
+        enhancement.tagline ||
+        sentences[0]?.substring(0, 60) ||
+        'Innovative app for Apple platforms',
       description: cleanDesc,
-      platforms: mapDeviceTosPlatform(app),
+      platforms,
       category: app.primaryGenreName,
       price: app.price === 0 ? 'Free' : `$${app.price}`,
-      appStoreUrl: appStoreUrl.replace('https://apps.apple.com/app/', 'https://apps.apple.com/us/app/'),
+      appStoreUrl,
       icon: app.artworkUrl512 || app.artworkUrl100,
       primaryColor: enhancement.primaryColor || '#3B82F6',
-      features: enhancement.features || []
+      features: enhancement.features || [],
     };
   });
 }
@@ -187,9 +195,17 @@ async function updateAppsData() {
   try {
     const apps = await fetchAppStoreData();
     console.log(`Found ${apps.length} apps`);
-    
+
     // Sort apps by a predefined order
-    const sortOrder = ['solar-beam', 'sforesight', 'double-kick', 'psywave', 'dream-eater', 'master-of-inventory', 'master-of-flags'];
+    const sortOrder = [
+      'solar-beam',
+      'sforesight',
+      'double-kick',
+      'psywave',
+      'dream-eater',
+      'master-of-inventory',
+      'master-of-flags',
+    ];
     apps.sort((a, b) => {
       const aIndex = sortOrder.indexOf(a.id);
       const bIndex = sortOrder.indexOf(b.id);
@@ -198,24 +214,20 @@ async function updateAppsData() {
       if (bIndex === -1) return -1;
       return aIndex - bIndex;
     });
-    
+
     const appData = { apps };
-    
+
     // Ensure directory exists
     await fs.mkdir(path.dirname(APPS_DATA_PATH), { recursive: true });
-    
+
     // Write the data
-    await fs.writeFile(
-      APPS_DATA_PATH,
-      JSON.stringify(appData, null, 2) + '\n'
-    );
-    
+    await fs.writeFile(APPS_DATA_PATH, JSON.stringify(appData, null, 2) + '\n');
+
     console.log(`✓ Successfully updated ${APPS_DATA_PATH}`);
-    
+
     // Log app names for verification
     console.log('Apps updated:');
-    apps.forEach(app => console.log(`  - ${app.name} (${app.price})`));
-    
+    apps.forEach((app) => console.log(`  - ${app.name} (${app.price})`));
   } catch (error) {
     console.error('Error fetching app data:', error.message);
     process.exit(1);

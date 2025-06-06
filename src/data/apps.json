@@ -49,7 +49,7 @@
       ],
       "category": "Food & Drink",
       "price": "$24.99",
-      "appStoreUrl": "https://apps.apple.com/us/app/double-kick/id6736581403?uo=4",
+      "appStoreUrl": "https://apps.apple.com/us/app/double-kick/id6736581403?uo=4&platform=iphone",
       "icon": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/33/4a/37/334a37a3-d519-3cef-56d9-82179341b851/AppIcon-0-0-1x_U007ephone-0-1-85-220.png/512x512bb.jpg",
       "primaryColor": "#DC2626",
       "features": [
@@ -69,7 +69,7 @@
       ],
       "category": "Music",
       "price": "$14.99",
-      "appStoreUrl": "https://apps.apple.com/us/app/psywave/id6727000827?uo=4",
+      "appStoreUrl": "https://apps.apple.com/us/app/psywave/id6727000827?uo=4&platform=iphone",
       "icon": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/90/d6/e2/90d6e2c0-3351-8f49-2672-b8d0cd14be1b/AppIcon-0-0-1x_U007epad-0-1-85-220.png/512x512bb.jpg",
       "primaryColor": "#8B5CF6",
       "features": [
@@ -89,7 +89,7 @@
       ],
       "category": "Lifestyle",
       "price": "Free",
-      "appStoreUrl": "https://apps.apple.com/us/app/dream-eater/id6661019277?uo=4",
+      "appStoreUrl": "https://apps.apple.com/us/app/dream-eater/id6661019277?uo=4&platform=iphone",
       "icon": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/74/80/3f/74803f7c-a6ad-dcf0-dbc9-72657667cd8c/AppIcon-0-0-1x_U007epad-0-1-85-220.png/512x512bb.jpg",
       "primaryColor": "#6366F1",
       "features": [
@@ -109,7 +109,7 @@
       ],
       "category": "Utilities",
       "price": "$9.99",
-      "appStoreUrl": "https://apps.apple.com/us/app/master-of-inventory/id1523538855?uo=4",
+      "appStoreUrl": "https://apps.apple.com/us/app/master-of-inventory/id1523538855?uo=4&platform=iphone",
       "icon": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/aa/6f/f5/aa6ff532-3a9f-7926-1ee9-a1b0ce8220e2/AppIcon-0-0-1x_U007emarketing-0-9-0-85-220.png/512x512bb.jpg",
       "primaryColor": "#10B981",
       "features": [
@@ -129,7 +129,7 @@
       ],
       "category": "Education",
       "price": "$9.99",
-      "appStoreUrl": "https://apps.apple.com/us/app/master-of-flags/id1484270248?uo=4",
+      "appStoreUrl": "https://apps.apple.com/us/app/master-of-flags/id1484270248?uo=4&platform=iphone",
       "icon": "https://is1-ssl.mzstatic.com/image/thumb/Purple122/v4/bc/3a/86/bc3a86ac-37f6-f6f7-e664-b69123bdf21e/AppIcon-1x_U007emarketing-0-8-0-85-220.png/512x512bb.jpg",
       "primaryColor": "#EF4444",
       "features": [
