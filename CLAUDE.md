@@ -14,6 +14,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm run test:ui` - Run tests with Vitest UI
 - `npm run test:run` - Run tests once (CI mode)
 
+### Code Quality
+- `npx prettier --check "src/**/*.{js,ts,astro,css}"` - Check code formatting
+- `npx prettier --write "src/**/*.{js,ts,astro,css}"` - Fix code formatting
+
 ## Architecture Overview
 
 This is an Astro-based static blog with the following key architectural patterns:
@@ -57,3 +61,15 @@ Most features can be toggled by removing components from layouts (e.g., removing
 
 ### Styling Approach
 Uses Tailwind classes throughout components. Global styles in `src/styles/global.css`. Theme customization in `tailwind.config.mjs`.
+
+## Pre-deployment Checklist
+
+**IMPORTANT**: Before pushing code that will trigger a deployment, ALWAYS run these checks:
+
+1. **Code Formatting**: Run `npx prettier --check "src/**/*.{js,ts,astro,css}"` to ensure all code is properly formatted. If it fails, run `npx prettier --write "src/**/*.{js,ts,astro,css}"` to fix formatting issues.
+
+2. **Tests**: Run `npm test` to ensure all tests pass.
+
+3. **Build**: Run `npm run build` to ensure the site builds successfully without errors.
+
+These checks are enforced by GitHub Actions CI and will cause deployment to fail if not passing.
