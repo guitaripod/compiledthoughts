@@ -3,12 +3,50 @@ import BaseLayout from '@layouts/BaseLayout.astro';
 import AppCard from '@components/AppCard.astro';
 import appsData from '../data/apps.json';
 
-const pageTitle = 'Apps';
+const pageTitle = 'Apps | Marcus Ziadé';
 const pageDescription =
   'Explore my portfolio of applications for Apple platforms - iPhone, iPad, Mac, and Apple TV. Featuring machine learning, productivity tools, and innovative experiences.';
+
+// Create a more engaging OG description
+const ogDescription = `🚀 ${appsData.apps.length} apps across Apple platforms • 🤖 ML-powered experiences • 📱 iPhone, iPad, Mac & Apple TV • ⭐ From productivity tools to space exploration`;
+
+// Get featured apps for the OG preview
+const featuredApps = appsData.apps
+  .slice(0, 3)
+  .map((app) => app.name)
+  .join(', ');
+const moreAppsCount = Math.max(0, appsData.apps.length - 3);
+
+// Create structured data for the apps collection
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: pageTitle,
+  description: pageDescription,
+  url: 'https://compiledthoughts.pages.dev/apps/',
+  author: {
+    '@type': 'Person',
+    name: 'Marcus Ziadé',
+    url: 'https://compiledthoughts.pages.dev',
+  },
+  hasPart: appsData.apps.map((app) => ({
+    '@type': 'SoftwareApplication',
+    name: app.name,
+    description: app.tagline,
+    applicationCategory: app.category,
+    operatingSystem: app.platforms.join(', '),
+    offers: {
+      '@type': 'Offer',
+      price: app.price === 'Free' ? '0' : app.price.replace('$', ''),
+      priceCurrency: 'USD',
+    },
+    datePublished: app.releaseDate,
+    url: app.appStoreUrl,
+  })),
+};
 ---
 
-<BaseLayout title={pageTitle} description={pageDescription}>
+<BaseLayout title={pageTitle} description={ogDescription} image="/og-apps-grid.png">
   <main>
     <div class="container mx-auto px-4 py-8">
       <header class="text-center mb-12">
@@ -53,6 +91,9 @@ const pageDescription =
       </section>
     </div>
   </main>
+
+  <!-- Structured data for better SEO -->
+  <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
 </BaseLayout>
 
 <style>

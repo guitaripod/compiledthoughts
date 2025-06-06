@@ -89,6 +89,11 @@ jobs:
         echo "Fetching latest app data from App Store..."
         node scripts/fetch-app-store-data.js || echo "Failed to update app data, using existing data"
     
+    - name: Generate OG image grid
+      run: |
+        echo "Generating OG image grid from app icons..."
+        node scripts/generate-apps-og-grid.js || echo "Failed to generate OG grid, using existing image"
+    
     - name: Build project
       run: npm run build
     
@@ -126,6 +131,11 @@ jobs:
       run: |
         echo "Fetching latest app data from App Store..."
         node scripts/fetch-app-store-data.js || echo "Failed to update app data, using existing data"
+    
+    - name: Generate OG image grid
+      run: |
+        echo "Generating OG image grid from app icons..."
+        node scripts/generate-apps-og-grid.js || echo "Failed to generate OG grid, using existing image"
     
     - name: Build project
       run: npm run build
