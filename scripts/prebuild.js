@@ -24,4 +24,14 @@ try {
   // Don't fail the build if GitHub fetch fails
 }
 
+// Generate OG image
+try {
+  console.log('Generating OG image...');
+  execSync('node scripts/generate-main-og-image.js', { stdio: 'inherit' });
+  console.log('✓ OG image generated successfully');
+} catch (error) {
+  console.error('Failed to generate OG image:', error.message);
+  // Don't fail the build if OG image generation fails
+}
+
 console.log('✓ Pre-build tasks complete');

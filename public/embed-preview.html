@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Embed Preview - Compiled Thoughts</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: #f3f4f6;
+            padding: 40px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #111827;
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #374151;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        .embed-preview {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        .embed-preview h3 {
+            margin-top: 0;
+            color: #6b7280;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .mock-embed {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: box-shadow 0.2s;
+        }
+        .mock-embed:hover {
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .mock-embed img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .mock-embed-content {
+            padding: 16px;
+        }
+        .mock-embed-title {
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 4px;
+        }
+        .mock-embed-description {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        .mock-embed-url {
+            color: #9ca3af;
+            font-size: 12px;
+        }
+        code {
+            background: #f3f4f6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        .meta-tags {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: monospace;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Compiled Thoughts - Social Media Embed Preview</h1>
+        
+        <p>This page shows how your website will appear when shared on social media platforms.</p>
+        
+        <h2>Twitter/X Preview</h2>
+        <div class="embed-preview">
+            <h3>Large Summary Card</h3>
+            <div class="mock-embed">
+                <img src="/og-image.png" alt="OG Image Preview">
+                <div class="mock-embed-content">
+                    <div class="mock-embed-title">Compiled Thoughts</div>
+                    <div class="mock-embed-description">Engineer who ships across iOS, macOS, tvOS, web, and Linux. Currently building open source tools and apps that solve real problems.</div>
+                    <div class="mock-embed-url">compiledthoughts.com</div>
+                </div>
+            </div>
+        </div>
+        
+        <h2>Facebook/LinkedIn Preview</h2>
+        <div class="embed-preview">
+            <h3>Link Preview</h3>
+            <div class="mock-embed">
+                <img src="/og-image.png" alt="OG Image Preview">
+                <div class="mock-embed-content">
+                    <div class="mock-embed-url">COMPILEDTHOUGHTS.COM</div>
+                    <div class="mock-embed-title">Compiled Thoughts</div>
+                    <div class="mock-embed-description">Engineer who ships across iOS, macOS, tvOS, web, and Linux. Currently building open source tools and apps that solve real problems.</div>
+                </div>
+            </div>
+        </div>
+        
+        <h2>Discord/Slack Preview</h2>
+        <div class="embed-preview">
+            <h3>Embed Preview</h3>
+            <div class="mock-embed" style="border-left: 4px solid #3b82f6;">
+                <div class="mock-embed-content">
+                    <div class="mock-embed-title">Compiled Thoughts</div>
+                    <div class="mock-embed-description">Engineer who ships across iOS, macOS, tvOS, web, and Linux. Currently building open source tools and apps that solve real problems.</div>
+                    <img src="/og-image.png" alt="OG Image Preview" style="margin-top: 12px; border-radius: 4px;">
+                </div>
+            </div>
+        </div>
+        
+        <h2>Meta Tags Used</h2>
+        <div class="meta-tags">
+&lt;!-- Open Graph / Facebook --&gt;
+&lt;meta property="og:type" content="website" /&gt;
+&lt;meta property="og:url" content="https://compiledthoughts.com" /&gt;
+&lt;meta property="og:title" content="Compiled Thoughts" /&gt;
+&lt;meta property="og:description" content="Engineer who ships across iOS, macOS, tvOS, web, and Linux. Currently building open source tools and apps that solve real problems." /&gt;
+&lt;meta property="og:image" content="https://compiledthoughts.com/og-image.png" /&gt;
+&lt;meta property="og:image:width" content="1200" /&gt;
+&lt;meta property="og:image:height" content="630" /&gt;
+&lt;meta property="og:site_name" content="Compiled Thoughts" /&gt;
+
+&lt;!-- Twitter --&gt;
+&lt;meta property="twitter:card" content="summary_large_image" /&gt;
+&lt;meta property="twitter:title" content="Compiled Thoughts" /&gt;
+&lt;meta property="twitter:description" content="Engineer who ships across iOS, macOS, tvOS, web, and Linux. Currently building open source tools and apps that solve real problems." /&gt;
+&lt;meta property="twitter:image" content="https://compiledthoughts.com/og-image.png" /&gt;
+        </div>
+        
+        <h2>Testing Your Embeds</h2>
+        <p>You can test how your embeds look on different platforms using these tools:</p>
+        <ul>
+            <li><a href="https://www.opengraph.xyz/" target="_blank">OpenGraph.xyz</a> - Preview OpenGraph tags</li>
+            <li><a href="https://cards-dev.twitter.com/validator" target="_blank">Twitter Card Validator</a> - Test Twitter cards</li>
+            <li><a href="https://developers.facebook.com/tools/debug/" target="_blank">Facebook Sharing Debugger</a> - Debug Facebook shares</li>
+            <li><a href="https://www.linkedin.com/post-inspector/" target="_blank">LinkedIn Post Inspector</a> - Check LinkedIn previews</li>
+        </ul>
+    </div>
+</body>
+</html>
