@@ -108,26 +108,35 @@ function fetchJSON(url) {
 }
 
 function mapDeviceTosPlatform(app) {
-  const platforms = [];
+  // Check for macOS apps
+  if (app.kind === 'mac-software') {
+    return ['Mac'];
+  }
   
   // Check supported devices array
   if (app.supportedDevices && Array.isArray(app.supportedDevices)) {
-    if (app.supportedDevices.some(d => d.includes('iPhone'))) platforms.push('iPhone');
-    if (app.supportedDevices.some(d => d.includes('iPad'))) platforms.push('iPad');
-    if (app.supportedDevices.some(d => d.includes('iPod'))) platforms.push('iPod');
+    // Check for Apple TV
+    if (app.supportedDevices.some(d => d.includes('AppleTV'))) {
+      return ['Apple TV'];
+    }
+    
+    // Check for iOS devices
+    const platforms = [];
+    const hasIPhone = app.supportedDevices.some(d => d.includes('iPhone'));
+    const hasIPad = app.supportedDevices.some(d => d.includes('iPad'));
+    
+    if (hasIPhone) platforms.push('iPhone');
+    if (hasIPad) platforms.push('iPad');
+    
+    if (platforms.length > 0) return platforms;
   }
   
-  // Check kind for other platforms
-  if (app.kind === 'mac-software') platforms.push('Mac');
-  if (app.kind === 'apple-tv-software') platforms.push('Apple TV');
+  // Fallback: check screenshot URLs for iOS apps
+  const platforms = [];
+  if (app.ipadScreenshotUrls && app.ipadScreenshotUrls.length > 0) platforms.push('iPad');
+  if (app.screenshotUrls && app.screenshotUrls.length > 0) platforms.push('iPhone');
   
-  // Default based on device families
-  if (platforms.length === 0 && app.screenshotUrls) {
-    if (app.ipadScreenshotUrls && app.ipadScreenshotUrls.length > 0) platforms.push('iPad');
-    if (app.screenshotUrls && app.screenshotUrls.length > 0) platforms.push('iPhone');
-  }
-  
-  return platforms.length > 0 ? platforms : ['iOS'];
+  return platforms.length > 0 ? platforms : ['iPhone', 'iPad'];
 }
 
 async function fetchAppStoreData() {

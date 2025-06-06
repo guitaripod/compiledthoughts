@@ -6,7 +6,7 @@
       "tagline": "Your Window to the Universe",
       "description": "Solar Beam: Your Window to the Universe\n\nEmbark on an interstellar journey with Solar Beam, the ultimate space exploration app designed exclusively for your Apple TV.  Immerse yourself in the wonders of the cosmos from the comfort of your living room.",
       "platforms": [
-        "iOS"
+        "Apple TV"
       ],
       "category": "Photo & Video",
       "price": "$19.99",
@@ -45,8 +45,7 @@
       "description": "Double Kick - Your Global Menu Companion\n\nOne-time purchase, no subscriptions, no ads - your passport to understanding any menu worldwide. \n\nTransform any restaurant menu into an interactive guide, no matter where you are in the world.",
       "platforms": [
         "iPhone",
-        "iPad",
-        "iPod"
+        "iPad"
       ],
       "category": "Food & Drink",
       "price": "$24.99",
@@ -66,8 +65,7 @@
       "description": "Psywave: Your Musical Mind Reader\n\nUnleash the power of machine learning to craft your perfect playlist with Psywave.  No more endless scrolling or manual curation – describe your mood and watch as Psywave conjures up a tailor-made soundtrack for your moment.",
       "platforms": [
         "iPhone",
-        "iPad",
-        "iPod"
+        "iPad"
       ],
       "category": "Music",
       "price": "$14.99",
@@ -87,8 +85,7 @@
       "description": "Dream Eater: ML-Powered Dream Journal & Interpreter\n\nDive into the fascinating world of your subconscious with Dream Eater, the ultimate ML-powered dream journal and interpretation app.  Unlock the mysteries of your nightly adventures and gain deeper insights into your mind.",
       "platforms": [
         "iPhone",
-        "iPad",
-        "iPod"
+        "iPad"
       ],
       "category": "Lifestyle",
       "price": "Free",
@@ -108,8 +105,7 @@
       "description": "Take control of your belongings with Inventory, the comprehensive personal inventory management app that helps you track, organize, and protect your valuable items. \n\nWHAT MAKES INVENTORY SPECIAL\n• Smart Receipt Scanning: Use your camera to capture and store receipts with our built-in document scanner.",
       "platforms": [
         "iPhone",
-        "iPad",
-        "iPod"
+        "iPad"
       ],
       "category": "Utilities",
       "price": "$9.99",
@@ -129,8 +125,7 @@
       "description": "This is Master of Flags, the game where you gather experience points (XP) and level up as you become familiar with the world's flags.  There are 196 different flags in this game.",
       "platforms": [
         "iPhone",
-        "iPad",
-        "iPod"
+        "iPad"
       ],
       "category": "Education",
       "price": "$9.99",
