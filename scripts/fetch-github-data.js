@@ -17,6 +17,9 @@ const EXCLUDE_REPOS = [
   'homebrew-songlink-cli', // homebrew tap
 ];
 
+// Minimum number of commits to be considered an active project
+const MIN_COMMITS = 5;
+
 // Category mapping based on repo characteristics
 function categorizeProject(repo) {
   const name = repo.name.toLowerCase();
@@ -108,6 +111,36 @@ function getPlatforms(repo) {
   return [...new Set(platforms)]; // Remove duplicates
 }
 
+// Fetch commit count for a repository
+async function getCommitCount(repo, headers) {
+  try {
+    // First try to get contributor stats which includes commit counts
+    const contributorsUrl = `https://api.github.com/repos/${GITHUB_USERNAME}/${repo.name}/contributors`;
+    const response = await fetch(contributorsUrl, { headers });
+    
+    if (response.ok) {
+      const contributors = await response.json();
+      // Find the owner's contributions
+      const ownerContribution = contributors.find(c => c.login === GITHUB_USERNAME);
+      return ownerContribution ? ownerContribution.contributions : 0;
+    }
+    
+    // Fallback: count commits in the default branch
+    const commitsUrl = `https://api.github.com/repos/${GITHUB_USERNAME}/${repo.name}/commits?author=${GITHUB_USERNAME}&per_page=100`;
+    const commitsResponse = await fetch(commitsUrl, { headers });
+    
+    if (commitsResponse.ok) {
+      const commits = await commitsResponse.json();
+      return commits.length;
+    }
+    
+    return 0;
+  } catch (error) {
+    console.error(`Error fetching commit count for ${repo.name}:`, error.message);
+    return 0;
+  }
+}
+
 async function fetchGitHubData() {
   try {
     console.log('Fetching GitHub repository data...');
@@ -129,15 +162,44 @@ async function fetchGitHubData() {
     
     const repos = await response.json();
     
-    // Filter and transform repos
-    const projects = repos
-      .filter(repo => 
-        !repo.fork && 
-        !repo.private && 
-        !EXCLUDE_REPOS.includes(repo.name) &&
-        repo.description && // Has a description
-        (repo.stargazers_count > 0 || repo.topics?.length > 0 || repo.language) // Has some activity/metadata
-      )
+    const headers = {
+      'Accept': 'application/vnd.github.v3+json',
+      'User-Agent': 'marcusziade-website',
+      ...(process.env.GITHUB_TOKEN && {
+        'Authorization': `token ${process.env.GITHUB_TOKEN}`
+      })
+    };
+    
+    // Filter repos and check commit counts
+    console.log('Checking commit counts for repositories...');
+    const reposWithCommits = [];
+    
+    for (const repo of repos) {
+      // Skip if it's in the exclude list or doesn't meet basic criteria
+      if (repo.fork || 
+          repo.private || 
+          EXCLUDE_REPOS.includes(repo.name) ||
+          !repo.description ||
+          (!repo.stargazers_count && !repo.topics?.length && !repo.language)) {
+        continue;
+      }
+      
+      // Check commit count
+      const commitCount = await getCommitCount(repo, headers);
+      
+      if (commitCount >= MIN_COMMITS) {
+        reposWithCommits.push({
+          ...repo,
+          commitCount
+        });
+        console.log(`  ✓ ${repo.name}: ${commitCount} commits`);
+      } else {
+        console.log(`  ✗ ${repo.name}: ${commitCount} commits (skipped)`);
+      }
+    }
+    
+    // Transform filtered repos
+    const projects = reposWithCommits
       .map(repo => ({
         id: repo.name.toLowerCase(),
         name: repo.name,
@@ -150,11 +212,13 @@ async function fetchGitHubData() {
         highlights: getHighlights(repo),
         updatedAt: repo.updated_at,
         createdAt: repo.created_at,
-        topics: repo.topics || []
+        topics: repo.topics || [],
+        commitCount: repo.commitCount
       }))
       .sort((a, b) => {
-        // Sort by stars first, then by update date
+        // Sort by stars first, then by commit count, then by update date
         if (b.stars !== a.stars) return b.stars - a.stars;
+        if (b.commitCount !== a.commitCount) return b.commitCount - a.commitCount;
         return new Date(b.updatedAt) - new Date(a.updatedAt);
       });
     
@@ -188,7 +252,7 @@ async function fetchGitHubData() {
     const outputPath = path.join(__dirname, '..', 'src', 'data', 'opensource.json');
     fs.writeFileSync(outputPath, JSON.stringify(outputData, null, 2));
     
-    console.log(`✓ Successfully fetched ${outputData.projects.length} open source projects`);
+    console.log(`\n✓ Successfully fetched ${outputData.projects.length} open source projects`);
     console.log(`✓ Data written to ${outputPath}`);
     
     // Summary
@@ -197,10 +261,13 @@ async function fetchGitHubData() {
       return acc;
     }, {});
     
+    const totalCommits = outputData.projects.reduce((sum, p) => sum + (p.commitCount || 0), 0);
+    
     console.log('\nProject breakdown:');
     Object.entries(categoryCounts).forEach(([category, count]) => {
       console.log(`  ${category}: ${count}`);
     });
+    console.log(`\nTotal commits across all projects: ${totalCommits}`);
     
   } catch (error) {
     console.error('Error fetching GitHub data:', error);

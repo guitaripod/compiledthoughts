@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2025-06-06T22:59:49.790Z",
+  "lastUpdated": "2025-06-06T23:12:33.195Z",
   "totalRepos": 100,
   "projects": [
     {
@@ -26,7 +26,8 @@
         "ollama",
         "package",
         "swift"
-      ]
+      ],
+      "commitCount": 54
     },
     {
       "id": "openaiimageskit",
@@ -44,7 +45,8 @@
       ],
       "updatedAt": "2025-05-08T17:14:22Z",
       "createdAt": "2025-04-23T18:41:04Z",
-      "topics": []
+      "topics": [],
+      "commitCount": 14
     },
     {
       "id": "apod-cli",
@@ -62,7 +64,8 @@
       "highlights": [],
       "updatedAt": "2024-06-06T21:52:16Z",
       "createdAt": "2023-02-12T09:17:00Z",
-      "topics": []
+      "topics": [],
+      "commitCount": 37
     },
     {
       "id": "songlink-cli",
@@ -90,7 +93,8 @@
         "macos",
         "music",
         "windows"
-      ]
+      ],
+      "commitCount": 39
     },
     {
       "id": "goscrapequotes",
@@ -108,7 +112,8 @@
       "highlights": [],
       "updatedAt": "2023-10-08T01:40:53Z",
       "createdAt": "2023-08-19T16:45:51Z",
-      "topics": []
+      "topics": [],
+      "commitCount": 6
     },
     {
       "id": "torrent-rss",
@@ -135,7 +140,8 @@
         "downloader",
         "go",
         "torrent"
-      ]
+      ],
+      "commitCount": 22
     },
     {
       "id": "settingsclone",
@@ -152,7 +158,8 @@
       "highlights": [],
       "updatedAt": "2024-07-14T17:33:23Z",
       "createdAt": "2021-02-25T18:17:42Z",
-      "topics": []
+      "topics": [],
+      "commitCount": 14
     },
     {
       "id": "github-appleos",
@@ -168,7 +175,8 @@
       "highlights": [],
       "updatedAt": "2023-12-09T00:40:31Z",
       "createdAt": "2023-09-04T01:05:55Z",
-      "topics": []
+      "topics": [],
+      "commitCount": 11
     },
     {
       "id": "neetcode",
@@ -184,7 +192,8 @@
       "highlights": [],
       "updatedAt": "2024-08-02T03:11:02Z",
       "createdAt": "2023-05-20T11:35:23Z",
-      "topics": []
+      "topics": [],
+      "commitCount": 12
     },
     {
       "id": "ios-experiments",
@@ -201,7 +210,8 @@
       "highlights": [],
       "updatedAt": "2024-04-20T16:09:12Z",
       "createdAt": "2021-08-26T10:53:19Z",
-      "topics": []
+      "topics": [],
+      "commitCount": 12
     },
     {
       "id": "compiledthoughts",
@@ -213,25 +223,28 @@
       "githubUrl": "https://github.com/marcusziade/compiledthoughts",
       "category": "Other Projects",
       "highlights": [],
-      "updatedAt": "2025-06-06T22:21:59Z",
+      "updatedAt": "2025-06-06T23:10:52Z",
       "createdAt": "2025-06-05T17:16:02Z",
-      "topics": []
+      "topics": [],
+      "commitCount": 43
     },
     {
-      "id": "multi-ai-chat-worker",
-      "name": "multi-ai-chat-worker",
-      "description": "Cloudflare worker routing multiple AI services",
-      "language": "JavaScript",
+      "id": "rawdog.ml.nvim",
+      "name": "rawdog.ml.nvim",
+      "description": "my neovim config, btw. for arch and macOS, btw.",
+      "language": "Lua",
       "platforms": [],
       "stars": 0,
-      "githubUrl": "https://github.com/marcusziade/multi-ai-chat-worker",
+      "githubUrl": "https://github.com/marcusziade/rawdog.ml.nvim",
       "category": "Other Projects",
       "highlights": [
-        "AI-powered"
+        "Cross-platform",
+        "Vim controls"
       ],
-      "updatedAt": "2025-05-21T18:20:28Z",
-      "createdAt": "2025-05-21T18:19:33Z",
-      "topics": []
+      "updatedAt": "2025-04-23T18:10:02Z",
+      "createdAt": "2024-11-16T13:16:19Z",
+      "topics": [],
+      "commitCount": 28
     }
   ]
 }
