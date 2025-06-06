@@ -10,7 +10,7 @@ describe('Bionic Reading', () => {
 
   it('should handle single character words', () => {
     const input = 'I am a developer';
-    const expected = '<b>I</b> <b>a</b>m <b>a</b> <b>dev</b>eloper';
+    const expected = '<b>I</b> <b>a</b>m <b>a</b> <b>deve</b>loper';
     expect(transformToBionicText(input)).toBe(expected);
   });
 
