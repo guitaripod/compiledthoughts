@@ -1,0 +1,123 @@
+{
+  "apps": [
+    {
+      "id": "solar-beam",
+      "name": "Solar Beam",
+      "tagline": "Your Window to the Universe",
+      "description": "Transform your Apple TV into a portal to space with stunning astronomical visualizations and real-time data.",
+      "platforms": ["Apple TV"],
+      "category": "Photo & Video",
+      "price": "$22.99",
+      "appStoreUrl": "https://apps.apple.com/app/solar-beam/id6670128344",
+      "icon": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/e5/86/e5/e586e539-d586-09a4-f664-ce1d61fc02e3/App_Icon-marketing.lsr/1024x1024.jpg",
+      "primaryColor": "#F59E0B",
+      "features": [
+        "Real-time space data",
+        "Stunning 4K visualizations",
+        "Educational astronomy content"
+      ]
+    },
+    {
+      "id": "sforesight",
+      "name": "SForesight",
+      "tagline": "ML-Powered SF Symbol Search",
+      "description": "Find the perfect SF Symbol instantly using machine learning. Search by description, not just names.",
+      "platforms": ["Mac"],
+      "category": "Developer Tools",
+      "price": "$11.99",
+      "appStoreUrl": "https://apps.apple.com/app/sforesight/id6670643660",
+      "icon": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/c5/95/19/c5951956-fbab-3e8e-ed31-e3fa45c0c2fc/AppIcon-0-0-85-220-0-4-0-2x.png/1024x1024.jpg",
+      "primaryColor": "#3B82F6",
+      "features": [
+        "ML-powered semantic search",
+        "Instant symbol preview",
+        "Export in multiple formats"
+      ]
+    },
+    {
+      "id": "double-kick",
+      "name": "Double Kick",
+      "tagline": "Understand Any Menu, Anywhere",
+      "description": "Never struggle with foreign menus again. Instant translation and dietary information for any cuisine.",
+      "platforms": ["iPhone"],
+      "category": "Food & Drink",
+      "price": "$29.99",
+      "appStoreUrl": "https://apps.apple.com/app/double-kick/id6738435217",
+      "icon": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/33/4a/37/334a37a3-d519-3cef-56d9-82179341b851/AppIcon-0-0-1x_U007ephone-0-1-85-220.png/1024x1024.jpg",
+      "primaryColor": "#DC2626",
+      "features": [
+        "Instant menu translation",
+        "Dietary restriction alerts",
+        "Cuisine insights"
+      ]
+    },
+    {
+      "id": "psywave",
+      "name": "Psywave",
+      "tagline": "AI-Powered Playlist Generation",
+      "description": "Create personalized playlists using advanced machine learning to match your mood and music taste.",
+      "platforms": ["iPhone", "iPad"],
+      "category": "Music",
+      "price": "$17.99",
+      "appStoreUrl": "https://apps.apple.com/app/psywave/id6727000827",
+      "icon": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/90/d6/e2/90d6e2c0-3351-8f49-2672-b8d0cd14be1b/AppIcon-0-0-1x_U007epad-0-1-85-220.png/1024x1024.jpg",
+      "primaryColor": "#8B5CF6",
+      "features": [
+        "ML-powered music analysis",
+        "Mood-based playlist generation",
+        "Apple Music integration"
+      ]
+    },
+    {
+      "id": "dream-eater",
+      "name": "Dream Eater",
+      "tagline": "ML-Powered Dream Journaling",
+      "description": "Track and analyze your dreams with machine learning insights to discover patterns and meanings.",
+      "platforms": ["iPhone", "iPad"],
+      "category": "Lifestyle",
+      "price": "Free",
+      "appStoreUrl": "https://apps.apple.com/app/dream-eater/id6661019277",
+      "icon": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/74/80/3f/74803f7c-a6ad-dcf0-dbc9-72657667cd8c/AppIcon-0-0-1x_U007epad-0-1-85-220.png/1024x1024.jpg",
+      "primaryColor": "#6366F1",
+      "features": [
+        "Dream pattern analysis",
+        "AI-powered insights",
+        "Private & secure journaling"
+      ]
+    },
+    {
+      "id": "master-of-inventory",
+      "name": "Master of Inventory",
+      "tagline": "Professional Inventory Management",
+      "description": "Powerful inventory tracking and management system for businesses and personal collections.",
+      "platforms": ["iPhone", "iPad", "iPod"],
+      "category": "Utilities",
+      "price": "$11.99",
+      "appStoreUrl": "https://apps.apple.com/app/master-of-inventory/id1487838089",
+      "icon": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/aa/6f/f5/aa6ff532-3a9f-7926-1ee9-a1b0ce8220e2/AppIcon-0-0-1x_U007emarketing-0-9-0-85-220.png/1024x1024.jpg",
+      "primaryColor": "#10B981",
+      "features": [
+        "Barcode scanning",
+        "Multi-location tracking",
+        "Detailed analytics"
+      ]
+    },
+    {
+      "id": "master-of-flags",
+      "name": "Master of Flags",
+      "tagline": "Learn World Flags",
+      "description": "Educational app to master world flags through interactive quizzes and detailed information.",
+      "platforms": ["iPhone", "iPad", "iPod"],
+      "category": "Education",
+      "price": "$11.99",
+      "appStoreUrl": "https://apps.apple.com/app/master-of-flags/id1487843440",
+      "icon": "https://is1-ssl.mzstatic.com/image/thumb/Purple122/v4/bc/3a/86/bc3a86ac-37f6-f6f7-e664-b69123bdf21e/AppIcon-1x_U007emarketing-0-8-0-85-220.png/1024x1024.jpg",
+      "primaryColor": "#EF4444",
+      "features": [
+        "All country flags",
+        "Interactive quizzes",
+        "Progress tracking"
+      ]
+    }
+  ]
+}
