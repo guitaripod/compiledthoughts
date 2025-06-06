@@ -60,32 +60,7 @@ const formattedUpdatedDate = updatedDate?.toLocaleDateString('en-US', {
         
         <span>{readingTime} min read</span>
         
-        <div class="flex items-center gap-2">
-          <BionicToggle />
-          <div class="font-size-controls flex items-center gap-1">
-            <button
-              class="font-size-btn px-2 py-1 text-xs rounded hover:bg-gray-100 dark:hover:bg-gray-800"
-              data-size="small"
-              aria-label="Small font size"
-            >
-              S
-            </button>
-            <button
-              class="font-size-btn px-2 py-1 text-xs rounded hover:bg-gray-100 dark:hover:bg-gray-800"
-              data-size="medium"
-              aria-label="Medium font size"
-            >
-              M
-            </button>
-            <button
-              class="font-size-btn px-2 py-1 text-xs rounded hover:bg-gray-100 dark:hover:bg-gray-800"
-              data-size="large"
-              aria-label="Large font size"
-            >
-              L
-            </button>
-          </div>
-        </div>
+        <BionicToggle />
       </div>
       
       {tags.length > 0 && (
@@ -122,45 +97,3 @@ const formattedUpdatedDate = updatedDate?.toLocaleDateString('en-US', {
   <EnhanceCodeBlocks />
 </BaseLayout>
 
-<script>
-  function initFontSizeControls() {
-    const buttons = document.querySelectorAll('.font-size-btn');
-    const body = document.body;
-    
-    // Check localStorage for saved preference
-    const savedSize = localStorage.getItem('fontSize') || 'medium';
-    body.classList.remove('font-small', 'font-medium', 'font-large');
-    body.classList.add(`font-${savedSize}`);
-    
-    // Update active button
-    buttons.forEach(btn => {
-      if (btn.getAttribute('data-size') === savedSize) {
-        btn.classList.add('bg-gray-200', 'dark:bg-gray-700');
-      }
-    });
-    
-    buttons.forEach(button => {
-      button.addEventListener('click', () => {
-        const size = button.getAttribute('data-size');
-        
-        // Remove all size classes
-        body.classList.remove('font-small', 'font-medium', 'font-large');
-        
-        // Add new size class
-        body.classList.add(`font-${size}`);
-        
-        // Save preference
-        localStorage.setItem('fontSize', size);
-        
-        // Update active state
-        buttons.forEach(btn => {
-          btn.classList.remove('bg-gray-200', 'dark:bg-gray-700');
-        });
-        button.classList.add('bg-gray-200', 'dark:bg-gray-700');
-      });
-    });
-  }
-  
-  document.addEventListener('DOMContentLoaded', initFontSizeControls);
-  document.addEventListener('astro:after-swap', initFontSizeControls);
-</script>

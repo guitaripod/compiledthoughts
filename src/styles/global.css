@@ -30,18 +30,6 @@
     @apply transition-colors duration-200;
   }
 
-  /* Font size adjustment */
-  body.font-small {
-    font-size: 0.875rem;
-  }
-
-  body.font-medium {
-    font-size: 1rem;
-  }
-
-  body.font-large {
-    font-size: 1.125rem;
-  }
 
   /* Bionic reading styles */
   .bionic-reading b {
