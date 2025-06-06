@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1200, height=630">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            width: 1200px;
+            height: 630px;
+            background: #0f172a;
+            font-family: system-ui, -apple-system, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .grid {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(#1e293b 1px, transparent 1px),
+                linear-gradient(90deg, #1e293b 1px, transparent 1px);
+            background-size: 40px 40px;
+            opacity: 0.5;
+        }
+        
+        .terminal {
+            width: 800px;
+            height: 330px;
+            background: #1e293b;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+        
+        .terminal-header {
+            height: 32px;
+            background: #334155;
+            border-radius: 6px 6px 0 0;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            gap: 8px;
+        }
+        
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .dot-red { background: #ef4444; }
+        .dot-yellow { background: #eab308; }
+        .dot-green { background: #22c55e; }
+        
+        .terminal-body {
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .line {
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+        
+        .prompt { color: #22c55e; }
+        .command { color: #e2e8f0; }
+        .output { color: #94a3b8; font-size: 16px; }
+        .success { color: #10b981; font-size: 16px; }
+        
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 20px;
+            background: #e2e8f0;
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        .title {
+            position: absolute;
+            bottom: 50px;
+            text-align: center;
+            width: 100%;
+        }
+        
+        .title h1 {
+            font-size: 48px;
+            font-weight: bold;
+            color: #e2e8f0;
+            margin-bottom: 10px;
+        }
+        
+        .title p {
+            font-size: 24px;
+            color: #94a3b8;
+        }
+    </style>
+</head>
+<body>
+    <div class="grid"></div>
+    
+    <div class="terminal">
+        <div class="terminal-header">
+            <div class="dot dot-red"></div>
+            <div class="dot dot-yellow"></div>
+            <div class="dot dot-green"></div>
+        </div>
+        <div class="terminal-body">
+            <div class="line">
+                <span class="prompt">$</span>
+                <span class="command"> compiled --thoughts</span>
+            </div>
+            <div class="line output">[■■■■■■■■■■] 100% Building ideas...</div>
+            <div class="line success">✓ Successfully compiled thoughts</div>
+            <div class="line">
+                <span class="cursor"></span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="title">
+        <h1>Compiled Thoughts</h1>
+        <p>A developer's blog about code and ideas</p>
+    </div>
+</body>
+</html>
