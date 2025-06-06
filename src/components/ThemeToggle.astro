@@ -1,4 +1,5 @@
 ---
+
 ---
 
 <div class="relative">
@@ -9,18 +10,31 @@
     aria-label="Toggle theme menu"
   >
     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+      ></path>
     </svg>
   </button>
-  
-  <div id="theme-menu" class="hidden absolute right-0 mt-2 w-40 rounded-lg shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+
+  <div
+    id="theme-menu"
+    class="hidden absolute right-0 mt-2 w-40 rounded-lg shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"
+  >
     <div class="py-1">
       <button
         data-theme-option="light"
         class="theme-option flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
       >
         <svg class="h-4 w-4 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+          ></path>
         </svg>
         Light
       </button>
@@ -29,7 +43,12 @@
         class="theme-option flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
       >
         <svg class="h-4 w-4 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+          ></path>
         </svg>
         Dark
       </button>
@@ -38,7 +57,12 @@
         class="theme-option flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
       >
         <svg class="h-4 w-4 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+          ></path>
         </svg>
         System
       </button>
@@ -47,12 +71,12 @@
 </div>
 
 <style>
-  .theme-option[data-active="true"] {
+  .theme-option[data-active='true'] {
     @apply bg-gray-100 dark:bg-gray-700;
   }
-  
-  .theme-option[data-active="true"]::after {
-    content: "✓";
+
+  .theme-option[data-active='true']::after {
+    content: '✓';
     @apply absolute right-4 text-blue-600 dark:text-blue-400;
   }
 </style>
@@ -85,52 +109,55 @@
     const toggle = document.getElementById('theme-toggle');
     const menu = document.getElementById('theme-menu');
     const options = document.querySelectorAll('[data-theme-option]');
-    
+
     if (!toggle || !menu) return;
-    
+
     let currentTheme = getThemePreference();
-    
+
     updateTheme(currentTheme);
-    
+
     // Update active state
     const updateActiveOption = () => {
-      options.forEach(option => {
-        option.setAttribute('data-active', option.getAttribute('data-theme-option') === currentTheme);
+      options.forEach((option) => {
+        option.setAttribute(
+          'data-active',
+          option.getAttribute('data-theme-option') === currentTheme
+        );
       });
     };
-    
+
     updateActiveOption();
-    
+
     // Toggle menu
     toggle.addEventListener('click', (e) => {
       e.stopPropagation();
       menu.classList.toggle('hidden');
     });
-    
+
     // Handle theme selection
-    options.forEach(option => {
+    options.forEach((option) => {
       option.addEventListener('click', () => {
         currentTheme = option.getAttribute('data-theme-option');
-        
+
         if (currentTheme === 'system') {
           localStorage.removeItem('theme');
         } else {
           localStorage.setItem('theme', currentTheme);
         }
-        
+
         updateTheme(currentTheme);
         updateActiveOption();
         menu.classList.add('hidden');
       });
     });
-    
+
     // Close menu when clicking outside
     document.addEventListener('click', (e) => {
       if (!toggle.contains(e.target) && !menu.contains(e.target)) {
         menu.classList.add('hidden');
       }
     });
-    
+
     // Update theme on system preference change
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
       if (getThemePreference() === 'system') {
@@ -138,7 +165,7 @@
       }
     });
   }
-  
+
   document.addEventListener('DOMContentLoaded', initThemeToggle);
   document.addEventListener('astro:after-swap', initThemeToggle);
 </script>

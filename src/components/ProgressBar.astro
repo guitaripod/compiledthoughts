@@ -1,4 +1,5 @@
 ---
+
 ---
 
 <div id="reading-progress" class="reading-progress" style="width: 0%"></div>
@@ -7,15 +8,16 @@
   function initProgressBar() {
     const progressBar = document.getElementById('reading-progress');
     if (!progressBar) return;
-    
+
     function updateProgress() {
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-      const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrollHeight =
+        document.documentElement.scrollHeight - document.documentElement.clientHeight;
       const progress = (scrollTop / scrollHeight) * 100;
-      
+
       progressBar.style.width = `${progress}%`;
     }
-    
+
     // Update on scroll
     let ticking = false;
     function onScroll() {
@@ -27,11 +29,11 @@
         ticking = true;
       }
     }
-    
+
     window.addEventListener('scroll', onScroll);
     updateProgress();
   }
-  
+
   document.addEventListener('DOMContentLoaded', initProgressBar);
   document.addEventListener('astro:after-swap', initProgressBar);
 </script>

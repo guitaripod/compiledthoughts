@@ -60,12 +60,8 @@ const ogImage = new URL(image, Astro.url);
 <meta property="twitter:creator" content="@compiledthought" />
 
 <!-- Article specific -->
-{article && publishedTime && (
-  <meta property="article:published_time" content={publishedTime} />
-)}
-{article && tags.length > 0 && tags.map(tag => (
-  <meta property="article:tag" content={tag} />
-))}
+{article && publishedTime && <meta property="article:published_time" content={publishedTime} />}
+{article && tags.length > 0 && tags.map((tag) => <meta property="article:tag" content={tag} />)}
 
 <!-- RSS Feed -->
 <link rel="alternate" type="application/rss+xml" title={title} href="/rss.xml" />
@@ -79,21 +75,26 @@ const ogImage = new URL(image, Astro.url);
 <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)" />
 
 <!-- JSON-LD -->
-{article && (
-  <script type="application/ld+json" set:html={JSON.stringify({
-    "@context": "https://schema.org",
-    "@type": "BlogPosting",
-    "headline": title,
-    "description": description,
-    "datePublished": publishedTime,
-    "author": {
-      "@type": "Person",
-      "name": "Compiled Thoughts"
-    },
-    "image": ogImage,
-    "keywords": tags.join(", ")
-  })} />
-)}
+{
+  article && (
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'BlogPosting',
+        headline: title,
+        description: description,
+        datePublished: publishedTime,
+        author: {
+          '@type': 'Person',
+          name: 'Compiled Thoughts',
+        },
+        image: ogImage,
+        keywords: tags.join(', '),
+      })}
+    />
+  )
+}
 
 <!-- Dark mode script -->
 <script is:inline>
@@ -112,13 +113,13 @@ const ogImage = new URL(image, Astro.url);
   };
 
   const theme = getThemePreference();
-  
+
   if (isDarkMode(theme)) {
     document.documentElement.classList.add('dark');
   } else {
     document.documentElement.classList.remove('dark');
   }
-  
+
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
     if (getThemePreference() === 'system') {
       if (e.matches) {

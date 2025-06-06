@@ -5,8 +5,8 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
   return posts
-    .filter(post => !post.data.draft)
-    .map(post => ({
+    .filter((post) => !post.data.draft)
+    .map((post) => ({
       params: { slug: post.slug },
       props: { post },
     }));

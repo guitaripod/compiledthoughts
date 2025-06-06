@@ -4,67 +4,67 @@ import { SITE_TITLE } from '../consts';
 
 const links = [
   {
-    title: "Open Source Software",
-    url: "https://github.com/marcusziade",
-    description: "My GitHub profile and open source projects",
-    icon: "🐙"
+    title: 'Open Source Software',
+    url: 'https://github.com/marcusziade',
+    description: 'My GitHub profile and open source projects',
+    icon: '🐙',
   },
   {
-    title: "Apple Platform Software",
-    url: "https://apps.apple.com/az/developer/marcus-ziade/id1484270247",
-    description: "My apps on the App Store",
-    icon: "📱"
+    title: 'Apple Platform Software',
+    url: 'https://apps.apple.com/az/developer/marcus-ziade/id1484270247',
+    description: 'My apps on the App Store',
+    icon: '📱',
   },
   {
-    title: "WakaTime",
-    url: "https://wakatime.com/@marcusziade",
-    description: "My coding activity and stats",
-    icon: "⏱️"
+    title: 'WakaTime',
+    url: 'https://wakatime.com/@marcusziade',
+    description: 'My coding activity and stats',
+    icon: '⏱️',
   },
   {
-    title: "Trakt.tv",
-    url: "https://trakt.tv/users/marcusziade",
+    title: 'Trakt.tv',
+    url: 'https://trakt.tv/users/marcusziade',
     description: "Track what I'm watching",
-    icon: "📺"
+    icon: '📺',
   },
   {
-    title: "last.fm",
-    url: "https://www.last.fm/user/marcusziade/library/artists",
-    description: "My music listening history",
-    icon: "🎵"
+    title: 'last.fm',
+    url: 'https://www.last.fm/user/marcusziade/library/artists',
+    description: 'My music listening history',
+    icon: '🎵',
   },
   {
-    title: "Steam",
-    url: "https://steamcommunity.com/id/kratos42069/",
-    description: "Gaming profile",
-    icon: "🎮"
+    title: 'Steam',
+    url: 'https://steamcommunity.com/id/kratos42069/',
+    description: 'Gaming profile',
+    icon: '🎮',
   },
   {
-    title: "LeetCode",
-    url: "https://leetcode.com/marcusziade/",
-    description: "Coding challenges and solutions",
-    icon: "💻"
+    title: 'LeetCode',
+    url: 'https://leetcode.com/marcusziade/',
+    description: 'Coding challenges and solutions',
+    icon: '💻',
   },
   {
-    title: "Medium blog",
-    url: "https://medium.com/@marcusziade",
-    description: "My writing on Medium",
-    icon: "✍️"
+    title: 'Medium blog',
+    url: 'https://medium.com/@marcusziade',
+    description: 'My writing on Medium',
+    icon: '✍️',
   },
   {
-    title: "Have the Epstein Files Been Released?",
-    url: "https://havetheepsteinfilesbeenreleased.xyz",
-    description: "A side project",
-    icon: "🔍"
-  }
+    title: 'Have the Epstein Files Been Released?',
+    url: 'https://havetheepsteinfilesbeenreleased.xyz',
+    description: 'A side project',
+    icon: '🔍',
+  },
 ];
 
 const socialLinks = [
-  { name: "YouTube", url: "https://youtube.com/@marcusziade", icon: "📹" },
-  { name: "Apple Music", url: "https://music.apple.com/profile/marcusziade", icon: "🎶" },
-  { name: "Twitch", url: "https://twitch.tv/marcusziade", icon: "🟣" },
-  { name: "X (Twitter)", url: "https://x.com/marcusziade", icon: "🐦" },
-  { name: "GitHub", url: "https://github.com/marcusziade", icon: "💻" }
+  { name: 'YouTube', url: 'https://youtube.com/@marcusziade', icon: '📹' },
+  { name: 'Apple Music', url: 'https://music.apple.com/profile/marcusziade', icon: '🎶' },
+  { name: 'Twitch', url: 'https://twitch.tv/marcusziade', icon: '🟣' },
+  { name: 'X (Twitter)', url: 'https://x.com/marcusziade', icon: '🐦' },
+  { name: 'GitHub', url: 'https://github.com/marcusziade', icon: '💻' },
 ];
 ---
 
@@ -73,45 +73,64 @@ const socialLinks = [
     <section class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <h1 class="text-4xl font-bold mb-2 text-gray-900 dark:text-gray-100">Links</h1>
       <p class="text-lg text-gray-600 dark:text-gray-400 mb-8">100% stardust</p>
-      
+
       <div class="space-y-4 mb-12">
-        {links.map((link) => (
-          <a
-            href={link.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="block p-6 bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-lg transition-shadow duration-200 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
-          >
-            <div class="flex items-center space-x-4">
-              <span class="text-2xl" aria-hidden="true">{link.icon}</span>
-              <div class="flex-1">
-                <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-1">
-                  {link.title}
-                </h2>
-                <p class="text-sm text-gray-600 dark:text-gray-400">{link.description}</p>
+        {
+          links.map((link) => (
+            <a
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="block p-6 bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-lg transition-shadow duration-200 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
+            >
+              <div class="flex items-center space-x-4">
+                <span class="text-2xl" aria-hidden="true">
+                  {link.icon}
+                </span>
+                <div class="flex-1">
+                  <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-1">
+                    {link.title}
+                  </h2>
+                  <p class="text-sm text-gray-600 dark:text-gray-400">{link.description}</p>
+                </div>
+                <svg
+                  class="w-5 h-5 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                  />
+                </svg>
               </div>
-              <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-              </svg>
-            </div>
-          </a>
-        ))}
+            </a>
+          ))
+        }
       </div>
-      
+
       <div class="border-t border-gray-200 dark:border-gray-700 pt-8">
         <h2 class="text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">Social</h2>
         <div class="flex flex-wrap gap-4">
-          {socialLinks.map((social) => (
-            <a
-              href={social.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex items-center space-x-2 px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200"
-            >
-              <span aria-hidden="true">{social.icon}</span>
-              <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{social.name}</span>
-            </a>
-          ))}
+          {
+            socialLinks.map((social) => (
+              <a
+                href={social.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center space-x-2 px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200"
+              >
+                <span aria-hidden="true">{social.icon}</span>
+                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  {social.name}
+                </span>
+              </a>
+            ))
+          }
         </div>
       </div>
     </section>

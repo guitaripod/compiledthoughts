@@ -6,40 +6,40 @@
   function enhanceCodeBlocks() {
     // Find all Shiki code blocks
     const codeBlocks = document.querySelectorAll('.astro-code');
-    
+
     codeBlocks.forEach((pre, index) => {
       // Skip if already enhanced
       if (pre.dataset.enhanced) return;
       pre.dataset.enhanced = 'true';
-      
+
       const codeId = `code-${Math.random().toString(36).substr(2, 9)}`;
       const initialLines = 5;
-      
+
       // Wrap the pre element
       const wrapper = document.createElement('div');
       wrapper.className = 'enhanced-code-block relative group my-6';
       wrapper.dataset.codeId = codeId;
-      
+
       // Insert wrapper before pre and move pre inside
       pre.parentNode.insertBefore(wrapper, pre);
       wrapper.appendChild(pre);
-      
+
       // Add copy button
       const copyButton = document.createElement('button');
       copyButton.className = 'copy-button opacity-0 group-hover:opacity-100 transition-opacity';
       copyButton.innerHTML = '<span class="copy-text">Copy</span>';
       copyButton.setAttribute('aria-label', 'Copy code');
-      
+
       const code = pre.querySelector('code');
       const codeText = code.textContent || '';
-      
+
       copyButton.addEventListener('click', async () => {
         const copyText = copyButton.querySelector('.copy-text');
         try {
           await navigator.clipboard.writeText(codeText);
           copyText.textContent = 'Copied!';
           copyButton.classList.add('copied');
-          
+
           setTimeout(() => {
             copyText.textContent = 'Copy';
             copyButton.classList.remove('copied');
@@ -48,24 +48,26 @@
           console.error('Failed to copy:', err);
         }
       });
-      
+
       wrapper.appendChild(copyButton);
-      
+
       // Calculate if collapsible is needed
       const lineHeight = parseFloat(window.getComputedStyle(code).lineHeight);
-      const padding = parseFloat(window.getComputedStyle(pre).paddingTop) + parseFloat(window.getComputedStyle(pre).paddingBottom);
-      const maxHeight = (lineHeight * initialLines) + padding;
+      const padding =
+        parseFloat(window.getComputedStyle(pre).paddingTop) +
+        parseFloat(window.getComputedStyle(pre).paddingBottom);
+      const maxHeight = lineHeight * initialLines + padding;
       const totalHeight = pre.scrollHeight;
-      
+
       if (totalHeight <= maxHeight + 20) {
         // Content is short enough, no need for collapsing
         return;
       }
-      
+
       // Add collapsible functionality
       pre.classList.add('collapsible-pre');
       pre.style.setProperty('--max-height', `${maxHeight}px`);
-      
+
       // Create expand/collapse wrapper
       const expandWrapper = document.createElement('div');
       expandWrapper.className = 'expand-collapse-wrapper';
@@ -78,11 +80,11 @@
           <span class="expand-text">Show more</span>
         </button>
       `;
-      
+
       // Insert inside the pre element
       pre.style.position = 'relative';
       pre.appendChild(expandWrapper);
-      
+
       // Create collapse CTA
       const collapseCta = document.createElement('div');
       collapseCta.className = 'collapse-cta';
@@ -95,36 +97,36 @@
           <span>Collapse</span>
         </button>
       `;
-      
+
       wrapper.parentNode.insertBefore(collapseCta, wrapper.nextSibling);
-      
+
       const expandButton = expandWrapper.querySelector('.expand-button');
       const collapseButton = collapseCta.querySelector('.collapse-button');
-      
+
       // Expand functionality
       expandButton.addEventListener('click', () => {
         pre.classList.add('expanded');
         expandWrapper.classList.add('hidden');
         collapseCta.style.display = 'flex';
-        
+
         // Smooth scroll to show expanded code
         setTimeout(() => {
           const rect = pre.getBoundingClientRect();
           if (rect.top < 0) {
             window.scrollBy({
               top: rect.top - 20,
-              behavior: 'smooth'
+              behavior: 'smooth',
             });
           }
         }, 100);
       });
-      
+
       // Collapse functionality
       collapseButton.addEventListener('click', () => {
         pre.classList.remove('expanded');
         expandWrapper.classList.remove('hidden');
         collapseCta.style.display = 'none';
-        
+
         // Scroll to code block if it's above viewport
         const rect = wrapper.getBoundingClientRect();
         if (rect.top < 0) {
@@ -133,7 +135,7 @@
       });
     });
   }
-  
+
   // Run on page load and navigation
   document.addEventListener('DOMContentLoaded', enhanceCodeBlocks);
   document.addEventListener('astro:after-swap', enhanceCodeBlocks);
@@ -180,22 +182,26 @@
     left: 0;
     right: 0;
     height: 150px;
-    background: linear-gradient(to bottom, 
-      transparent 0%, 
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
       rgba(30, 41, 59, 0) 20%,
       rgba(30, 41, 59, 0.8) 60%,
       rgba(30, 41, 59, 0.95) 80%,
-      rgba(30, 41, 59, 1) 100%);
+      rgba(30, 41, 59, 1) 100%
+    );
     pointer-events: none;
   }
 
   :global(.dark) .shadow-fade {
-    background: linear-gradient(to bottom, 
-      transparent 0%, 
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
       rgba(30, 41, 59, 0) 20%,
       rgba(30, 41, 59, 0.8) 60%,
       rgba(30, 41, 59, 0.95) 80%,
-      rgba(30, 41, 59, 1) 100%);
+      rgba(30, 41, 59, 1) 100%
+    );
   }
 
   .expand-button {

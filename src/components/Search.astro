@@ -1,4 +1,5 @@
 ---
+
 ---
 
 <button
@@ -8,14 +9,19 @@
   aria-label="Search"
 >
   <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
   </svg>
 </button>
 
 <div id="search-modal" class="hidden fixed inset-0 z-50 overflow-y-auto">
   <div class="flex min-h-screen items-center justify-center p-4">
-    <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
-    
+    <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true">
+    </div>
+
     <div class="relative w-full max-w-2xl bg-white dark:bg-gray-900 rounded-lg shadow-xl">
       <div class="p-4">
         <div id="search"></div>
@@ -28,12 +34,12 @@
   function initSearch() {
     const searchButton = document.getElementById('search-button');
     const searchModal = document.getElementById('search-modal');
-    
+
     if (!searchButton || !searchModal) return;
-    
+
     searchButton.addEventListener('click', () => {
       searchModal.classList.remove('hidden');
-      
+
       // Load Pagefind UI if not already loaded
       if (!window.PagefindUI) {
         const script = document.createElement('script');
@@ -47,21 +53,21 @@
           });
         };
         document.head.appendChild(script);
-        
+
         const link = document.createElement('link');
         link.rel = 'stylesheet';
         link.href = '/pagefind/pagefind-ui.css';
         document.head.appendChild(link);
       }
     });
-    
+
     // Close modal on background click or Escape key
     searchModal.addEventListener('click', (e) => {
       if (e.target === searchModal || e.target.classList.contains('bg-opacity-75')) {
         searchModal.classList.add('hidden');
       }
     });
-    
+
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && !searchModal.classList.contains('hidden')) {
         searchModal.classList.add('hidden');
@@ -73,7 +79,7 @@
       }
     });
   }
-  
+
   document.addEventListener('DOMContentLoaded', initSearch);
   document.addEventListener('astro:after-swap', initSearch);
 </script>
