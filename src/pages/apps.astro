@@ -3,12 +3,12 @@ import BaseLayout from '@layouts/BaseLayout.astro';
 import AppCard from '@components/AppCard.astro';
 import appsData from '../data/apps.json';
 
-const pageTitle = 'Apps | Marcus Ziadé';
+const pageTitle = 'Apple Platform Apps | Marcus Ziadé';
 const pageDescription =
   'Explore my portfolio of applications for Apple platforms - iPhone, iPad, Mac, and Apple TV. Featuring machine learning, productivity tools, and innovative experiences.';
 
 // Create a more engaging OG description
-const ogDescription = `🚀 ${appsData.apps.length} apps across Apple platforms • 🤖 ML-powered experiences • 📱 iPhone, iPad, Mac & Apple TV • ⭐ From productivity tools to space exploration`;
+const ogDescription = `🚀 ${appsData.apps.length} apps on the App Store • 🤖 ML-powered experiences • 📱 iPhone, iPad, Mac & Apple TV • ⭐ From productivity tools to space exploration`;
 
 // Get featured apps for the OG preview
 const featuredApps = appsData.apps
@@ -51,11 +51,13 @@ const structuredData = {
     <div class="container mx-auto px-4 py-8">
       <header class="text-center mb-12">
         <h1 class="text-4xl font-bold mb-4">Apple Platform Apps</h1>
-        <p class="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
-          I develop applications across the entire Apple ecosystem - from iPhone and iPad to Mac and
-          Apple TV. Each app leverages platform-specific capabilities to deliver exceptional user
-          experiences, whether it's machine learning on macOS, immersive visuals on Apple TV, or
-          innovative mobile experiences on iOS.
+        <p class="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto mb-4">
+          7 apps on the App Store spanning iPhone, iPad, Mac, and Apple TV. Each one solves a real
+          problem—from ML-powered health insights to space exploration.
+        </p>
+        <p class="text-base text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+          Building my own products after years of shipping at scale. Open source where it makes
+          sense. Always learning, always shipping.
         </p>
       </header>
 
@@ -69,10 +71,10 @@ const structuredData = {
         <div
           class="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-8"
         >
-          <h3 class="text-2xl font-bold mb-4">Want to collaborate?</h3>
+          <h3 class="text-2xl font-bold mb-4">Building Something?</h3>
           <p class="text-gray-600 dark:text-gray-400 mb-6">
-            I'm always interested in working on innovative projects. Let's build something amazing
-            together.
+            Open to collaborating on projects that matter. Especially interested in health tech,
+            developer tools, and anything that pushes boundaries.
           </p>
           <a
             href="/links"

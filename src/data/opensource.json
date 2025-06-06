@@ -1,0 +1,237 @@
+{
+  "lastUpdated": "2025-06-06T22:59:49.790Z",
+  "totalRepos": 100,
+  "projects": [
+    {
+      "id": "swollama",
+      "name": "Swollama",
+      "description": "A Swift package for Ollama",
+      "language": "Swift",
+      "platforms": [
+        "macOS"
+      ],
+      "stars": 9,
+      "githubUrl": "https://github.com/marcusziade/Swollama",
+      "category": "Swift Packages",
+      "highlights": [
+        "Chat",
+        "Cli"
+      ],
+      "updatedAt": "2025-03-07T12:19:56Z",
+      "createdAt": "2024-10-25T06:26:58Z",
+      "topics": [
+        "chat",
+        "cli",
+        "concurrency",
+        "ollama",
+        "package",
+        "swift"
+      ]
+    },
+    {
+      "id": "openaiimageskit",
+      "name": "OpenAIImagesKit",
+      "description": "Swift package for OpenAI's Images API",
+      "language": "Swift",
+      "platforms": [
+        "macOS"
+      ],
+      "stars": 4,
+      "githubUrl": "https://github.com/marcusziade/OpenAIImagesKit",
+      "category": "Swift Packages",
+      "highlights": [
+        "AI-powered"
+      ],
+      "updatedAt": "2025-05-08T17:14:22Z",
+      "createdAt": "2025-04-23T18:41:04Z",
+      "topics": []
+    },
+    {
+      "id": "apod-cli",
+      "name": "apod-cli",
+      "description": "A command-line tool to browse the NASA Astronomy Picture of the Day archive.",
+      "language": "Go",
+      "platforms": [
+        "macOS",
+        "Linux",
+        "Windows"
+      ],
+      "stars": 6,
+      "githubUrl": "https://github.com/marcusziade/apod-cli",
+      "category": "CLI Tools",
+      "highlights": [],
+      "updatedAt": "2024-06-06T21:52:16Z",
+      "createdAt": "2023-02-12T09:17:00Z",
+      "topics": []
+    },
+    {
+      "id": "songlink-cli",
+      "name": "songlink-cli",
+      "description": "A Song.Link CLI app written in Go",
+      "language": "Go",
+      "platforms": [
+        "macOS",
+        "Linux",
+        "Windows"
+      ],
+      "stars": 5,
+      "githubUrl": "https://github.com/marcusziade/songlink-cli",
+      "category": "CLI Tools",
+      "highlights": [
+        "Cli",
+        "Go"
+      ],
+      "updatedAt": "2025-04-18T10:04:26Z",
+      "createdAt": "2022-09-01T17:50:57Z",
+      "topics": [
+        "cli",
+        "go",
+        "linux",
+        "macos",
+        "music",
+        "windows"
+      ]
+    },
+    {
+      "id": "goscrapequotes",
+      "name": "goscrapequotes",
+      "description": "Backend service that provides quotes",
+      "language": "Go",
+      "platforms": [
+        "macOS",
+        "Linux",
+        "Windows"
+      ],
+      "stars": 5,
+      "githubUrl": "https://github.com/marcusziade/goscrapequotes",
+      "category": "Go Projects",
+      "highlights": [],
+      "updatedAt": "2023-10-08T01:40:53Z",
+      "createdAt": "2023-08-19T16:45:51Z",
+      "topics": []
+    },
+    {
+      "id": "torrent-rss",
+      "name": "torrent-rss",
+      "description": "torrentday.com torrent downloader",
+      "language": "Go",
+      "platforms": [
+        "macOS",
+        "Linux",
+        "Windows"
+      ],
+      "stars": 2,
+      "githubUrl": "https://github.com/marcusziade/torrent-rss",
+      "category": "Go Projects",
+      "highlights": [
+        "Automation",
+        "Docker"
+      ],
+      "updatedAt": "2025-03-09T16:56:49Z",
+      "createdAt": "2024-10-31T03:00:55Z",
+      "topics": [
+        "automation",
+        "docker",
+        "downloader",
+        "go",
+        "torrent"
+      ]
+    },
+    {
+      "id": "settingsclone",
+      "name": "settingsclone",
+      "description": "Clone of Apple's iOS Settings app",
+      "language": "Swift",
+      "platforms": [
+        "macOS",
+        "iOS"
+      ],
+      "stars": 4,
+      "githubUrl": "https://github.com/marcusziade/settingsclone",
+      "category": "Desktop Apps",
+      "highlights": [],
+      "updatedAt": "2024-07-14T17:33:23Z",
+      "createdAt": "2021-02-25T18:17:42Z",
+      "topics": []
+    },
+    {
+      "id": "github-appleos",
+      "name": "github-appleos",
+      "description": "Native Apple OS GitHub app.",
+      "language": "Swift",
+      "platforms": [
+        "macOS"
+      ],
+      "stars": 1,
+      "githubUrl": "https://github.com/marcusziade/github-appleos",
+      "category": "Desktop Apps",
+      "highlights": [],
+      "updatedAt": "2023-12-09T00:40:31Z",
+      "createdAt": "2023-09-04T01:05:55Z",
+      "topics": []
+    },
+    {
+      "id": "neetcode",
+      "name": "neetcode",
+      "description": "Neetcode algo ladder",
+      "language": "Swift",
+      "platforms": [
+        "macOS"
+      ],
+      "stars": 1,
+      "githubUrl": "https://github.com/marcusziade/neetcode",
+      "category": "Swift Projects",
+      "highlights": [],
+      "updatedAt": "2024-08-02T03:11:02Z",
+      "createdAt": "2023-05-20T11:35:23Z",
+      "topics": []
+    },
+    {
+      "id": "ios-experiments",
+      "name": "ios-experiments",
+      "description": "random ios shit",
+      "language": "Swift",
+      "platforms": [
+        "macOS",
+        "iOS"
+      ],
+      "stars": 1,
+      "githubUrl": "https://github.com/marcusziade/ios-experiments",
+      "category": "Swift Projects",
+      "highlights": [],
+      "updatedAt": "2024-04-20T16:09:12Z",
+      "createdAt": "2021-08-26T10:53:19Z",
+      "topics": []
+    },
+    {
+      "id": "compiledthoughts",
+      "name": "compiledthoughts",
+      "description": "blog site",
+      "language": "Astro",
+      "platforms": [],
+      "stars": 0,
+      "githubUrl": "https://github.com/marcusziade/compiledthoughts",
+      "category": "Other Projects",
+      "highlights": [],
+      "updatedAt": "2025-06-06T22:21:59Z",
+      "createdAt": "2025-06-05T17:16:02Z",
+      "topics": []
+    },
+    {
+      "id": "multi-ai-chat-worker",
+      "name": "multi-ai-chat-worker",
+      "description": "Cloudflare worker routing multiple AI services",
+      "language": "JavaScript",
+      "platforms": [],
+      "stars": 0,
+      "githubUrl": "https://github.com/marcusziade/multi-ai-chat-worker",
+      "category": "Other Projects",
+      "highlights": [
+        "AI-powered"
+      ],
+      "updatedAt": "2025-05-21T18:20:28Z",
+      "createdAt": "2025-05-21T18:19:33Z",
+      "topics": []
+    }
+  ]
+}
