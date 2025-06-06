@@ -157,9 +157,29 @@ async function generateOGGrid() {
       left: 0
     });
     
-    // Apply all composites
-    const result = await compositeImage
-      .composite(composites)
+    // Add a semi-transparent overlay to dim the app icons
+    const overlay = await sharp({
+      create: {
+        width: ogWidth,
+        height: ogHeight,
+        channels: 4,
+        background: { r: 0, g: 0, b: 0, alpha: 0.4 } // 40% black overlay
+      }
+    })
+    .png()
+    .toBuffer();
+    
+    // Apply icon composites first
+    const withIcons = await compositeImage
+      .composite(composites.filter((_, i) => i < Math.min(icons.length, cols * rows)))
+      .toBuffer();
+    
+    // Then apply overlay and text
+    const result = await sharp(withIcons)
+      .composite([
+        { input: overlay, top: 0, left: 0 },
+        ...composites.slice(Math.min(icons.length, cols * rows))
+      ])
       .png()
       .toBuffer();
     
