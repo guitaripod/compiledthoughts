@@ -84,6 +84,11 @@ jobs:
     - name: Install dependencies
       run: npm ci
     
+    - name: Update App Store data
+      run: |
+        echo "Fetching latest app data from App Store..."
+        node scripts/fetch-app-store-data.js || echo "Failed to update app data, using existing data"
+    
     - name: Build project
       run: npm run build
     
@@ -116,6 +121,11 @@ jobs:
     
     - name: Install dependencies
       run: npm ci
+    
+    - name: Update App Store data
+      run: |
+        echo "Fetching latest app data from App Store..."
+        node scripts/fetch-app-store-data.js || echo "Failed to update app data, using existing data"
     
     - name: Build project
       run: npm run build
