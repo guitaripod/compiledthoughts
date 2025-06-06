@@ -35,6 +35,8 @@ const ogImage = new URL(image, Astro.url);
 <title>{title}</title>
 <meta name="title" content={title} />
 <meta name="description" content={description} />
+<meta name="author" content="Compiled Thoughts" />
+<meta name="robots" content="index, follow" />
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content={article ? 'article' : 'website'} />
@@ -42,6 +44,8 @@ const ogImage = new URL(image, Astro.url);
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:image" content={ogImage} />
+<meta property="og:site_name" content="Compiled Thoughts" />
+<meta property="og:locale" content="en_US" />
 
 <!-- Twitter -->
 <meta property="twitter:card" content="summary_large_image" />
@@ -49,6 +53,7 @@ const ogImage = new URL(image, Astro.url);
 <meta property="twitter:title" content={title} />
 <meta property="twitter:description" content={description} />
 <meta property="twitter:image" content={ogImage} />
+<meta property="twitter:creator" content="@compiledthought" />
 
 <!-- Article specific -->
 {article && publishedTime && (
