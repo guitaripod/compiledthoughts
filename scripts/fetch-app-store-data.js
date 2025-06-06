@@ -155,6 +155,9 @@ async function fetchAppStoreData() {
     const sentences = fullDesc.split(/[.!?]+/).filter(s => s.trim());
     const cleanDesc = sentences.slice(0, 2).join('. ') + (sentences.length > 0 ? '.' : '');
     
+    // Ensure App Store URL uses US location
+    const appStoreUrl = app.trackViewUrl || `https://apps.apple.com/us/app/${urlSlug}/id${app.trackId}`;
+    
     return {
       id: urlSlug,
       name: appName,
@@ -163,7 +166,7 @@ async function fetchAppStoreData() {
       platforms: mapDeviceTosPlatform(app),
       category: app.primaryGenreName,
       price: app.price === 0 ? 'Free' : `$${app.price}`,
-      appStoreUrl: app.trackViewUrl,
+      appStoreUrl: appStoreUrl.replace('https://apps.apple.com/app/', 'https://apps.apple.com/us/app/'),
       icon: app.artworkUrl512 || app.artworkUrl100,
       primaryColor: enhancement.primaryColor || '#3B82F6',
       features: enhancement.features || []
