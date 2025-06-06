@@ -12,10 +12,20 @@ export interface Props {
     icon: string;
     primaryColor: string;
     features: string[];
+    releaseDate?: string;
   };
 }
 
 const { app } = Astro.props;
+
+// Format release date
+const formatReleaseDate = (dateString: string) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', {
+    month: 'short',
+    year: 'numeric',
+  });
+};
 ---
 
 <article
@@ -52,6 +62,13 @@ const { app } = Astro.props;
           <span class="font-semibold text-green-600 dark:text-green-400">
             {app.price}
           </span>
+          {
+            app.releaseDate && (
+              <span class="text-gray-500 dark:text-gray-400">
+                Since {formatReleaseDate(app.releaseDate)}
+              </span>
+            )
+          }
         </div>
       </div>
     </div>

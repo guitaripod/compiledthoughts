@@ -17,7 +17,8 @@
         "Real-time space data",
         "Stunning 4K visualizations",
         "Educational astronomy content"
-      ]
+      ],
+      "releaseDate": "2024-09-29T07:00:00Z"
     },
     {
       "id": "sforesight",
@@ -36,7 +37,8 @@
         "ML-powered semantic search",
         "Instant symbol preview",
         "Export in multiple formats"
-      ]
+      ],
+      "releaseDate": "2024-10-03T07:00:00Z"
     },
     {
       "id": "double-kick",
@@ -56,7 +58,8 @@
         "Instant menu translation",
         "Dietary restriction alerts",
         "Cuisine insights"
-      ]
+      ],
+      "releaseDate": "2024-12-12T08:00:00Z"
     },
     {
       "id": "psywave",
@@ -76,7 +79,8 @@
         "ML-powered music analysis",
         "Mood-based playlist generation",
         "Apple Music integration"
-      ]
+      ],
+      "releaseDate": "2024-10-02T07:00:00Z"
     },
     {
       "id": "dream-eater",
@@ -96,7 +100,8 @@
         "Dream pattern analysis",
         "AI-powered insights",
         "Private & secure journaling"
-      ]
+      ],
+      "releaseDate": "2024-09-18T07:00:00Z"
     },
     {
       "id": "master-of-inventory",
@@ -116,7 +121,8 @@
         "Barcode scanning",
         "Multi-location tracking",
         "Detailed analytics"
-      ]
+      ],
+      "releaseDate": "2021-02-14T08:00:00Z"
     },
     {
       "id": "master-of-flags",
@@ -136,7 +142,8 @@
         "All country flags",
         "Interactive quizzes",
         "Progress tracking"
-      ]
+      ],
+      "releaseDate": "2019-10-21T07:00:00Z"
     }
   ]
 }

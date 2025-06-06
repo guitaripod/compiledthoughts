@@ -187,6 +187,7 @@ async function fetchAppStoreData() {
       icon: app.artworkUrl512 || app.artworkUrl100,
       primaryColor: enhancement.primaryColor || '#3B82F6',
       features: enhancement.features || [],
+      releaseDate: app.releaseDate,
     };
   });
 }
