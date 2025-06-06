@@ -1,2 +1,9 @@
 *.mdx linguist-documentation
 package-lock.json linguist-generated=true
+*.html text eol=lf
+*.css text eol=lf
+*.js text eol=lf
+*.json text eol=lf
+*.xml text eol=lf
+_redirects text eol=lf
+_headers text eol=lf

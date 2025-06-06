@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro build",
+    "build": "astro build && node scripts/postbuild.js",
+    "build:debug": "astro build && node scripts/postbuild.js && ls -la dist/",
     "preview": "astro preview",
     "test": "vitest",
     "test:ui": "vitest --ui",
