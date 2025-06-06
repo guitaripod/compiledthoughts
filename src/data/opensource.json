@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2025-06-06T23:12:33.195Z",
+  "lastUpdated": "2025-06-06T23:54:34.602Z",
   "totalRepos": 100,
   "projects": [
     {
@@ -144,41 +144,6 @@
       "commitCount": 22
     },
     {
-      "id": "settingsclone",
-      "name": "settingsclone",
-      "description": "Clone of Apple's iOS Settings app",
-      "language": "Swift",
-      "platforms": [
-        "macOS",
-        "iOS"
-      ],
-      "stars": 4,
-      "githubUrl": "https://github.com/marcusziade/settingsclone",
-      "category": "Desktop Apps",
-      "highlights": [],
-      "updatedAt": "2024-07-14T17:33:23Z",
-      "createdAt": "2021-02-25T18:17:42Z",
-      "topics": [],
-      "commitCount": 14
-    },
-    {
-      "id": "github-appleos",
-      "name": "github-appleos",
-      "description": "Native Apple OS GitHub app.",
-      "language": "Swift",
-      "platforms": [
-        "macOS"
-      ],
-      "stars": 1,
-      "githubUrl": "https://github.com/marcusziade/github-appleos",
-      "category": "Desktop Apps",
-      "highlights": [],
-      "updatedAt": "2023-12-09T00:40:31Z",
-      "createdAt": "2023-09-04T01:05:55Z",
-      "topics": [],
-      "commitCount": 11
-    },
-    {
       "id": "neetcode",
       "name": "neetcode",
       "description": "Neetcode algo ladder",
@@ -214,6 +179,50 @@
       "commitCount": 12
     },
     {
+      "id": "github-appleos",
+      "name": "github-appleos",
+      "description": "Native Apple OS GitHub app.",
+      "language": "Swift",
+      "platforms": [
+        "macOS"
+      ],
+      "stars": 1,
+      "githubUrl": "https://github.com/marcusziade/github-appleos",
+      "category": "Desktop Apps",
+      "highlights": [],
+      "updatedAt": "2023-12-09T00:40:31Z",
+      "createdAt": "2023-09-04T01:05:55Z",
+      "topics": [],
+      "commitCount": 11
+    },
+    {
+      "id": "legendstracker",
+      "name": "legendstracker",
+      "description": "Apex Legends Tracker iOS app",
+      "language": "Swift",
+      "platforms": [
+        "macOS",
+        "iOS"
+      ],
+      "stars": 0,
+      "githubUrl": "https://github.com/marcusziade/legendstracker",
+      "category": "Desktop Apps",
+      "highlights": [
+        "Apex",
+        "Ios"
+      ],
+      "updatedAt": "2024-05-28T03:38:00Z",
+      "createdAt": "2022-09-28T18:20:48Z",
+      "topics": [
+        "apex",
+        "ios",
+        "legends",
+        "swift",
+        "tracker"
+      ],
+      "commitCount": 52
+    },
+    {
       "id": "compiledthoughts",
       "name": "compiledthoughts",
       "description": "blog site",
@@ -223,10 +232,10 @@
       "githubUrl": "https://github.com/marcusziade/compiledthoughts",
       "category": "Other Projects",
       "highlights": [],
-      "updatedAt": "2025-06-06T23:10:52Z",
+      "updatedAt": "2025-06-06T23:29:00Z",
       "createdAt": "2025-06-05T17:16:02Z",
       "topics": [],
-      "commitCount": 43
+      "commitCount": 44
     },
     {
       "id": "rawdog.ml.nvim",

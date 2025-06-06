@@ -23,21 +23,23 @@ const years = Object.keys(postsByYear).sort((a, b) => Number(b) - Number(a));
 ---
 
 <BaseLayout title="Archive - Compiled Thoughts" description="All blog posts organized by year">
-  <div class="py-8">
-    <h1 class="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4">Archive</h1>
-    <p class="text-lg text-gray-600 dark:text-gray-400 mb-8">
+  <div class="py-6 sm:py-8">
+    <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4">
+      Archive
+    </h1>
+    <p class="text-base sm:text-lg text-gray-600 dark:text-gray-400 mb-6 sm:mb-8">
       Writing about Swift, system design, and the craft of building software. From health tech at
       scale to indie app development.
     </p>
 
     {
       years.map((year) => (
-        <section class="mb-12">
-          <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4 pb-2 border-b border-gray-200 dark:border-gray-800">
+        <section class="mb-8 sm:mb-12">
+          <h2 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4 pb-2 border-b border-gray-200 dark:border-gray-800">
             {year}
           </h2>
 
-          <div class="space-y-4">
+          <div class="space-y-3 sm:space-y-4">
             {postsByYear[Number(year)].map((post) => {
               const formattedDate = post.data.pubDate.toLocaleDateString('en-US', {
                 month: 'short',
@@ -45,22 +47,22 @@ const years = Object.keys(postsByYear).sort((a, b) => Number(b) - Number(a));
               });
 
               return (
-                <article class="flex items-baseline gap-4">
+                <article class="flex flex-col sm:flex-row sm:items-baseline gap-2 sm:gap-4">
                   <time
                     datetime={post.data.pubDate.toISOString()}
-                    class="text-sm text-gray-500 dark:text-gray-400 font-mono flex-shrink-0"
+                    class="text-sm text-gray-500 dark:text-gray-400 font-mono flex-shrink-0 w-20"
                   >
                     {formattedDate}
                   </time>
                   <div class="flex-grow">
                     <a
                       href={`/blog/${post.slug}`}
-                      class="text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                      class="text-base sm:text-lg text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium sm:font-normal"
                     >
                       {post.data.title}
                     </a>
                     {post.data.tags.length > 0 && (
-                      <div class="inline-flex gap-2 ml-2">
+                      <div class="flex flex-wrap gap-2 mt-1 sm:mt-0 sm:inline-flex sm:ml-2">
                         {post.data.tags.map((tag) => (
                           <a
                             href={`/tags/${tag}`}
