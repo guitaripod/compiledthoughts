@@ -2,8 +2,8 @@ import type { APIRoute } from 'astro';
 
 export const prerender = false;
 
-export const GET: APIRoute = async ({ request, locals }) => {
-  const url = new URL(request.url);
+export const GET: APIRoute = async (context) => {
+  const url = new URL(context.request.url);
   const username = url.searchParams.get('username');
 
   if (!username) {
@@ -15,10 +15,9 @@ export const GET: APIRoute = async ({ request, locals }) => {
     });
   }
 
-  // In Cloudflare Pages, secrets are available via context.env
-  // @ts-ignore
-  const apiKey =
-    locals.runtime?.env?.PUBLIC_LASTFM_API_KEY || import.meta.env.PUBLIC_LASTFM_API_KEY;
+  // In Cloudflare Pages, secrets are available via context.locals.runtime.env
+  const runtime = (context.locals as any).runtime;
+  const apiKey = runtime?.env?.PUBLIC_LASTFM_API_KEY || import.meta.env.PUBLIC_LASTFM_API_KEY;
 
   if (!apiKey) {
     return new Response(JSON.stringify({ error: 'Last.fm API key not configured' }), {
