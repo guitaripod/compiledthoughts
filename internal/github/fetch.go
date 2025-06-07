@@ -512,8 +512,8 @@ func selectFeaturedProjects(projects []Project, pinnedRepos []string) []Project 
 	var qualityProjects []Project
 	
 	for _, p := range projects {
-		// Only include projects with significant work or popularity
-		if p.CommitCount >= 10 || p.Stars >= 3 {
+		// Include projects with >= 10 commits, or projects with > 1 star regardless of commit count
+		if p.CommitCount >= 10 || p.Stars > 1 {
 			qualityProjects = append(qualityProjects, p)
 		}
 	}
