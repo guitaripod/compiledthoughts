@@ -50,11 +50,19 @@ export const GET: APIRoute = async (context) => {
         }
       : null;
 
+    // Get more detailed game info including achievements for recent games
+    const recentGames = recentGamesData.response?.games || [];
+
+    // For each recent game, we could fetch achievement data, but that requires many API calls
+    // Steam API rate limits are generous (100k/day) but we should be conservative
+
+    console.log('[Steam API] Player profile:', player?.personaname, 'Level:', player?.playerlevel);
+
     return new Response(
       JSON.stringify({
         player,
         currentGame,
-        recentGames: recentGamesData.response?.games || [],
+        recentGames,
       }),
       {
         status: 200,

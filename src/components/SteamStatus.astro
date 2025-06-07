@@ -94,6 +94,11 @@
           <span class="font-medium">${statusText}</span>
         `;
 
+        // Add player name if available
+        if (data.player.personaname) {
+          statusElement.innerHTML += ` <span class="text-gray-500">· ${data.player.personaname}</span>`;
+        }
+
         // Show current game if playing
         if (data.currentGame) {
           currentGameElement.innerHTML = `
@@ -117,31 +122,53 @@
         console.error('No player data in response:', data);
       }
 
-      // Display recent games
+      // Display recent games with more details
       if (data.recentGames && data.recentGames.length > 0) {
+        console.log('[Steam] Recent games data:', data.recentGames);
+
         const gamesHtml = data.recentGames
           .map((game) => {
             const hours = Math.floor(game.playtime_2weeks / 60);
             const minutes = game.playtime_2weeks % 60;
             const playtime = hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
 
+            const totalHours = Math.floor(game.playtime_forever / 60);
+            const gameIconUrl = `https://media.steampowered.com/steamcommunity/public/images/apps/${game.appid}/${game.img_icon_url}.jpg`;
+
             return `
-            <div class="flex items-center justify-between text-xs">
-              <span class="text-gray-600 dark:text-gray-400 truncate flex-1 mr-2">
-                ${game.name}
-              </span>
-              <span class="text-gray-500 dark:text-gray-500 text-right">
-                ${playtime} last 2 weeks
-              </span>
+            <div class="flex items-center gap-3 py-1.5">
+              <img 
+                src="${gameIconUrl}" 
+                alt="${game.name}" 
+                class="w-8 h-8 rounded flex-shrink-0"
+                onerror="this.style.display='none'"
+              />
+              <div class="flex-1 min-w-0">
+                <div class="text-xs font-medium text-gray-700 dark:text-gray-300 truncate">
+                  ${game.name}
+                </div>
+                <div class="text-xs text-gray-500 dark:text-gray-500">
+                  ${playtime} recently · ${totalHours}h total
+                </div>
+              </div>
             </div>
           `;
           })
           .join('');
 
         recentGamesElement.innerHTML = `
-          <p class="text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">Recent games:</p>
+          <p class="text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">Recent activity:</p>
           ${gamesHtml}
         `;
+      } else {
+        // If no recent games, show total games owned from player data
+        if (data.player && data.player.gamecount) {
+          recentGamesElement.innerHTML = `
+            <p class="text-xs text-gray-500 dark:text-gray-500">
+              ${data.player.gamecount} games in library
+            </p>
+          `;
+        }
       }
     } catch (error) {
       console.error('Error fetching Steam data:', error);
