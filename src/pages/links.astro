@@ -2,81 +2,130 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SITE_TITLE } from '../consts';
 import LastFmNowPlaying from '../components/LastFmNowPlaying.astro';
+import WakaTimeStats from '../components/WakaTimeStats.astro';
+import GitHubStats from '../components/GitHubStats.astro';
+import SteamStatus from '../components/SteamStatus.astro';
+import TraktStatus from '../components/TraktStatus.astro';
 
+// Links are now categorized and include size property for grid layout
 const links = [
+  // Large cards (span 2 columns on desktop)
   {
-    title: 'GitHub Profile',
+    title: 'GitHub',
     url: 'https://github.com/marcusziade',
     description: '20+ open source projects across Go, Swift, and more',
     icon: '🐙',
-  },
-  {
-    title: 'App Store Developer',
-    url: 'https://apps.apple.com/az/developer/marcus-ziade/id1484270247',
-    description: '7 published apps for iPhone, iPad, Mac, and Apple TV',
-    icon: '📱',
-  },
-  {
-    title: 'YouTube',
-    url: 'https://youtube.com/@marcusziade',
-    description: 'Tech tutorials and coding content',
-    icon: '📹',
-  },
-  {
-    title: 'X (Twitter)',
-    url: 'https://x.com/marcusziade',
-    description: 'Thoughts on tech and development',
-    icon: '🐦',
-  },
-  {
-    title: 'Apple Music',
-    url: 'https://music.apple.com/profile/marcusziade',
-    description: 'Curated playlists and music',
-    icon: '🎶',
-  },
-  {
-    title: 'Twitch',
-    url: 'https://twitch.tv/marcusziade',
-    description: 'Live coding and gaming streams',
-    icon: '🟣',
+    category: 'development',
+    size: 'large',
+    widget: 'github',
   },
   {
     title: 'WakaTime',
     url: 'https://wakatime.com/@marcusziade',
     description: 'My coding activity and stats',
     icon: '⏱️',
+    category: 'development',
+    size: 'large',
+    widget: 'wakatime',
+  },
+
+  // Medium cards (default size)
+  {
+    title: 'App Store',
+    url: 'https://apps.apple.com/az/developer/marcus-ziade/id1484270247',
+    description: '7 published apps for iPhone, iPad, Mac, and Apple TV',
+    icon: '📱',
+    category: 'development',
+    size: 'medium',
+  },
+  {
+    title: 'YouTube',
+    url: 'https://youtube.com/@marcusziade',
+    description: 'Tech tutorials and coding content',
+    icon: '📹',
+    category: 'social',
+    size: 'medium',
+    widget: null, // TODO: Add YouTube subscriber count
+  },
+  {
+    title: 'X (Twitter)',
+    url: 'https://x.com/marcusziade',
+    description: 'Thoughts on tech and development',
+    icon: '🐦',
+    category: 'social',
+    size: 'medium',
+  },
+  {
+    title: 'Last.fm',
+    url: 'https://www.last.fm/user/marcusziade/library/artists',
+    description: 'My music listening history',
+    icon: '🎵',
+    category: 'entertainment',
+    size: 'medium',
+    widget: 'lastfm',
+  },
+  {
+    title: 'Apple Music',
+    url: 'https://music.apple.com/profile/marcusziade',
+    description: 'Curated playlists and music',
+    icon: '🎶',
+    category: 'entertainment',
+    size: 'medium',
+  },
+  {
+    title: 'Twitch',
+    url: 'https://twitch.tv/marcusziade',
+    description: 'Live coding and gaming streams',
+    icon: '🟣',
+    category: 'social',
+    size: 'medium',
   },
   {
     title: 'LeetCode',
     url: 'https://leetcode.com/marcusziade/',
     description: 'Coding challenges and solutions',
     icon: '💻',
+    category: 'development',
+    size: 'medium',
   },
   {
     title: 'Trakt.tv',
     url: 'https://trakt.tv/users/marcusziade',
     description: "Track what I'm watching",
     icon: '📺',
-  },
-  {
-    title: 'last.fm',
-    url: 'https://www.last.fm/user/marcusziade/library/artists',
-    description: 'My music listening history',
-    icon: '🎵',
+    category: 'entertainment',
+    size: 'medium',
+    widget: 'trakt',
   },
   {
     title: 'Steam',
     url: 'https://steamcommunity.com/id/kratos42069/',
     description: 'Gaming profile',
     icon: '🎮',
+    category: 'entertainment',
+    size: 'medium',
+    widget: 'steam',
   },
   {
-    title: 'Have the Epstein Files Been Released?',
+    title: 'Epstein Files',
     url: 'https://havetheepsteinfilesbeenreleased.xyz',
     description: 'A side project',
     icon: '🔍',
+    category: 'other',
+    size: 'medium',
   },
 ];
+
+// Sort links by category and size for better layout
+const sortedLinks = links.sort((a, b) => {
+  // First sort by size (large first)
+  if (a.size !== b.size) {
+    return a.size === 'large' ? -1 : 1;
+  }
+  // Then by category
+  const categoryOrder = ['development', 'social', 'entertainment', 'other'];
+  return categoryOrder.indexOf(a.category) - categoryOrder.indexOf(b.category);
+});
 ---
 
 <BaseLayout title="Links" description="Find me across the web">
@@ -94,62 +143,17 @@ const links = [
         </p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-fr">
         {
-          links.map((link) => {
-            // Special handling for Last.fm link
-            if (link.title === 'last.fm') {
-              return (
-                <a
-                  href={link.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="group relative flex flex-col p-5 sm:p-6 bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-lg transition-all duration-200 border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-400 overflow-hidden h-full"
-                >
-                  <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  <div class="relative flex flex-col h-full">
-                    <div class="flex items-start gap-4 mb-3">
-                      <div class="flex-shrink-0 w-12 h-12 flex items-center justify-center bg-gray-100 dark:bg-gray-700 rounded-lg group-hover:bg-blue-100 dark:group-hover:bg-blue-900/30 transition-colors duration-200">
-                        <span class="text-2xl" aria-hidden="true">
-                          {link.icon}
-                        </span>
-                      </div>
-                      <div class="flex-1">
-                        <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors flex items-center gap-2">
-                          {link.title}
-                          <svg
-                            class="w-4 h-4 text-gray-400 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-all duration-200 opacity-0 group-hover:opacity-100 transform group-hover:translate-x-1 group-hover:-translate-y-1"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                            />
-                          </svg>
-                        </h2>
-                      </div>
-                    </div>
-                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">{link.description}</p>
-                    <div class="mt-auto pt-2 border-t border-gray-200 dark:border-gray-700">
-                      <LastFmNowPlaying username="marcusziade" />
-                    </div>
-                  </div>
-                </a>
-              );
-            }
+          sortedLinks.map((link) => {
+            const spanClass = link.size === 'large' ? 'md:col-span-2' : '';
 
-            // Regular link rendering
             return (
               <a
                 href={link.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                class="group relative flex flex-col p-5 sm:p-6 bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-lg transition-all duration-200 border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-400 overflow-hidden h-full"
+                class={`${spanClass} group relative flex flex-col p-5 sm:p-6 bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-lg transition-all duration-200 border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-400 overflow-hidden`}
               >
                 <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <div class="relative flex flex-col h-full">
@@ -179,9 +183,18 @@ const links = [
                       </h2>
                     </div>
                   </div>
-                  <p class="text-sm text-gray-600 dark:text-gray-400 flex-grow">
-                    {link.description}
-                  </p>
+                  <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">{link.description}</p>
+
+                  {/* Widget rendering */}
+                  {link.widget && (
+                    <div class="mt-auto pt-3 border-t border-gray-200 dark:border-gray-700">
+                      {link.widget === 'lastfm' && <LastFmNowPlaying username="marcusziade" />}
+                      {link.widget === 'wakatime' && <WakaTimeStats username="marcusziade" />}
+                      {link.widget === 'github' && <GitHubStats username="marcusziade" />}
+                      {link.widget === 'steam' && <SteamStatus />}
+                      {link.widget === 'trakt' && <TraktStatus username="marcusziade" />}
+                    </div>
+                  )}
                 </div>
               </a>
             );

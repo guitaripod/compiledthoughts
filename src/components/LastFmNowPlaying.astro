@@ -1,27 +1,42 @@
 ---
 export interface Props {
   username: string;
+  showArtwork?: boolean;
 }
 
-const { username } = Astro.props;
+const { username, showArtwork = true } = Astro.props;
 ---
 
-<div id="lastfm-now-playing" class="text-xs text-gray-600 dark:text-gray-400">
-  <div class="flex items-center gap-2">
-    <svg class="w-4 h-4 animate-pulse text-green-500" fill="currentColor" viewBox="0 0 24 24">
-      <circle cx="12" cy="12" r="3"></circle>
-      <path
-        d="M12 6a6 6 0 0 0-6 6c0 1.66.67 3.16 1.76 4.24l1.42-1.42A4 4 0 0 1 8 12a4 4 0 0 1 4-4V6z"
-        opacity="0.6"></path>
-      <path
-        d="M12 2a10 10 0 0 0-10 10c0 2.76 1.12 5.26 2.93 7.07l1.42-1.42A8 8 0 0 1 4 12a8 8 0 0 1 8-8V2z"
-        opacity="0.3"></path>
-    </svg>
-    <span id="track-info" class="italic">Loading...</span>
+<div id="lastfm-now-playing" class="space-y-3">
+  <div id="lastfm-content" class="flex items-start gap-3">
+    <div id="album-art" class="hidden flex-shrink-0">
+      <!-- Album artwork will be inserted here -->
+    </div>
+    <div class="flex-1 min-w-0">
+      <div class="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
+        <svg
+          class="w-4 h-4 animate-pulse text-green-500 flex-shrink-0"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <circle cx="12" cy="12" r="3"></circle>
+          <path
+            d="M12 6a6 6 0 0 0-6 6c0 1.66.67 3.16 1.76 4.24l1.42-1.42A4 4 0 0 1 8 12a4 4 0 0 1 4-4V6z"
+            opacity="0.6"></path>
+          <path
+            d="M12 2a10 10 0 0 0-10 10c0 2.76 1.12 5.26 2.93 7.07l1.42-1.42A8 8 0 0 1 4 12a8 8 0 0 1 8-8V2z"
+            opacity="0.3"></path>
+        </svg>
+        <span id="track-info" class="italic">Loading...</span>
+      </div>
+      <div id="track-details" class="mt-1 space-y-0.5 hidden">
+        <!-- Additional track details will be shown here -->
+      </div>
+    </div>
   </div>
 </div>
 
-<script define:vars={{ username }}>
+<script define:vars={{ username, showArtwork }}>
   async function fetchNowPlaying() {
     try {
       console.log('Fetching Last.fm data for:', username);
@@ -36,6 +51,9 @@ const { username } = Astro.props;
       console.log('Last.fm API response:', data);
 
       const trackElement = document.getElementById('track-info');
+      const albumArtElement = document.getElementById('album-art');
+      const trackDetailsElement = document.getElementById('track-details');
+
       if (!trackElement) return;
 
       if (data.error) {
@@ -57,13 +75,41 @@ const { username } = Astro.props;
           console.log('Track found:', track.name, 'by', track.artist['#text']);
           console.log('Now playing:', isNowPlaying);
 
+          // Show album artwork if available
+          if (showArtwork && albumArtElement && track.image) {
+            const largeImage =
+              track.image.find((img) => img.size === 'large') ||
+              track.image[track.image.length - 1];
+            if (largeImage && largeImage['#text']) {
+              albumArtElement.innerHTML = `
+                <img 
+                  src="${largeImage['#text']}" 
+                  alt="${track.album ? track.album['#text'] : 'Album artwork'}"
+                  class="w-16 h-16 rounded-md shadow-sm"
+                  loading="lazy"
+                />
+              `;
+              albumArtElement.classList.remove('hidden');
+            }
+          }
+
           if (isNowPlaying) {
-            trackElement.innerHTML = `Now playing: <strong>${track.name}</strong> by ${track.artist['#text']}`;
+            trackElement.innerHTML = `<span class="text-green-600 dark:text-green-400">Now playing</span>`;
           } else {
             // Show last played track with timestamp
             const date = track.date ? new Date(track.date.uts * 1000) : null;
             const timeAgo = date ? getTimeAgo(date) : '';
-            trackElement.innerHTML = `Last played: <strong>${track.name}</strong> by ${track.artist['#text']}${timeAgo ? ' · ' + timeAgo : ''}`;
+            trackElement.innerHTML = `<span class="text-gray-500">Last played${timeAgo ? ' · ' + timeAgo : ''}</span>`;
+          }
+
+          // Show track details
+          if (trackDetailsElement) {
+            trackDetailsElement.innerHTML = `
+              <div class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">${track.name}</div>
+              <div class="text-xs text-gray-600 dark:text-gray-400 truncate">${track.artist['#text']}</div>
+              ${track.album && track.album['#text'] ? `<div class="text-xs text-gray-500 dark:text-gray-500 truncate">${track.album['#text']}</div>` : ''}
+            `;
+            trackDetailsElement.classList.remove('hidden');
           }
         } else {
           trackElement.textContent = 'No recent tracks';

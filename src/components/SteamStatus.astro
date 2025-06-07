@@ -1,0 +1,112 @@
+---
+// Steam status component
+---
+
+<div id="steam-status" class="space-y-3">
+  <div class="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
+    <div id="steam-online-status" class="flex items-center gap-2">
+      <div class="w-2 h-2 bg-gray-400 rounded-full"></div>
+      <span>Loading...</span>
+    </div>
+  </div>
+
+  <div id="steam-current-game" class="hidden">
+    <!-- Current game will be displayed here -->
+  </div>
+
+  <div id="steam-recent-games" class="space-y-2">
+    <!-- Recent games will be displayed here -->
+  </div>
+</div>
+
+<script>
+  async function fetchSteamStatus() {
+    try {
+      const response = await fetch('/api/steam.json');
+      const data = await response.json();
+
+      const statusElement = document.getElementById('steam-online-status');
+      const currentGameElement = document.getElementById('steam-current-game');
+      const recentGamesElement = document.getElementById('steam-recent-games');
+
+      if (!statusElement || !currentGameElement || !recentGamesElement) return;
+
+      if (data.error) {
+        statusElement.innerHTML = '<span class="text-gray-500">Unable to load Steam status</span>';
+        return;
+      }
+
+      // Update online status
+      if (data.player) {
+        const isOnline = data.player.personastate > 0;
+        const statusText =
+          data.player.personastate === 1
+            ? 'Online'
+            : data.player.personastate === 2
+              ? 'Busy'
+              : data.player.personastate === 3
+                ? 'Away'
+                : 'Offline';
+
+        statusElement.innerHTML = `
+          <div class="w-2 h-2 ${isOnline ? 'bg-green-500' : 'bg-gray-400'} rounded-full"></div>
+          <span class="font-medium">${statusText}</span>
+        `;
+
+        // Show current game if playing
+        if (data.currentGame) {
+          currentGameElement.innerHTML = `
+            <div class="flex items-center gap-2 text-xs">
+              <svg class="w-4 h-4 text-green-500 animate-pulse" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4-3c-.83 0-1.5-.67-1.5-1.5S18.67 9 19.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+              </svg>
+              <span class="text-green-600 dark:text-green-400">Now playing: <strong>${data.currentGame.name}</strong></span>
+            </div>
+          `;
+          currentGameElement.classList.remove('hidden');
+        } else {
+          currentGameElement.classList.add('hidden');
+        }
+      }
+
+      // Display recent games
+      if (data.recentGames && data.recentGames.length > 0) {
+        const gamesHtml = data.recentGames
+          .map((game) => {
+            const hours = Math.floor(game.playtime_2weeks / 60);
+            const minutes = game.playtime_2weeks % 60;
+            const playtime = hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
+
+            return `
+            <div class="flex items-center justify-between text-xs">
+              <span class="text-gray-600 dark:text-gray-400 truncate flex-1 mr-2">
+                ${game.name}
+              </span>
+              <span class="text-gray-500 dark:text-gray-500 text-right">
+                ${playtime} last 2 weeks
+              </span>
+            </div>
+          `;
+          })
+          .join('');
+
+        recentGamesElement.innerHTML = `
+          <p class="text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">Recent games:</p>
+          ${gamesHtml}
+        `;
+      }
+    } catch (error) {
+      console.error('Error fetching Steam data:', error);
+      const statusElement = document.getElementById('steam-online-status');
+      if (statusElement) {
+        statusElement.innerHTML = '<span class="text-gray-500">Unable to load Steam status</span>';
+      }
+    }
+  }
+
+  // Fetch immediately
+  fetchSteamStatus();
+
+  // Update every minute
+  setInterval(fetchSteamStatus, 60000);
+</script>
