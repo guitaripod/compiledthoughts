@@ -2,8 +2,8 @@ import type { APIRoute } from 'astro';
 
 export const prerender = false;
 
-// Your Steam ID from the URL
-const STEAM_ID = '76561199127850209'; // Extracted from your profile URL
+// Your Steam vanity URL
+const STEAM_VANITY_URL = 'kratos42069'; // From your profile URL
 
 export const GET: APIRoute = async (context) => {
   console.log('[Steam API] Handling request');
@@ -25,6 +25,21 @@ export const GET: APIRoute = async (context) => {
   }
 
   try {
+    // First, resolve vanity URL to Steam ID
+    const resolveUrl = `https://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=${apiKey}&vanityurl=${STEAM_VANITY_URL}`;
+    console.log('[Steam API] Resolving vanity URL:', STEAM_VANITY_URL);
+
+    const resolveResponse = await fetch(resolveUrl);
+    const resolveData = await resolveResponse.json();
+    console.log('[Steam API] Resolve response:', JSON.stringify(resolveData));
+
+    if (resolveData.response?.success !== 1) {
+      throw new Error('Failed to resolve Steam vanity URL');
+    }
+
+    const STEAM_ID = resolveData.response.steamid;
+    console.log('[Steam API] Resolved Steam ID:', STEAM_ID);
+
     // Fetch player summary
     const summaryUrl = `https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${apiKey}&steamids=${STEAM_ID}`;
     console.log('[Steam API] Fetching player summary for Steam ID:', STEAM_ID);
@@ -37,9 +52,12 @@ export const GET: APIRoute = async (context) => {
 
     // Fetch recently played games
     const recentGamesResponse = await fetch(
-      `https://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v0001/?key=${apiKey}&steamid=${STEAM_ID}&count=3`
+      `https://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v0001/?key=${apiKey}&steamid=${STEAM_ID}&count=5`
     );
+    console.log('[Steam API] Recent games response status:', recentGamesResponse.status);
+
     const recentGamesData = await recentGamesResponse.json();
+    console.log('[Steam API] Recent games data:', JSON.stringify(recentGamesData));
 
     // Check if currently in game
     const player = summaryData.response?.players?.[0];
