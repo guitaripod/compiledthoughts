@@ -129,6 +129,10 @@ const { username, size = 'normal' } = Astro.props;
 
               const typeIcon = type === 'episode' ? '📺' : '🎬';
 
+              // Note: Trakt API doesn't provide episode/show images directly
+              // To add images, we'd need to integrate with TMDB API (requires additional API key)
+              // Example: https://api.themoviedb.org/3/search/tv?api_key=YOUR_KEY&query=SHOW_NAME
+
               return `
               <div class="flex items-start gap-2 py-1.5">
                 ${typeIcon}
