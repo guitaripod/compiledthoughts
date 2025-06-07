@@ -28,16 +28,24 @@ const { username } = Astro.props;
 <script define:vars={{ username }}>
   async function fetchWakaTimeStats() {
     try {
+      console.log('[WakaTime] Fetching stats for:', username);
       const response = await fetch(`/api/wakatime.json?username=${username}`);
+      console.log('[WakaTime] API response status:', response.status);
+
       const data = await response.json();
+      console.log('[WakaTime] API response data:', data);
 
       const totalElement = document.getElementById('wakatime-total');
       const languagesElement = document.getElementById('wakatime-languages');
       const dailyElement = document.getElementById('wakatime-daily');
 
-      if (!totalElement || !languagesElement || !dailyElement) return;
+      if (!totalElement || !languagesElement || !dailyElement) {
+        console.error('[WakaTime] DOM elements not found');
+        return;
+      }
 
       if (data.error) {
+        console.error('[WakaTime] API error:', data.error);
         totalElement.textContent = 'Unable to load stats';
         return;
       }

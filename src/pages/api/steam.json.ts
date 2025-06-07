@@ -6,11 +6,16 @@ export const prerender = false;
 const STEAM_ID = '76561199127850209'; // Extracted from your profile URL
 
 export const GET: APIRoute = async (context) => {
+  console.log('[Steam API] Handling request');
+
   // In Cloudflare Pages, secrets are available via context.locals.runtime.env
   const runtime = (context.locals as any).runtime;
   const apiKey = runtime?.env?.STEAM_API_KEY || import.meta.env.STEAM_API_KEY;
 
+  console.log('[Steam API] API key configured:', !!apiKey);
+
   if (!apiKey) {
+    console.error('[Steam API] No API key found in environment');
     return new Response(JSON.stringify({ error: 'Steam API key not configured' }), {
       status: 500,
       headers: {
@@ -21,10 +26,14 @@ export const GET: APIRoute = async (context) => {
 
   try {
     // Fetch player summary
-    const summaryResponse = await fetch(
-      `https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${apiKey}&steamids=${STEAM_ID}`
-    );
+    const summaryUrl = `https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${apiKey}&steamids=${STEAM_ID}`;
+    console.log('[Steam API] Fetching player summary for Steam ID:', STEAM_ID);
+
+    const summaryResponse = await fetch(summaryUrl);
+    console.log('[Steam API] Summary response status:', summaryResponse.status);
+
     const summaryData = await summaryResponse.json();
+    console.log('[Steam API] Summary data:', JSON.stringify(summaryData));
 
     // Fetch recently played games
     const recentGamesResponse = await fetch(

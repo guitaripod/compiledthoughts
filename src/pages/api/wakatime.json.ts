@@ -6,6 +6,8 @@ export const GET: APIRoute = async (context) => {
   const url = new URL(context.request.url);
   const username = url.searchParams.get('username');
 
+  console.log('[WakaTime API] Request for username:', username);
+
   if (!username) {
     return new Response(JSON.stringify({ error: 'Username required' }), {
       status: 400,
@@ -19,7 +21,10 @@ export const GET: APIRoute = async (context) => {
   const runtime = (context.locals as any).runtime;
   const apiKey = runtime?.env?.WAKATIME_API_KEY || import.meta.env.WAKATIME_API_KEY;
 
+  console.log('[WakaTime API] API key configured:', !!apiKey);
+
   if (!apiKey) {
+    console.error('[WakaTime API] No API key found in environment');
     return new Response(JSON.stringify({ error: 'WakaTime API key not configured' }), {
       status: 500,
       headers: {
@@ -39,11 +44,16 @@ export const GET: APIRoute = async (context) => {
       }
     );
 
+    console.log('[WakaTime API] Stats API response status:', statsResponse.status);
+
     if (!statsResponse.ok) {
-      throw new Error(`WakaTime API error: ${statsResponse.status}`);
+      const errorBody = await statsResponse.text();
+      console.error('[WakaTime API] Error response body:', errorBody);
+      throw new Error(`WakaTime API error: ${statsResponse.status} - ${errorBody}`);
     }
 
     const data = await statsResponse.json();
+    console.log('[WakaTime API] Successfully fetched stats');
 
     return new Response(JSON.stringify(data), {
       status: 200,

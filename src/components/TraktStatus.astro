@@ -22,11 +22,15 @@ const { username, size = 'normal' } = Astro.props;
   </div>
 </div>
 
-<script define:vars={{ username }}>
+<script define:vars={{ username, size }}>
   async function fetchTraktStatus() {
     try {
+      console.log('[Trakt] Fetching status for:', username);
       const response = await fetch(`/api/trakt.json?username=${username}`);
+      console.log('[Trakt] API response status:', response.status);
+
       const data = await response.json();
+      console.log('[Trakt] API response data:', data);
 
       const watchingElement = document.getElementById('trakt-watching');
       const historyElement = document.getElementById('trakt-history');
@@ -47,17 +51,38 @@ const { username, size = 'normal' } = Astro.props;
       if (data.currentlyWatching && Object.keys(data.currentlyWatching).length > 0) {
         const item = data.currentlyWatching;
         const type = item.type;
-        const title =
-          type === 'episode'
-            ? `${item.show.title} - ${item.episode.season}x${String(item.episode.number).padStart(2, '0')}`
-            : item.movie.title;
+        let displayHtml;
 
-        watchingElement.innerHTML = `
-          <svg class="w-4 h-4 text-red-500 animate-pulse" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M21 3H3c-1.11 0-2 .89-2 2v14c0 1.11.89 2 2 2h18c1.11 0 2-.89 2-2V5c0-1.11-.89-2-2-2zm0 16H3V5h18v14zM9 8l7 4-7 4V8z"/>
-          </svg>
-          <span class="text-red-600 dark:text-red-400">Now watching: <strong>${title}</strong></span>
-        `;
+        if (type === 'episode') {
+          const episodeTitle = item.episode.title || `Episode ${item.episode.number}`;
+          displayHtml = `
+            <div class="flex items-start gap-3">
+              <svg class="w-4 h-4 text-red-500 animate-pulse flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M21 3H3c-1.11 0-2 .89-2 2v14c0 1.11.89 2 2 2h18c1.11 0 2-.89 2-2V5c0-1.11-.89-2-2-2zm0 16H3V5h18v14zM9 8l7 4-7 4V8z"/>
+              </svg>
+              <div>
+                <div class="text-xs text-red-600 dark:text-red-400 font-medium">Now watching</div>
+                <div class="text-sm font-medium text-gray-900 dark:text-gray-100">${item.show.title}</div>
+                <div class="text-xs text-gray-600 dark:text-gray-400">S${item.episode.season}E${String(item.episode.number).padStart(2, '0')} - ${episodeTitle}</div>
+              </div>
+            </div>
+          `;
+        } else {
+          displayHtml = `
+            <div class="flex items-start gap-3">
+              <svg class="w-4 h-4 text-red-500 animate-pulse flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M21 3H3c-1.11 0-2 .89-2 2v14c0 1.11.89 2 2 2h18c1.11 0 2-.89 2-2V5c0-1.11-.89-2-2-2zm0 16H3V5h18v14zM9 8l7 4-7 4V8z"/>
+              </svg>
+              <div>
+                <div class="text-xs text-red-600 dark:text-red-400 font-medium">Now watching</div>
+                <div class="text-sm font-medium text-gray-900 dark:text-gray-100">${item.movie.title}</div>
+                ${item.movie.year ? `<div class="text-xs text-gray-600 dark:text-gray-400">${item.movie.year}</div>` : ''}
+              </div>
+            </div>
+          `;
+        }
+
+        watchingElement.innerHTML = displayHtml;
       } else if (data.history && data.history.length > 0) {
         // Not currently watching, show last watched
         const lastWatched = data.history[0];
@@ -92,17 +117,25 @@ const { username, size = 'normal' } = Astro.props;
           const historyHtml = recentItems
             .map((item) => {
               const type = item.type;
-              const title =
-                type === 'episode'
-                  ? `${item.show.title} ${item.episode.season}x${String(item.episode.number).padStart(2, '0')}`
-                  : item.movie.title;
+              let title, subtitle;
+
+              if (type === 'episode') {
+                title = item.show.title;
+                subtitle = `S${item.episode.season}E${String(item.episode.number).padStart(2, '0')} - ${item.episode.title || 'Episode ' + item.episode.number}`;
+              } else {
+                title = item.movie.title;
+                subtitle = item.movie.year ? `(${item.movie.year})` : '';
+              }
+
               const typeIcon = type === 'episode' ? '📺' : '🎬';
 
               return `
-              <div class="flex items-center justify-between text-xs">
-                <span class="text-gray-600 dark:text-gray-400 truncate flex-1 mr-2">
-                  ${typeIcon} ${title}
-                </span>
+              <div class="flex items-start gap-2 py-1.5">
+                ${typeIcon}
+                <div class="flex-1 min-w-0">
+                  <div class="text-xs font-medium text-gray-700 dark:text-gray-300 ${size === 'large' ? '' : 'truncate'}">${title}</div>
+                  ${subtitle ? `<div class="text-xs text-gray-500 dark:text-gray-500 ${size === 'large' ? '' : 'truncate'}">${subtitle}</div>` : ''}
+                </div>
               </div>
             `;
             })
