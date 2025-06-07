@@ -15,6 +15,8 @@ const links = [
     url: 'https://github.com/marcusziade',
     description: '20+ open source projects across Go, Swift, and more',
     icon: '🐙',
+    iconPath: '/icons/github.svg',
+    brandColor: '#181717',
     category: 'development',
     size: 'large',
     widget: 'github',
@@ -25,6 +27,8 @@ const links = [
     url: 'https://www.last.fm/user/marcusziade/library/artists',
     description: 'My music listening history',
     icon: '🎵',
+    iconPath: '/icons/lastfm.svg',
+    brandColor: '#D51007',
     category: 'entertainment',
     size: 'large',
     widget: 'lastfm',
@@ -35,6 +39,8 @@ const links = [
     url: 'https://trakt.tv/users/marcusziade',
     description: "Track what I'm watching",
     icon: '📺',
+    iconPath: '/icons/trakt.svg',
+    brandColor: '#ED1C24',
     category: 'entertainment',
     size: 'large',
     widget: 'trakt',
@@ -45,6 +51,8 @@ const links = [
     url: 'https://steamcommunity.com/id/kratos42069/',
     description: 'Gaming profile',
     icon: '🎮',
+    iconPath: '/icons/steam.svg',
+    brandColor: '#00adee',
     category: 'entertainment',
     size: 'large',
     widget: 'steam',
@@ -57,6 +65,8 @@ const links = [
     url: 'https://apps.apple.com/az/developer/marcus-ziade/id1484270247',
     description: '7 published apps for iPhone, iPad, Mac, and Apple TV',
     icon: '📱',
+    iconPath: '/icons/appstore.svg',
+    brandColor: '#0D84FF',
     category: 'development',
     size: 'medium',
     priority: 5,
@@ -66,6 +76,8 @@ const links = [
     url: 'https://wakatime.com/@marcusziade',
     description: 'My coding activity and stats',
     icon: '⏱️',
+    iconPath: '/icons/wakatime.svg',
+    brandColor: '#17B897',
     category: 'development',
     size: 'medium',
     widget: null, // Disabled widget due to API issues
@@ -76,6 +88,8 @@ const links = [
     url: 'https://youtube.com/@marcusziade',
     description: 'Tech tutorials and coding content',
     icon: '📹',
+    iconPath: '/icons/youtube.svg',
+    brandColor: '#FF0000',
     category: 'social',
     size: 'medium',
     priority: 7,
@@ -85,6 +99,8 @@ const links = [
     url: 'https://x.com/marcusziade',
     description: 'Thoughts on tech and development',
     icon: '🐦',
+    iconPath: '/icons/x.svg',
+    brandColor: '#000000',
     category: 'social',
     size: 'medium',
     priority: 8,
@@ -94,6 +110,8 @@ const links = [
     url: 'https://twitch.tv/marcusziade',
     description: 'Live coding and gaming streams',
     icon: '🟣',
+    iconPath: '/icons/twitch.svg',
+    brandColor: '#9146FF',
     category: 'social',
     size: 'medium',
     priority: 9,
@@ -103,6 +121,8 @@ const links = [
     url: 'https://leetcode.com/marcusziade/',
     description: 'Coding challenges and solutions',
     icon: '💻',
+    iconPath: '/icons/leetcode.svg',
+    brandColor: '#FFA116',
     category: 'development',
     size: 'medium',
     priority: 10,
@@ -112,6 +132,8 @@ const links = [
     url: 'https://music.apple.com/profile/marcusziade',
     description: 'Curated playlists and music',
     icon: '🎶',
+    iconPath: '/icons/applemusic.svg',
+    brandColor: '#FA243C',
     category: 'entertainment',
     size: 'medium',
     priority: 11,
@@ -121,6 +143,8 @@ const links = [
     url: 'https://havetheepsteinfilesbeenreleased.xyz',
     description: 'A side project',
     icon: '🔍',
+    iconPath: '/icons/magnifyingglass.svg',
+    brandColor: '#6B7280',
     category: 'other',
     size: 'medium',
     priority: 12,
@@ -170,10 +194,17 @@ const sortedLinks = links.sort((a, b) => a.priority - b.priority);
                 <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <div class="relative flex flex-col h-full">
                   <div class="flex items-start gap-4 mb-3">
-                    <div class="flex-shrink-0 w-12 h-12 flex items-center justify-center bg-gray-100 dark:bg-gray-700 rounded-lg group-hover:bg-blue-100 dark:group-hover:bg-blue-900/30 transition-colors duration-200">
-                      <span class="text-2xl" aria-hidden="true">
-                        {link.icon}
-                      </span>
+                    <div 
+                      class="flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-lg transition-all duration-200 group-hover:scale-110"
+                      style={`background-color: ${link.brandColor}; box-shadow: 0 2px 8px ${link.brandColor}30;`}
+                    >
+                      <img 
+                        src={link.iconPath} 
+                        alt={`${link.title} icon`}
+                        class="w-6 h-6 transition-all duration-200"
+                        style={`filter: brightness(0) saturate(100%) invert(100%);`}
+                        loading="lazy"
+                      />
                     </div>
                     <div class="flex-1">
                       <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors flex items-center gap-2">
