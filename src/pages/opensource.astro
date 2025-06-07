@@ -40,6 +40,19 @@ const projects = openSourceData.projects;
         </div>
       </header>
 
+      <section class="mb-8 sm:mb-12">
+        <div
+          class="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-gray-200 dark:border-gray-700"
+        >
+          <h2 class="text-xl sm:text-2xl font-semibold mb-4 text-center">GitHub Activity</h2>
+          <img
+            src="https://ghchart.rshah.org/409ba5/marcusziade"
+            alt="Marcus Ziadé's GitHub Contribution Graph"
+            class="w-full"
+          />
+        </div>
+      </section>
+
       <section>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {projects.map((project) => <OpenSourceCard project={project} />)}

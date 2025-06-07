@@ -16,10 +16,40 @@ const links = [
     icon: '📱',
   },
   {
+    title: 'YouTube',
+    url: 'https://youtube.com/@marcusziade',
+    description: 'Tech tutorials and coding content',
+    icon: '📹',
+  },
+  {
+    title: 'X (Twitter)',
+    url: 'https://x.com/marcusziade',
+    description: 'Thoughts on tech and development',
+    icon: '🐦',
+  },
+  {
+    title: 'Apple Music',
+    url: 'https://music.apple.com/profile/marcusziade',
+    description: 'Curated playlists and music',
+    icon: '🎶',
+  },
+  {
+    title: 'Twitch',
+    url: 'https://twitch.tv/marcusziade',
+    description: 'Live coding and gaming streams',
+    icon: '🟣',
+  },
+  {
     title: 'WakaTime',
     url: 'https://wakatime.com/@marcusziade',
     description: 'My coding activity and stats',
     icon: '⏱️',
+  },
+  {
+    title: 'LeetCode',
+    url: 'https://leetcode.com/marcusziade/',
+    description: 'Coding challenges and solutions',
+    icon: '💻',
   },
   {
     title: 'Trakt.tv',
@@ -40,31 +70,11 @@ const links = [
     icon: '🎮',
   },
   {
-    title: 'LeetCode',
-    url: 'https://leetcode.com/marcusziade/',
-    description: 'Coding challenges and solutions',
-    icon: '💻',
-  },
-  {
-    title: 'Medium blog',
-    url: 'https://medium.com/@marcusziade',
-    description: 'My writing on Medium',
-    icon: '✍️',
-  },
-  {
     title: 'Have the Epstein Files Been Released?',
     url: 'https://havetheepsteinfilesbeenreleased.xyz',
     description: 'A side project',
     icon: '🔍',
   },
-];
-
-const socialLinks = [
-  { name: 'YouTube', url: 'https://youtube.com/@marcusziade', icon: '📹' },
-  { name: 'Apple Music', url: 'https://music.apple.com/profile/marcusziade', icon: '🎶' },
-  { name: 'Twitch', url: 'https://twitch.tv/marcusziade', icon: '🟣' },
-  { name: 'X (Twitter)', url: 'https://x.com/marcusziade', icon: '🐦' },
-  { name: 'GitHub', url: 'https://github.com/marcusziade', icon: '💻' },
 ];
 ---
 
@@ -77,14 +87,13 @@ const socialLinks = [
         >
           Links
         </h1>
-        <p class="text-xl text-blue-600 dark:text-blue-400 font-medium mb-2">100% stardust</p>
         <p class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
           From a decade in sales to shipping code at scale. Find me building across platforms,
           contributing to open source, and sharing what I learn along the way.
         </p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-16">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {
           links.map((link) => (
             <a
@@ -126,31 +135,6 @@ const socialLinks = [
             </a>
           ))
         }
-      </div>
-
-      <div class="border-t border-gray-200 dark:border-gray-700 pt-12">
-        <h2 class="text-2xl font-bold mb-6 text-center text-gray-900 dark:text-gray-100">
-          Connect
-        </h2>
-        <div class="flex flex-wrap justify-center gap-3 max-w-2xl mx-auto">
-          {
-            socialLinks.map((social) => (
-              <a
-                href={social.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="inline-flex items-center gap-2 px-5 py-2.5 bg-gray-100 dark:bg-gray-800 rounded-full hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-200 group"
-              >
-                <span aria-hidden="true" class="text-lg group-hover:scale-110 transition-transform">
-                  {social.icon}
-                </span>
-                <span class="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400">
-                  {social.name}
-                </span>
-              </a>
-            ))
-          }
-        </div>
       </div>
     </section>
   </main>
