@@ -8,9 +8,24 @@ const STEAM_VANITY_URL = 'kratos42069'; // From your profile URL
 export const GET: APIRoute = async (context) => {
   console.log('[Steam API] Handling request');
 
-  // In Cloudflare Pages, secrets are available via context.locals.runtime.env
-  const runtime = (context.locals as any).runtime;
-  const apiKey = runtime?.env?.STEAM_API_KEY || import.meta.env.STEAM_API_KEY;
+  // Try multiple ways to access the API key in Cloudflare Pages
+  let apiKey;
+  
+  // Method 1: Direct from context.env (Cloudflare Pages Functions)
+  if (context.env?.STEAM_API_KEY) {
+    apiKey = context.env.STEAM_API_KEY;
+    console.log('[Steam API] Found key in context.env');
+  }
+  // Method 2: From locals.runtime.env
+  else if ((context.locals as any)?.runtime?.env?.STEAM_API_KEY) {
+    apiKey = (context.locals as any).runtime.env.STEAM_API_KEY;
+    console.log('[Steam API] Found key in locals.runtime.env');
+  }
+  // Method 3: From import.meta.env (dev environment)
+  else if (import.meta.env.STEAM_API_KEY) {
+    apiKey = import.meta.env.STEAM_API_KEY;
+    console.log('[Steam API] Found key in import.meta.env');
+  }
 
   console.log('[Steam API] API key configured:', !!apiKey);
 
@@ -30,11 +45,20 @@ export const GET: APIRoute = async (context) => {
     const resolveUrl = `https://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=${apiKey}&vanityurl=${STEAM_VANITY_URL}`;
     console.log('[Steam API] Resolving vanity URL:', STEAM_VANITY_URL);
 
-    const resolveResponse = await fetch(resolveUrl);
+    const resolveResponse = await fetch(resolveUrl, {
+      signal: AbortSignal.timeout(5000), // 5 second timeout
+    });
+    
+    if (!resolveResponse.ok) {
+      console.error('[Steam API] Resolve request failed:', resolveResponse.status);
+      throw new Error(`Steam API returned ${resolveResponse.status}`);
+    }
+    
     const resolveData = await resolveResponse.json();
     console.log('[Steam API] Resolve response:', JSON.stringify(resolveData));
 
     if (resolveData.response?.success !== 1) {
+      console.error('[Steam API] Failed to resolve vanity URL:', resolveData);
       throw new Error('Failed to resolve Steam vanity URL');
     }
 
