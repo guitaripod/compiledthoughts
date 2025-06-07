@@ -20,6 +20,10 @@
 </div>
 
 <script>
+  let retryCount = 0;
+  const maxRetries = 10;
+  let retryTimeoutId = null;
+
   async function fetchSteamStatus() {
     try {
       // Create an AbortController for timeout
@@ -44,27 +48,33 @@
         return;
       }
 
+      // If response is not ok or has errors, schedule retry instead of showing error
       if (!response.ok) {
-        console.error('[Steam] API error:', response.status);
-        statusElement.innerHTML = `
-          <div class="w-2 h-2 bg-gray-400 rounded-full"></div>
-          <span class="text-gray-500">Steam data unavailable</span>
-        `;
-        currentGameElement.classList.add('hidden');
-        recentGamesElement.innerHTML = `
-          <p class="text-xs text-gray-500 dark:text-gray-500">
-            Configure Steam API key to see activity
-          </p>
-        `;
+        console.log(
+          `[Steam] API error (${response.status}), retry ${retryCount + 1}/${maxRetries}`
+        );
+        scheduleRetry();
         return;
       }
 
       const data = await response.json();
 
-      if (data.error) {
-        statusElement.innerHTML = '<span class="text-gray-500">Unable to load Steam status</span>';
+      if (data.error || data.loading) {
+        console.log(
+          `[Steam] ${data.loading ? 'Loading state' : 'Data error'}, retry ${retryCount + 1}/${maxRetries}`,
+          data.message || ''
+        );
+        scheduleRetry();
         return;
       }
+
+      // Successfully got data - reset retry count and start periodic updates
+      retryCount = 0;
+      if (retryTimeoutId) {
+        clearTimeout(retryTimeoutId);
+        retryTimeoutId = null;
+      }
+      startPeriodicUpdates();
 
       console.log('[Steam] Full API response:', data);
 
@@ -222,19 +232,39 @@
         }
       }
     } catch (error) {
-      console.error('Error fetching Steam data:', error);
-      const statusElement = document.getElementById('steam-online-status');
-      if (statusElement) {
-        if (error.name === 'AbortError') {
-          statusElement.innerHTML =
-            '<span class="text-gray-500">Steam API timeout - please refresh</span>';
-        } else {
-          statusElement.innerHTML =
-            '<span class="text-gray-500">Unable to load Steam status</span>';
-        }
-      }
+      console.log(`[Steam] Fetch error: ${error.message}, retry ${retryCount + 1}/${maxRetries}`);
+      scheduleRetry();
     }
   }
+
+  function scheduleRetry() {
+    if (retryCount >= maxRetries) {
+      console.log('[Steam] Max retries reached, giving up');
+      return;
+    }
+
+    retryCount++;
+    // Fast retries: 1 second for first 5 attempts, then slower
+    let delay;
+    if (retryCount <= 5) {
+      delay = 1000; // 1 second for first 5 retries
+    } else {
+      delay = Math.min(Math.pow(2, retryCount - 5) * 5000, 30000); // 5, 10, 20, 30 seconds
+    }
+
+    console.log(`[Steam] Scheduling retry in ${delay}ms`);
+
+    if (retryTimeoutId) {
+      clearTimeout(retryTimeoutId);
+    }
+
+    retryTimeoutId = setTimeout(() => {
+      console.log(`[Steam] Attempting retry ${retryCount}/${maxRetries}`);
+      fetchSteamStatus();
+    }, delay);
+  }
+
+  let updateInterval = null;
 
   // Function to initialize Steam status with retry
   function initializeSteamStatus() {
@@ -252,8 +282,14 @@
 
     // Elements are ready, fetch status
     fetchSteamStatus();
-    // Update every minute
-    setInterval(fetchSteamStatus, 60000);
+  }
+
+  function startPeriodicUpdates() {
+    // Only start periodic updates after first successful load
+    if (!updateInterval) {
+      console.log('[Steam] Starting periodic updates every 2 minutes');
+      updateInterval = setInterval(fetchSteamStatus, 120000); // Update every 2 minutes
+    }
   }
 
   // Ensure DOM is ready before initializing

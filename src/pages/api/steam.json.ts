@@ -15,9 +15,9 @@ export const GET: APIRoute = async (context) => {
   console.log('[Steam API] API key configured:', !!apiKey);
 
   if (!apiKey) {
-    console.error('[Steam API] No API key found in environment');
-    return new Response(JSON.stringify({ error: 'Steam API key not configured' }), {
-      status: 503, // Service Unavailable is more appropriate
+    console.log('[Steam API] No API key found in environment, returning loading state');
+    return new Response(JSON.stringify({ loading: true, message: 'API key not configured' }), {
+      status: 200,
       headers: {
         'Content-Type': 'application/json',
         'Cache-Control': 'no-cache',
@@ -101,10 +101,15 @@ export const GET: APIRoute = async (context) => {
       }
     );
   } catch (error) {
-    return new Response(JSON.stringify({ error: 'Failed to fetch Steam data' }), {
-      status: 500,
+    console.log(
+      '[Steam API] Error fetching Steam data:',
+      error instanceof Error ? error.message : 'Unknown error'
+    );
+    return new Response(JSON.stringify({ loading: true, message: 'Temporary API error' }), {
+      status: 200,
       headers: {
         'Content-Type': 'application/json',
+        'Cache-Control': 'no-cache',
       },
     });
   }
