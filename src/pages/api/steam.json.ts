@@ -10,7 +10,7 @@ export const GET: APIRoute = async (context) => {
 
   // Try multiple ways to access the API key in Cloudflare Pages
   let apiKey;
-  
+
   // Method 1: Direct from context.env (Cloudflare Pages Functions)
   if (context.env?.STEAM_API_KEY) {
     apiKey = context.env.STEAM_API_KEY;
@@ -48,12 +48,12 @@ export const GET: APIRoute = async (context) => {
     const resolveResponse = await fetch(resolveUrl, {
       signal: AbortSignal.timeout(5000), // 5 second timeout
     });
-    
+
     if (!resolveResponse.ok) {
       console.error('[Steam API] Resolve request failed:', resolveResponse.status);
       throw new Error(`Steam API returned ${resolveResponse.status}`);
     }
-    
+
     const resolveData = await resolveResponse.json();
     console.log('[Steam API] Resolve response:', JSON.stringify(resolveData));
 
