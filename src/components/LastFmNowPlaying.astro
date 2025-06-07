@@ -1,0 +1,60 @@
+---
+export interface Props {
+  username: string;
+}
+
+const { username } = Astro.props;
+---
+
+<div id="lastfm-now-playing" class="text-xs text-gray-600 dark:text-gray-400">
+  <div class="flex items-center gap-2">
+    <svg class="w-4 h-4 animate-pulse text-green-500" fill="currentColor" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="3"></circle>
+      <path
+        d="M12 6a6 6 0 0 0-6 6c0 1.66.67 3.16 1.76 4.24l1.42-1.42A4 4 0 0 1 8 12a4 4 0 0 1 4-4V6z"
+        opacity="0.6"></path>
+      <path
+        d="M12 2a10 10 0 0 0-10 10c0 2.76 1.12 5.26 2.93 7.07l1.42-1.42A8 8 0 0 1 4 12a8 8 0 0 1 8-8V2z"
+        opacity="0.3"></path>
+    </svg>
+    <span id="track-info" class="italic">Loading...</span>
+  </div>
+</div>
+
+<script define:vars={{ username }}>
+  async function fetchNowPlaying() {
+    try {
+      const response = await fetch(
+        `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${username}&api_key=b25b959554ed76058ac220b7b2e0a026&format=json&limit=1`
+      );
+      const data = await response.json();
+
+      const trackElement = document.getElementById('track-info');
+      if (!trackElement) return;
+
+      if (data.recenttracks && data.recenttracks.track && data.recenttracks.track.length > 0) {
+        const track = data.recenttracks.track[0];
+        const isNowPlaying = track['@attr'] && track['@attr'].nowplaying === 'true';
+
+        if (isNowPlaying) {
+          trackElement.innerHTML = `Now playing: <strong>${track.name}</strong> by ${track.artist['#text']}`;
+        } else {
+          trackElement.textContent = 'Not currently playing';
+        }
+      } else {
+        trackElement.textContent = 'No recent tracks';
+      }
+    } catch (error) {
+      const trackElement = document.getElementById('track-info');
+      if (trackElement) {
+        trackElement.textContent = 'Unable to load track info';
+      }
+    }
+  }
+
+  // Fetch immediately
+  fetchNowPlaying();
+
+  // Update every 30 seconds
+  setInterval(fetchNowPlaying, 30000);
+</script>
