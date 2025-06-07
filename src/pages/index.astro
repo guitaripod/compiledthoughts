@@ -21,10 +21,11 @@ const postsWithReadingTime = await Promise.all(
   })
 );
 
-// Get featured apps (latest 3)
-const featuredApps = appsData.apps
-  .sort((a, b) => new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime())
-  .slice(0, 3);
+// Get featured apps (manually selected)
+const featuredAppIds = ['dream-eater', 'solar-beam', 'psywave'];
+const featuredApps = featuredAppIds
+  .map((id) => appsData.apps.find((app) => app.id === id))
+  .filter(Boolean);
 
 // Calculate stats
 const totalPosts = (await getCollection('blog')).filter((post) => !post.data.draft).length;
