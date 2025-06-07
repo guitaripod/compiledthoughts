@@ -15,7 +15,8 @@ import (
 const (
 	githubUsername = "marcusziade"
 	githubAPIURL   = "https://api.github.com/users/%s/repos?per_page=100&sort=updated"
-	minCommits     = 5
+	graphQLURL     = "https://api.github.com/graphql"
+	minCommits     = 8  // Increased to filter out minor projects
 )
 
 var excludeRepos = []string{
@@ -66,9 +67,32 @@ type OpenSourceData struct {
 	Projects    []Project `json:"projects"`
 }
 
+type GraphQLQuery struct {
+	Query string `json:"query"`
+}
+
+type PinnedReposResponse struct {
+	Data struct {
+		User struct {
+			PinnedItems struct {
+				Nodes []struct {
+					Name string `json:"name"`
+				} `json:"nodes"`
+			} `json:"pinnedItems"`
+		} `json:"user"`
+	} `json:"data"`
+}
+
 func FetchData() error {
 	fmt.Println("Fetching latest GitHub repository data...")
 	fmt.Println("Fetching GitHub repository data...")
+
+	// Fetch pinned repos first
+	pinnedRepos, err := fetchPinnedRepos()
+	if err != nil {
+		fmt.Printf("Warning: failed to fetch pinned repos: %v\n", err)
+		pinnedRepos = []string{} // Continue without pinned repos
+	}
 
 	repos, err := fetchGitHubRepos()
 	if err != nil {
@@ -147,7 +171,7 @@ func FetchData() error {
 	})
 
 	// Select featured projects
-	featuredProjects := selectFeaturedProjects(projects)
+	featuredProjects := selectFeaturedProjects(projects, pinnedRepos)
 
 	// Prepare output data
 	outputData := OpenSourceData{
@@ -181,16 +205,43 @@ func FetchData() error {
 	// Summary
 	categoryCounts := make(map[string]int)
 	totalCommits := 0
+	totalStars := 0
+	pinnedCount := 0
+	
 	for _, p := range outputData.Projects {
 		categoryCounts[p.Category]++
 		totalCommits += p.CommitCount
+		totalStars += p.Stars
+		
+		// Check if pinned
+		for _, pinned := range pinnedRepos {
+			if p.ID == pinned {
+				pinnedCount++
+				break
+			}
+		}
 	}
 
 	fmt.Println("\nProject breakdown:")
-	for category, count := range categoryCounts {
-		fmt.Printf("  %s: %d\n", category, count)
+	// Sort categories with "Other Projects" last
+	sortedCats := make([]string, 0, len(categoryCounts))
+	for cat := range categoryCounts {
+		if cat != "Other Projects" {
+			sortedCats = append(sortedCats, cat)
+		}
 	}
-	fmt.Printf("\nTotal commits across all projects: %d\n", totalCommits)
+	sort.Strings(sortedCats)
+	if count, ok := categoryCounts["Other Projects"]; ok && count > 0 {
+		sortedCats = append(sortedCats, "Other Projects")
+	}
+	
+	for _, category := range sortedCats {
+		fmt.Printf("  %s: %d\n", category, categoryCounts[category])
+	}
+	
+	fmt.Printf("\nPinned repositories included: %d\n", pinnedCount)
+	fmt.Printf("Total commits across all projects: %d\n", totalCommits)
+	fmt.Printf("Total stars across all projects: %d\n", totalStars)
 	fmt.Println("✓ GitHub data updated successfully")
 
 	return nil
@@ -402,38 +453,138 @@ func getPlatforms(repo GitHubRepo) []string {
 	return unique
 }
 
-func selectFeaturedProjects(projects []Project) []Project {
-	var featured []Project
-	categoryMap := make(map[string][]Project)
-	
-	// Group by category
-	for _, p := range projects {
-		categoryMap[p.Category] = append(categoryMap[p.Category], p)
+func fetchPinnedRepos() ([]string, error) {
+	query := `{
+		user(login: "marcusziade") {
+			pinnedItems(first: 6, types: REPOSITORY) {
+				nodes {
+					... on Repository {
+						name
+					}
+				}
+			}
+		}
+	}`
+
+	gqlQuery := GraphQLQuery{Query: query}
+	jsonData, err := json.Marshal(gqlQuery)
+	if err != nil {
+		return nil, err
 	}
+
+	req, err := http.NewRequest("POST", graphQLURL, strings.NewReader(string(jsonData)))
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Accept", "application/json")
+	req.Header.Set("User-Agent", "marcusziade-website")
 	
-	// Get top projects from each category
-	for _, categoryProjects := range categoryMap {
-		if len(categoryProjects) >= 2 {
-			featured = append(featured, categoryProjects[:2]...)
-		} else if len(categoryProjects) == 1 {
-			featured = append(featured, categoryProjects[0])
+	if token := os.Getenv("GITHUB_TOKEN"); token != "" {
+		req.Header.Set("Authorization", "Bearer "+token)
+	}
+
+	client := &http.Client{Timeout: 10 * time.Second}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("GraphQL query failed with status %d", resp.StatusCode)
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	var pinnedResp PinnedReposResponse
+	if err := json.Unmarshal(body, &pinnedResp); err != nil {
+		return nil, err
+	}
+
+	var pinnedNames []string
+	for _, node := range pinnedResp.Data.User.PinnedItems.Nodes {
+		pinnedNames = append(pinnedNames, strings.ToLower(node.Name))
+	}
+
+	return pinnedNames, nil
+}
+
+func selectFeaturedProjects(projects []Project, pinnedRepos []string) []Project {
+	// Separate pinned and unpinned projects
+	var pinnedProjects []Project
+	var unpinnedProjects []Project
+	
+	for _, p := range projects {
+		isPinned := false
+		for _, pinned := range pinnedRepos {
+			if p.ID == pinned {
+				isPinned = true
+				break
+			}
+		}
+		
+		// Only include high-quality projects (significant commits and/or stars)
+		if p.CommitCount >= 10 || p.Stars >= 5 {
+			if isPinned {
+				pinnedProjects = append(pinnedProjects, p)
+			} else {
+				unpinnedProjects = append(unpinnedProjects, p)
+			}
 		}
 	}
 	
-	// If we need more projects, add from the overall list
-	if len(featured) < 8 {
-		for _, p := range projects {
-			found := false
-			for _, f := range featured {
-				if f.ID == p.ID {
-					found = true
-					break
-				}
+	// Sort unpinned projects by quality (stars + commits)
+	sort.Slice(unpinnedProjects, func(i, j int) bool {
+		scoreI := unpinnedProjects[i].Stars*2 + unpinnedProjects[i].CommitCount/10
+		scoreJ := unpinnedProjects[j].Stars*2 + unpinnedProjects[j].CommitCount/10
+		return scoreI > scoreJ
+	})
+	
+	// Build featured list: pinned first, then best unpinned
+	featured := make([]Project, 0, 12)
+	featured = append(featured, pinnedProjects...)
+	
+	// Add best unpinned projects by category to ensure diversity
+	categoryMap := make(map[string][]Project)
+	for _, p := range unpinnedProjects {
+		categoryMap[p.Category] = append(categoryMap[p.Category], p)
+	}
+	
+	// Sort categories to put "Other Projects" last
+	categories := make([]string, 0, len(categoryMap))
+	for cat := range categoryMap {
+		if cat != "Other Projects" {
+			categories = append(categories, cat)
+		}
+	}
+	sort.Strings(categories)
+	categories = append(categories, "Other Projects")
+	
+	// Add top projects from each category
+	for _, cat := range categories {
+		if projs, ok := categoryMap[cat]; ok {
+			// Add up to 2 from each category
+			maxFromCat := 2
+			if cat == "Other Projects" {
+				maxFromCat = 1 // Limit "Other Projects"
 			}
-			if !found {
-				featured = append(featured, p)
-				if len(featured) >= 8 {
-					break
+			
+			for i := 0; i < len(projs) && i < maxFromCat && len(featured) < 12; i++ {
+				// Check if not already added
+				alreadyAdded := false
+				for _, f := range featured {
+					if f.ID == projs[i].ID {
+						alreadyAdded = true
+						break
+					}
+				}
+				if !alreadyAdded {
+					featured = append(featured, projs[i])
 				}
 			}
 		}
