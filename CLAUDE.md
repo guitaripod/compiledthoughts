@@ -9,6 +9,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm run build` - Build for production (includes Pagefind search index)
 - `npm run preview` - Preview production build locally
 
+### Build CLI
+- `make build` - Build the `ct` CLI tool (required for build process)
+- `./ct help` - Show available CLI commands
+
 ### Testing
 - `npm test` - Run all unit tests with Vitest
 - `npm run test:ui` - Run tests with Vitest UI
@@ -42,7 +46,9 @@ This is an Astro-based static blog with the following key architectural patterns
 
 ### Build Process
 - Static site generation with Astro
-- Post-build script (`scripts/postbuild.js`) runs Pagefind for search indexing
+- Go-based CLI tool (`ct`) handles pre-build and post-build tasks
+- Pre-build: Fetches App Store data, GitHub data, generates OG images
+- Post-build: Runs Pagefind for search indexing
 - Shiki for syntax highlighting with `github-dark-dimmed` theme
 - Tailwind for styling with typography plugin
 

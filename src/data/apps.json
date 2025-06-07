@@ -4,11 +4,11 @@
       "id": "solar-beam",
       "name": "Solar Beam",
       "tagline": "Your Window to the Universe",
-      "description": "Solar Beam: Your Window to the Universe\n\nEmbark on an interstellar journey with Solar Beam, the ultimate space exploration app designed exclusively for your Apple TV.  Immerse yourself in the wonders of the cosmos from the comfort of your living room.",
+      "description": "Solar Beam: Your Window to the Universe\n\nEmbark on an interstellar journey with Solar Beam, the ultimate space exploration app designed exclusively for your Apple TV. Immerse yourself in the wonders of the cosmos from the comfort of your living room.",
       "platforms": [
         "Apple TV"
       ],
-      "category": "Photo & Video",
+      "category": "Photo \u0026 Video",
       "price": "$19.99",
       "appStoreUrl": "https://apps.apple.com/us/app/solar-beam/id6705124497?uo=4",
       "icon": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/e5/86/e5/e586e539-d586-09a4-f664-ce1d61fc02e3/App_Icon-marketing.lsr/512x512bb.jpg",
@@ -24,13 +24,13 @@
       "id": "sforesight",
       "name": "SForesight",
       "tagline": "ML-Powered SF Symbol Search",
-      "description": "SForesight: The Ultimate SF Symbols Search Companion\n\nAre you tired of endless scrolling through the official SF Symbols app.  Say hello to SForesight, the game-changing macOS app that revolutionizes how Swift developers find and use SF Symbols in their projects.",
+      "description": "SForesight: The Ultimate SF Symbols Search Companion\n\nAre you tired of endless scrolling through the official SF Symbols app. Say hello to SForesight, the game-changing macOS app that revolutionizes how Swift developers find and use SF Symbols in their projects.",
       "platforms": [
         "Mac"
       ],
       "category": "Developer Tools",
       "price": "$9.99",
-      "appStoreUrl": "https://apps.apple.com/us/app/sforesight/id6736438070?mt=12&uo=4",
+      "appStoreUrl": "https://apps.apple.com/us/app/sforesight/id6736438070?mt=12\u0026uo=4",
       "icon": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/c5/95/19/c5951956-fbab-3e8e-ed31-e3fa45c0c2fc/AppIcon-0-0-85-220-0-4-0-2x.png/512x512bb.png",
       "primaryColor": "#3B82F6",
       "features": [
@@ -44,14 +44,14 @@
       "id": "double-kick",
       "name": "Double Kick",
       "tagline": "Understand Any Menu, Anywhere",
-      "description": "Double Kick - Your Global Menu Companion\n\nOne-time purchase, no subscriptions, no ads - your passport to understanding any menu worldwide. \n\nTransform any restaurant menu into an interactive guide, no matter where you are in the world.",
+      "description": "Double Kick - Your Global Menu Companion\n\nOne-time purchase, no subscriptions, no ads - your passport to understanding any menu worldwide. Transform any restaurant menu into an interactive guide, no matter where you are in the world.",
       "platforms": [
         "iPhone",
         "iPad"
       ],
-      "category": "Food & Drink",
+      "category": "Food \u0026 Drink",
       "price": "$24.99",
-      "appStoreUrl": "https://apps.apple.com/us/app/double-kick/id6736581403?uo=4&platform=iphone",
+      "appStoreUrl": "https://apps.apple.com/us/app/double-kick/id6736581403?uo=4\u0026platform=iphone",
       "icon": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/33/4a/37/334a37a3-d519-3cef-56d9-82179341b851/AppIcon-0-0-1x_U007ephone-0-1-85-220.png/512x512bb.jpg",
       "primaryColor": "#DC2626",
       "features": [
@@ -65,14 +65,14 @@
       "id": "psywave",
       "name": "Psywave",
       "tagline": "AI-Powered Playlist Generation",
-      "description": "Psywave: Your Musical Mind Reader\n\nUnleash the power of machine learning to craft your perfect playlist with Psywave.  No more endless scrolling or manual curation – describe your mood and watch as Psywave conjures up a tailor-made soundtrack for your moment.",
+      "description": "Psywave: Your Musical Mind Reader\n\nUnleash the power of machine learning to craft your perfect playlist with Psywave. No more endless scrolling or manual curation – describe your mood and watch as Psywave conjures up a tailor-made soundtrack for your moment.",
       "platforms": [
         "iPhone",
         "iPad"
       ],
       "category": "Music",
       "price": "$14.99",
-      "appStoreUrl": "https://apps.apple.com/us/app/psywave/id6727000827?uo=4&platform=iphone",
+      "appStoreUrl": "https://apps.apple.com/us/app/psywave/id6727000827?uo=4\u0026platform=iphone",
       "icon": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/90/d6/e2/90d6e2c0-3351-8f49-2672-b8d0cd14be1b/AppIcon-0-0-1x_U007epad-0-1-85-220.png/512x512bb.jpg",
       "primaryColor": "#8B5CF6",
       "features": [
@@ -86,20 +86,20 @@
       "id": "dream-eater",
       "name": "Dream Eater",
       "tagline": "ML-Powered Dream Journaling",
-      "description": "Dream Eater: ML-Powered Dream Journal & Interpreter\n\nDive into the fascinating world of your subconscious with Dream Eater, the ultimate ML-powered dream journal and interpretation app.  Unlock the mysteries of your nightly adventures and gain deeper insights into your mind.",
+      "description": "Dream Eater: ML-Powered Dream Journal \u0026 Interpreter\n\nDive into the fascinating world of your subconscious with Dream Eater, the ultimate ML-powered dream journal and interpretation app. Unlock the mysteries of your nightly adventures and gain deeper insights into your mind.",
       "platforms": [
         "iPhone",
         "iPad"
       ],
       "category": "Lifestyle",
       "price": "Free",
-      "appStoreUrl": "https://apps.apple.com/us/app/dream-eater/id6661019277?uo=4&platform=iphone",
+      "appStoreUrl": "https://apps.apple.com/us/app/dream-eater/id6661019277?uo=4\u0026platform=iphone",
       "icon": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/74/80/3f/74803f7c-a6ad-dcf0-dbc9-72657667cd8c/AppIcon-0-0-1x_U007epad-0-1-85-220.png/512x512bb.jpg",
       "primaryColor": "#6366F1",
       "features": [
         "Dream pattern analysis",
         "AI-powered insights",
-        "Private & secure journaling"
+        "Private \u0026 secure journaling"
       ],
       "releaseDate": "2024-09-18T07:00:00Z"
     },
@@ -107,14 +107,14 @@
       "id": "master-of-inventory",
       "name": "Master of Inventory",
       "tagline": "Professional Inventory Management",
-      "description": "Take control of your belongings with Inventory, the comprehensive personal inventory management app that helps you track, organize, and protect your valuable items. \n\nWHAT MAKES INVENTORY SPECIAL\n• Smart Receipt Scanning: Use your camera to capture and store receipts with our built-in document scanner.",
+      "description": "Take control of your belongings with Inventory, the comprehensive personal inventory management app that helps you track, organize, and protect your valuable items. WHAT MAKES INVENTORY SPECIAL\n• Smart Receipt Scanning: Use your camera to capture and store receipts with our built-in document scanner.",
       "platforms": [
         "iPhone",
         "iPad"
       ],
       "category": "Utilities",
       "price": "$9.99",
-      "appStoreUrl": "https://apps.apple.com/us/app/master-of-inventory/id1523538855?uo=4&platform=iphone",
+      "appStoreUrl": "https://apps.apple.com/us/app/master-of-inventory/id1523538855?uo=4\u0026platform=iphone",
       "icon": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/aa/6f/f5/aa6ff532-3a9f-7926-1ee9-a1b0ce8220e2/AppIcon-0-0-1x_U007emarketing-0-9-0-85-220.png/512x512bb.jpg",
       "primaryColor": "#10B981",
       "features": [
@@ -128,14 +128,14 @@
       "id": "master-of-flags",
       "name": "Master of Flags",
       "tagline": "Learn World Flags",
-      "description": "This is Master of Flags, the game where you gather experience points (XP) and level up as you become familiar with the world's flags.  There are 196 different flags in this game.",
+      "description": "This is Master of Flags, the game where you gather experience points (XP) and level up as you become familiar with the world's flags. There are 196 different flags in this game.",
       "platforms": [
         "iPhone",
         "iPad"
       ],
       "category": "Education",
       "price": "$9.99",
-      "appStoreUrl": "https://apps.apple.com/us/app/master-of-flags/id1484270248?uo=4&platform=iphone",
+      "appStoreUrl": "https://apps.apple.com/us/app/master-of-flags/id1484270248?uo=4\u0026platform=iphone",
       "icon": "https://is1-ssl.mzstatic.com/image/thumb/Purple122/v4/bc/3a/86/bc3a86ac-37f6-f6f7-e664-b69123bdf21e/AppIcon-1x_U007emarketing-0-8-0-85-220.png/512x512bb.jpg",
       "primaryColor": "#EF4444",
       "features": [

@@ -29,3 +29,7 @@ coverage/
 
 # pagefind
 public/pagefind/
+
+# go binary
+ct
+ct-*
