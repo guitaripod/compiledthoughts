@@ -5,8 +5,8 @@
 <div id="steam-status" class="space-y-3">
   <div class="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
     <div id="steam-online-status" class="flex items-center gap-2">
-      <div class="w-2 h-2 bg-gray-400 rounded-full"></div>
-      <span>Loading...</span>
+      <div class="w-2 h-2 bg-gray-400 rounded-full animate-pulse"></div>
+      <span>Loading Steam status...</span>
     </div>
   </div>
 
@@ -22,14 +22,29 @@
 <script>
   async function fetchSteamStatus() {
     try {
-      const response = await fetch('/api/steam.json');
+      // Create an AbortController for timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
+      const response = await fetch('/api/steam.json', {
+        signal: controller.signal,
+      });
+      clearTimeout(timeoutId);
+
       const data = await response.json();
 
       const statusElement = document.getElementById('steam-online-status');
       const currentGameElement = document.getElementById('steam-current-game');
       const recentGamesElement = document.getElementById('steam-recent-games');
 
-      if (!statusElement || !currentGameElement || !recentGamesElement) return;
+      if (!statusElement || !currentGameElement || !recentGamesElement) {
+        console.error('[Steam] DOM elements not found:', {
+          statusElement: !!statusElement,
+          currentGameElement: !!currentGameElement,
+          recentGamesElement: !!recentGamesElement,
+        });
+        return;
+      }
 
       if (data.error) {
         statusElement.innerHTML = '<span class="text-gray-500">Unable to load Steam status</span>';
@@ -193,14 +208,42 @@
       console.error('Error fetching Steam data:', error);
       const statusElement = document.getElementById('steam-online-status');
       if (statusElement) {
-        statusElement.innerHTML = '<span class="text-gray-500">Unable to load Steam status</span>';
+        if (error.name === 'AbortError') {
+          statusElement.innerHTML =
+            '<span class="text-gray-500">Steam API timeout - please refresh</span>';
+        } else {
+          statusElement.innerHTML =
+            '<span class="text-gray-500">Unable to load Steam status</span>';
+        }
       }
     }
   }
 
-  // Fetch immediately
-  fetchSteamStatus();
+  // Function to initialize Steam status with retry
+  function initializeSteamStatus() {
+    // Check if elements exist
+    const statusElement = document.getElementById('steam-online-status');
+    const currentGameElement = document.getElementById('steam-current-game');
+    const recentGamesElement = document.getElementById('steam-recent-games');
 
-  // Update every minute
-  setInterval(fetchSteamStatus, 60000);
+    if (!statusElement || !currentGameElement || !recentGamesElement) {
+      // Retry after a short delay if elements aren't ready
+      console.log('[Steam] Elements not ready, retrying in 100ms...');
+      setTimeout(initializeSteamStatus, 100);
+      return;
+    }
+
+    // Elements are ready, fetch status
+    fetchSteamStatus();
+    // Update every minute
+    setInterval(fetchSteamStatus, 60000);
+  }
+
+  // Ensure DOM is ready before initializing
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeSteamStatus);
+  } else {
+    // DOM is already ready, but use requestAnimationFrame to ensure rendering is complete
+    requestAnimationFrame(initializeSteamStatus);
+  }
 </script>

@@ -187,9 +187,29 @@ const { username, size = 'normal' } = Astro.props;
     return 'just now';
   }
 
-  // Fetch immediately
-  fetchTraktStatus();
+  // Function to initialize Trakt widget with retry
+  function initializeTrakt() {
+    // Check if element exists
+    const watchingElement = document.getElementById('trakt-watching');
 
-  // Update every minute
-  setInterval(fetchTraktStatus, 60000);
+    if (!watchingElement) {
+      // Retry after a short delay if element isn't ready
+      console.log('[Trakt] Element not ready, retrying in 100ms...');
+      setTimeout(initializeTrakt, 100);
+      return;
+    }
+
+    // Element is ready, fetch data
+    fetchTraktStatus();
+    // Update every minute
+    setInterval(fetchTraktStatus, 60000);
+  }
+
+  // Ensure DOM is ready before initializing
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeTrakt);
+  } else {
+    // DOM is already ready, but use requestAnimationFrame to ensure rendering is complete
+    requestAnimationFrame(initializeTrakt);
+  }
 </script>

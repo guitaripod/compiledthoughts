@@ -159,9 +159,29 @@ const { username, showArtwork = true, size = 'normal' } = Astro.props;
     return 'just now';
   }
 
-  // Fetch immediately
-  fetchNowPlaying();
+  // Function to initialize Last.fm widget with retry
+  function initializeLastFm() {
+    // Check if element exists
+    const trackElement = document.getElementById('track-info');
 
-  // Update every 10 seconds for better real-time updates
-  setInterval(fetchNowPlaying, 10000);
+    if (!trackElement) {
+      // Retry after a short delay if element isn't ready
+      console.log('[Last.fm] Element not ready, retrying in 100ms...');
+      setTimeout(initializeLastFm, 100);
+      return;
+    }
+
+    // Element is ready, fetch data
+    fetchNowPlaying();
+    // Update every 10 seconds for better real-time updates
+    setInterval(fetchNowPlaying, 10000);
+  }
+
+  // Ensure DOM is ready before initializing
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeLastFm);
+  } else {
+    // DOM is already ready, but use requestAnimationFrame to ensure rendering is complete
+    requestAnimationFrame(initializeLastFm);
+  }
 </script>
