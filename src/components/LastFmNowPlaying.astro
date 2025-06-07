@@ -25,27 +25,65 @@ const apiKey = import.meta.env.PUBLIC_LASTFM_API_KEY;
 <script define:vars={{ username, apiKey }}>
   async function fetchNowPlaying() {
     try {
-      const response = await fetch(
-        `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${username}&api_key=${apiKey}&format=json&limit=1`
-      );
+      console.log('Fetching Last.fm data for:', username);
+      console.log('API Key exists:', !!apiKey);
+
+      if (!apiKey) {
+        console.error('Last.fm API key is missing!');
+        const trackElement = document.getElementById('track-info');
+        if (trackElement) {
+          trackElement.textContent = 'API key missing';
+        }
+        return;
+      }
+
+      const url = `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${username}&api_key=${apiKey}&format=json&limit=1`;
+      console.log('Fetching from URL:', url.replace(apiKey, 'HIDDEN'));
+
+      const response = await fetch(url);
+      console.log('Response status:', response.status);
+
       const data = await response.json();
+      console.log('Last.fm API response:', data);
 
       const trackElement = document.getElementById('track-info');
       if (!trackElement) return;
 
-      if (data.recenttracks && data.recenttracks.track && data.recenttracks.track.length > 0) {
-        const track = data.recenttracks.track[0];
-        const isNowPlaying = track['@attr'] && track['@attr'].nowplaying === 'true';
+      if (data.error) {
+        console.error('Last.fm API error:', data.message);
+        trackElement.textContent = 'API error';
+        return;
+      }
 
-        if (isNowPlaying) {
-          trackElement.innerHTML = `Now playing: <strong>${track.name}</strong> by ${track.artist['#text']}`;
+      if (data.recenttracks && data.recenttracks.track) {
+        // Handle both array and single object response
+        const tracks = Array.isArray(data.recenttracks.track)
+          ? data.recenttracks.track
+          : [data.recenttracks.track];
+
+        if (tracks.length > 0) {
+          const track = tracks[0];
+          const isNowPlaying = track['@attr'] && track['@attr'].nowplaying === 'true';
+
+          console.log('Track found:', track.name, 'by', track.artist['#text']);
+          console.log('Now playing:', isNowPlaying);
+
+          if (isNowPlaying) {
+            trackElement.innerHTML = `Now playing: <strong>${track.name}</strong> by ${track.artist['#text']}`;
+          } else {
+            // Show last played track with timestamp
+            const date = track.date ? new Date(track.date.uts * 1000) : null;
+            const timeAgo = date ? getTimeAgo(date) : '';
+            trackElement.innerHTML = `Last played: <strong>${track.name}</strong> by ${track.artist['#text']}${timeAgo ? ' · ' + timeAgo : ''}`;
+          }
         } else {
-          trackElement.textContent = 'Not currently playing';
+          trackElement.textContent = 'No recent tracks';
         }
       } else {
         trackElement.textContent = 'No recent tracks';
       }
     } catch (error) {
+      console.error('Error fetching Last.fm data:', error);
       const trackElement = document.getElementById('track-info');
       if (trackElement) {
         trackElement.textContent = 'Unable to load track info';
@@ -53,9 +91,31 @@ const apiKey = import.meta.env.PUBLIC_LASTFM_API_KEY;
     }
   }
 
+  function getTimeAgo(date) {
+    const seconds = Math.floor((new Date() - date) / 1000);
+
+    const intervals = {
+      year: 31536000,
+      month: 2592000,
+      week: 604800,
+      day: 86400,
+      hour: 3600,
+      minute: 60,
+    };
+
+    for (const [name, secondsInInterval] of Object.entries(intervals)) {
+      const interval = Math.floor(seconds / secondsInInterval);
+      if (interval >= 1) {
+        return interval === 1 ? `1 ${name} ago` : `${interval} ${name}s ago`;
+      }
+    }
+
+    return 'just now';
+  }
+
   // Fetch immediately
   fetchNowPlaying();
 
-  // Update every 30 seconds
-  setInterval(fetchNowPlaying, 30000);
+  // Update every 10 seconds for better real-time updates
+  setInterval(fetchNowPlaying, 10000);
 </script>
