@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2025-06-07T05:21:40.688Z",
+  "lastUpdated": "2025-06-07T09:26:20+03:00",
   "totalRepos": 100,
   "projects": [
     {
@@ -28,25 +28,6 @@
         "swift"
       ],
       "commitCount": 54
-    },
-    {
-      "id": "openaiimageskit",
-      "name": "OpenAIImagesKit",
-      "description": "Swift package for OpenAI's Images API",
-      "language": "Swift",
-      "platforms": [
-        "macOS"
-      ],
-      "stars": 4,
-      "githubUrl": "https://github.com/marcusziade/OpenAIImagesKit",
-      "category": "Swift Packages",
-      "highlights": [
-        "AI-powered"
-      ],
-      "updatedAt": "2025-05-08T17:14:22Z",
-      "createdAt": "2025-04-23T18:41:04Z",
-      "topics": [],
-      "commitCount": 14
     },
     {
       "id": "apod-cli",
@@ -97,23 +78,87 @@
       "commitCount": 39
     },
     {
-      "id": "goscrapequotes",
-      "name": "goscrapequotes",
-      "description": "Backend service that provides quotes",
-      "language": "Go",
+      "id": "master-of-flags",
+      "name": "master-of-flags",
+      "description": "A country encyclopedia",
+      "language": "Swift",
       "platforms": [
-        "macOS",
-        "Linux",
-        "Windows"
+        "macOS"
       ],
-      "stars": 5,
-      "githubUrl": "https://github.com/marcusziade/goscrapequotes",
-      "category": "Go Projects",
+      "stars": 0,
+      "githubUrl": "https://github.com/marcusziade/master-of-flags",
+      "category": "Swift Projects",
       "highlights": [],
-      "updatedAt": "2023-10-08T01:40:53Z",
-      "createdAt": "2023-08-19T16:45:51Z",
+      "updatedAt": "2025-06-03T21:30:18Z",
+      "createdAt": "2019-10-15T17:36:13Z",
       "topics": [],
-      "commitCount": 6
+      "commitCount": 230
+    },
+    {
+      "id": "openaiimageskit",
+      "name": "OpenAIImagesKit",
+      "description": "Swift package for OpenAI's Images API",
+      "language": "Swift",
+      "platforms": [
+        "macOS"
+      ],
+      "stars": 4,
+      "githubUrl": "https://github.com/marcusziade/OpenAIImagesKit",
+      "category": "Swift Packages",
+      "highlights": [
+        "AI-powered"
+      ],
+      "updatedAt": "2025-05-08T17:14:22Z",
+      "createdAt": "2025-04-23T18:41:04Z",
+      "topics": [],
+      "commitCount": 14
+    },
+    {
+      "id": "swiftpokekit",
+      "name": "SwiftPokeKit",
+      "description": "Swift APIs to interface with the PokéAPI",
+      "language": "Swift",
+      "platforms": [
+        "macOS"
+      ],
+      "stars": 2,
+      "githubUrl": "https://github.com/marcusziade/SwiftPokeKit",
+      "category": "Swift Packages",
+      "highlights": [],
+      "updatedAt": "2023-04-19T14:41:00Z",
+      "createdAt": "2023-04-13T16:43:30Z",
+      "topics": [],
+      "commitCount": 100
+    },
+    {
+      "id": "songurl",
+      "name": "SongURL",
+      "description": "SongLink macOS. Paste any music link and get a song.link URL back.",
+      "language": "Swift",
+      "platforms": [
+        "macOS"
+      ],
+      "stars": 1,
+      "githubUrl": "https://github.com/marcusziade/SongURL",
+      "category": "Swift Projects",
+      "highlights": [
+        "Cross-platform",
+        "Appkit",
+        "Async-Await"
+      ],
+      "updatedAt": "2023-04-17T13:02:15Z",
+      "createdAt": "2022-08-14T11:00:54Z",
+      "topics": [
+        "appkit",
+        "async-await",
+        "combine",
+        "concurrency",
+        "macos",
+        "mvvm",
+        "swift",
+        "swiftui"
+      ],
+      "commitCount": 100
     },
     {
       "id": "torrent-rss",
@@ -142,6 +187,119 @@
         "torrent"
       ],
       "commitCount": 22
+    },
+    {
+      "id": "moodlint",
+      "name": "MoodLint",
+      "description": "Tired of messy PR titles? Want to enforce a consistent style across your team? MoodLint is here to rescue your git workflow",
+      "language": "Go",
+      "platforms": [
+        "macOS",
+        "Linux",
+        "Windows"
+      ],
+      "stars": 2,
+      "githubUrl": "https://github.com/marcusziade/MoodLint",
+      "category": "Go Projects",
+      "highlights": [
+        "Github-Actions",
+        "Go"
+      ],
+      "updatedAt": "2024-07-30T13:47:41Z",
+      "createdAt": "2023-09-03T10:52:04Z",
+      "topics": [
+        "github-actions",
+        "go",
+        "linting",
+        "tidy"
+      ],
+      "commitCount": 15
+    },
+    {
+      "id": "starcraftkit",
+      "name": "StarCraftKit",
+      "description": "StarCraftKit aims to be the go-to Swift package for developers working with the StarCraft II pro scene.",
+      "language": "Swift",
+      "platforms": [
+        "macOS"
+      ],
+      "stars": 1,
+      "githubUrl": "https://github.com/marcusziade/StarCraftKit",
+      "category": "Swift Packages",
+      "highlights": [
+        "AI-powered"
+      ],
+      "updatedAt": "2024-11-02T06:32:56Z",
+      "createdAt": "2024-02-25T16:47:08Z",
+      "topics": [],
+      "commitCount": 44
+    },
+    {
+      "id": "jewornotjewkit",
+      "name": "JewOrNotJewKit",
+      "description": "A Go SDK and database for JewOrNotJew(dot)com",
+      "language": "Go",
+      "platforms": [
+        "macOS",
+        "Linux",
+        "Windows"
+      ],
+      "stars": 1,
+      "githubUrl": "https://github.com/marcusziade/JewOrNotJewKit",
+      "category": "Go Projects",
+      "highlights": [],
+      "updatedAt": "2025-03-31T09:43:07Z",
+      "createdAt": "2025-03-29T10:32:22Z",
+      "topics": [],
+      "commitCount": 19
+    },
+    {
+      "id": "falcony",
+      "name": "falcony",
+      "description": "A system that downloads the latest videos from a Youtube channel",
+      "language": "Go",
+      "platforms": [
+        "macOS",
+        "Linux",
+        "Windows"
+      ],
+      "stars": 1,
+      "githubUrl": "https://github.com/marcusziade/falcony",
+      "category": "Go Projects",
+      "highlights": [
+        "Well-tested",
+        "Automation",
+        "Cli"
+      ],
+      "updatedAt": "2024-12-15T04:48:55Z",
+      "createdAt": "2023-09-08T21:05:31Z",
+      "topics": [
+        "automation",
+        "cli",
+        "docker",
+        "go",
+        "youtube-dl"
+      ],
+      "commitCount": 13
+    },
+    {
+      "id": "vimterminalkit",
+      "name": "VimTerminalKit",
+      "description": "A Swift package that brings Vim-style navigation to your command-line applications.",
+      "language": "Swift",
+      "platforms": [
+        "macOS"
+      ],
+      "stars": 1,
+      "githubUrl": "https://github.com/marcusziade/VimTerminalKit",
+      "category": "Swift Packages",
+      "highlights": [
+        "Vim controls"
+      ],
+      "updatedAt": "2024-11-02T06:34:58Z",
+      "createdAt": "2024-10-31T11:32:27Z",
+      "topics": [],
+      "commitCount": 13
     },
     {
       "id": "neetcode",
@@ -177,6 +335,27 @@
       "createdAt": "2021-08-26T10:53:19Z",
       "topics": [],
       "commitCount": 12
+    },
+    {
+      "id": "playstation-portal-scraper",
+      "name": "playstation-portal-scraper",
+      "description": "Scrape the Portal sales page for availability",
+      "language": "Go",
+      "platforms": [
+        "macOS",
+        "Linux",
+        "Windows"
+      ],
+      "stars": 1,
+      "githubUrl": "https://github.com/marcusziade/playstation-portal-scraper",
+      "category": "Go Projects",
+      "highlights": [
+        "AI-powered"
+      ],
+      "updatedAt": "2023-12-18T11:04:38Z",
+      "createdAt": "2023-12-17T21:38:27Z",
+      "topics": [],
+      "commitCount": 10
     },
     {
       "id": "github-appleos",
@@ -232,10 +411,55 @@
       "githubUrl": "https://github.com/marcusziade/compiledthoughts",
       "category": "Other Projects",
       "highlights": [],
-      "updatedAt": "2025-06-06T23:55:24Z",
+      "updatedAt": "2025-06-07T06:20:03Z",
       "createdAt": "2025-06-05T17:16:02Z",
       "topics": [],
-      "commitCount": 48
+      "commitCount": 49
+    },
+    {
+      "id": "appofthedead",
+      "name": "appofthedead",
+      "description": "Work in progress",
+      "language": "Swift",
+      "platforms": [
+        "macOS"
+      ],
+      "stars": 0,
+      "githubUrl": "https://github.com/marcusziade/appofthedead",
+      "category": "Swift Projects",
+      "highlights": [],
+      "updatedAt": "2025-06-04T23:39:17Z",
+      "createdAt": "2025-06-02T20:56:21Z",
+      "topics": [],
+      "commitCount": 39
+    },
+    {
+      "id": "initialize",
+      "name": "Initialize",
+      "description": "GitHub API Go backend",
+      "language": "Go",
+      "platforms": [
+        "macOS",
+        "Linux",
+        "Windows"
+      ],
+      "stars": 0,
+      "githubUrl": "https://github.com/marcusziade/Initialize",
+      "category": "Go Projects",
+      "highlights": [
+        "Api",
+        "Backend"
+      ],
+      "updatedAt": "2023-09-01T03:17:39Z",
+      "createdAt": "2023-09-01T01:07:31Z",
+      "topics": [
+        "api",
+        "backend",
+        "github",
+        "go",
+        "golang"
+      ],
+      "commitCount": 38
     },
     {
       "id": "rawdog.ml.nvim",
@@ -254,6 +478,235 @@
       "createdAt": "2024-11-16T13:16:19Z",
       "topics": [],
       "commitCount": 28
+    },
+    {
+      "id": "speedrun-cli",
+      "name": "speedrun-cli",
+      "description": "CLI client for speedrun.com",
+      "language": "Go",
+      "platforms": [
+        "macOS",
+        "Linux",
+        "Windows"
+      ],
+      "stars": 0,
+      "githubUrl": "https://github.com/marcusziade/speedrun-cli",
+      "category": "CLI Tools",
+      "highlights": [],
+      "updatedAt": "2025-06-05T16:08:13Z",
+      "createdAt": "2025-05-22T19:07:26Z",
+      "topics": [],
+      "commitCount": 19
+    },
+    {
+      "id": "echo",
+      "name": "Echo",
+      "description": "Trakt TV app",
+      "language": "Swift",
+      "platforms": [
+        "macOS"
+      ],
+      "stars": 0,
+      "githubUrl": "https://github.com/marcusziade/Echo",
+      "category": "Desktop Apps",
+      "highlights": [],
+      "updatedAt": "2025-06-01T21:28:13Z",
+      "createdAt": "2025-05-29T20:14:10Z",
+      "topics": [],
+      "commitCount": 19
+    },
+    {
+      "id": "fluxxxer",
+      "name": "fluxxxer",
+      "description": "a native gtk4 Linux image generator built with Go",
+      "language": "Go",
+      "platforms": [
+        "macOS",
+        "Linux",
+        "Windows"
+      ],
+      "stars": 0,
+      "githubUrl": "https://github.com/marcusziade/fluxxxer",
+      "category": "Desktop Apps",
+      "highlights": [
+        "Cross-platform",
+        "GTK4"
+      ],
+      "updatedAt": "2025-04-03T09:15:30Z",
+      "createdAt": "2024-11-24T05:39:07Z",
+      "topics": [],
+      "commitCount": 18
+    },
+    {
+      "id": "stability-go",
+      "name": "stability-go",
+      "description": "Go SDK for Stability AI",
+      "language": "Go",
+      "platforms": [
+        "macOS",
+        "Linux",
+        "Windows"
+      ],
+      "stars": 0,
+      "githubUrl": "https://github.com/marcusziade/stability-go",
+      "category": "Go Projects",
+      "highlights": [
+        "AI-powered"
+      ],
+      "updatedAt": "2025-04-02T19:06:05Z",
+      "createdAt": "2025-03-24T16:02:08Z",
+      "topics": [],
+      "commitCount": 17
+    },
+    {
+      "id": "dreameater-vue",
+      "name": "dreameater-vue",
+      "description": "Landing page for Dream Eater iOS",
+      "language": "Vue",
+      "platforms": [],
+      "stars": 0,
+      "githubUrl": "https://github.com/marcusziade/dreameater-vue",
+      "category": "Other Projects",
+      "highlights": [],
+      "updatedAt": "2024-09-15T02:14:34Z",
+      "createdAt": "2024-09-14T02:40:18Z",
+      "topics": [],
+      "commitCount": 19
+    },
+    {
+      "id": "steamkit",
+      "name": "SteamKit",
+      "description": "A lightweight, easy-to-use Swift package for interacting with the Steam Web API.",
+      "language": "Swift",
+      "platforms": [
+        "macOS"
+      ],
+      "stars": 0,
+      "githubUrl": "https://github.com/marcusziade/SteamKit",
+      "category": "Swift Packages",
+      "highlights": [],
+      "updatedAt": "2024-07-08T03:20:23Z",
+      "createdAt": "2024-07-05T02:12:19Z",
+      "topics": [],
+      "commitCount": 17
+    },
+    {
+      "id": "pomme",
+      "name": "Pomme",
+      "description": "App Store Connect CLI tool built with Go.",
+      "language": "Go",
+      "platforms": [
+        "macOS",
+        "Linux",
+        "Windows"
+      ],
+      "stars": 0,
+      "githubUrl": "https://github.com/marcusziade/Pomme",
+      "category": "CLI Tools",
+      "highlights": [],
+      "updatedAt": "2025-04-01T16:09:55Z",
+      "createdAt": "2025-04-01T15:48:09Z",
+      "topics": [],
+      "commitCount": 14
+    },
+    {
+      "id": "havetheepsteinfilesbeenreleased",
+      "name": "havetheepsteinfilesbeenreleased",
+      "description": "Website that checks if Epstein Files have been released",
+      "language": "HTML",
+      "platforms": [],
+      "stars": 0,
+      "githubUrl": "https://github.com/marcusziade/havetheepsteinfilesbeenreleased",
+      "category": "Other Projects",
+      "highlights": [
+        "Epstein",
+        "Fbi"
+      ],
+      "updatedAt": "2025-03-24T21:21:35Z",
+      "createdAt": "2025-03-24T19:39:09Z",
+      "topics": [
+        "epstein",
+        "fbi",
+        "files",
+        "web"
+      ],
+      "commitCount": 10
+    },
+    {
+      "id": "speedrunner-tui",
+      "name": "speedrunner-tui",
+      "description": "TUI app to check speedrun.com notifications in the terminal",
+      "language": "Go",
+      "platforms": [
+        "macOS",
+        "Linux",
+        "Windows"
+      ],
+      "stars": 0,
+      "githubUrl": "https://github.com/marcusziade/speedrunner-tui",
+      "category": "Desktop Apps",
+      "highlights": [],
+      "updatedAt": "2025-01-16T20:16:22Z",
+      "createdAt": "2025-01-16T19:48:15Z",
+      "topics": [],
+      "commitCount": 11
+    },
+    {
+      "id": "chatgpt-gtk4",
+      "name": "chatgpt-gtk4",
+      "description": "Native GTK4 ChatGPT client using the official Go SDK",
+      "language": "Go",
+      "platforms": [
+        "macOS",
+        "Linux",
+        "Windows"
+      ],
+      "stars": 0,
+      "githubUrl": "https://github.com/marcusziade/chatgpt-gtk4",
+      "category": "CLI Tools",
+      "highlights": [
+        "GTK4"
+      ],
+      "updatedAt": "2024-12-18T17:12:56Z",
+      "createdAt": "2024-12-18T16:32:28Z",
+      "topics": [],
+      "commitCount": 11
+    },
+    {
+      "id": "redditkit",
+      "name": "RedditKit",
+      "description": "A Swift Package for interfacing with Reddit's API",
+      "language": "Swift",
+      "platforms": [
+        "macOS"
+      ],
+      "stars": 0,
+      "githubUrl": "https://github.com/marcusziade/RedditKit",
+      "category": "Swift Packages",
+      "highlights": [],
+      "updatedAt": "2024-03-16T16:02:10Z",
+      "createdAt": "2024-03-16T16:01:44Z",
+      "topics": [],
+      "commitCount": 10
+    },
+    {
+      "id": "cachedasyncimage",
+      "name": "CachedAsyncImage",
+      "description": "SwiftUI's simple to use AsyncImage with cache",
+      "language": "Swift",
+      "platforms": [
+        "macOS"
+      ],
+      "stars": 0,
+      "githubUrl": "https://github.com/marcusziade/CachedAsyncImage",
+      "category": "Swift Projects",
+      "highlights": [
+        "async/await"
+      ],
+      "updatedAt": "2024-01-07T22:56:16Z",
+      "createdAt": "2024-01-07T22:33:36Z",
+      "topics": [],
+      "commitCount": 10
     }
   ]
 }

@@ -170,7 +170,7 @@ func FetchData() error {
 		return ti.After(tj)
 	})
 
-	// Select featured projects
+	// Select featured projects (for homepage - prioritize stars)
 	featuredProjects := selectFeaturedProjects(projects, pinnedRepos)
 
 	// Prepare output data
@@ -222,27 +222,20 @@ func FetchData() error {
 		}
 	}
 
-	fmt.Println("\nProject breakdown:")
-	// Sort categories with "Other Projects" last
-	sortedCats := make([]string, 0, len(categoryCounts))
-	for cat := range categoryCounts {
-		if cat != "Other Projects" {
-			sortedCats = append(sortedCats, cat)
-		}
-	}
-	sort.Strings(sortedCats)
-	if count, ok := categoryCounts["Other Projects"]; ok && count > 0 {
-		sortedCats = append(sortedCats, "Other Projects")
+	fmt.Println("\nProject stats:")
+	fmt.Printf("  Total projects: %d\n", len(outputData.Projects))
+	fmt.Printf("  Total stars: %d\n", totalStars)
+	fmt.Printf("  Total commits: %d\n", totalCommits)
+	fmt.Printf("  Average stars per project: %.1f\n", float64(totalStars)/float64(len(outputData.Projects)))
+	
+	// Show top 5 projects by stars
+	fmt.Println("\nTop 5 projects by stars:")
+	for i := 0; i < 5 && i < len(outputData.Projects); i++ {
+		p := outputData.Projects[i]
+		fmt.Printf("  %d. %s - %d stars, %d commits\n", i+1, p.Name, p.Stars, p.CommitCount)
 	}
 	
-	for _, category := range sortedCats {
-		fmt.Printf("  %s: %d\n", category, categoryCounts[category])
-	}
-	
-	fmt.Printf("\nPinned repositories included: %d\n", pinnedCount)
-	fmt.Printf("Total commits across all projects: %d\n", totalCommits)
-	fmt.Printf("Total stars across all projects: %d\n", totalStars)
-	fmt.Println("✓ GitHub data updated successfully")
+	fmt.Println("\n✓ GitHub data updated successfully")
 
 	return nil
 }
@@ -515,87 +508,34 @@ func fetchPinnedRepos() ([]string, error) {
 }
 
 func selectFeaturedProjects(projects []Project, pinnedRepos []string) []Project {
-	// Separate pinned and unpinned projects
-	var pinnedProjects []Project
-	var unpinnedProjects []Project
+	// Filter for quality projects only
+	var qualityProjects []Project
 	
 	for _, p := range projects {
-		isPinned := false
-		for _, pinned := range pinnedRepos {
-			if p.ID == pinned {
-				isPinned = true
-				break
-			}
-		}
-		
-		// Only include high-quality projects (significant commits and/or stars)
-		if p.CommitCount >= 10 || p.Stars >= 5 {
-			if isPinned {
-				pinnedProjects = append(pinnedProjects, p)
-			} else {
-				unpinnedProjects = append(unpinnedProjects, p)
-			}
+		// Only include projects with significant work or popularity
+		if p.CommitCount >= 10 || p.Stars >= 3 {
+			qualityProjects = append(qualityProjects, p)
 		}
 	}
 	
-	// Sort unpinned projects by quality (stars + commits)
-	sort.Slice(unpinnedProjects, func(i, j int) bool {
-		scoreI := unpinnedProjects[i].Stars*2 + unpinnedProjects[i].CommitCount/10
-		scoreJ := unpinnedProjects[j].Stars*2 + unpinnedProjects[j].CommitCount/10
+	// Sort by a combination of stars (heavily weighted) and commits
+	sort.Slice(qualityProjects, func(i, j int) bool {
+		// Stars are worth much more than commits for homepage display
+		scoreI := qualityProjects[i].Stars*10 + qualityProjects[i].CommitCount/5
+		scoreJ := qualityProjects[j].Stars*10 + qualityProjects[j].CommitCount/5
+		
+		// If scores are equal, prefer more recent updates
+		if scoreI == scoreJ {
+			ti, _ := time.Parse(time.RFC3339, qualityProjects[i].UpdatedAt)
+			tj, _ := time.Parse(time.RFC3339, qualityProjects[j].UpdatedAt)
+			return ti.After(tj)
+		}
+		
 		return scoreI > scoreJ
 	})
 	
-	// Build featured list: pinned first, then best unpinned
-	featured := make([]Project, 0, 12)
-	featured = append(featured, pinnedProjects...)
-	
-	// Add best unpinned projects by category to ensure diversity
-	categoryMap := make(map[string][]Project)
-	for _, p := range unpinnedProjects {
-		categoryMap[p.Category] = append(categoryMap[p.Category], p)
-	}
-	
-	// Sort categories to put "Other Projects" last
-	categories := make([]string, 0, len(categoryMap))
-	for cat := range categoryMap {
-		if cat != "Other Projects" {
-			categories = append(categories, cat)
-		}
-	}
-	sort.Strings(categories)
-	categories = append(categories, "Other Projects")
-	
-	// Add top projects from each category
-	for _, cat := range categories {
-		if projs, ok := categoryMap[cat]; ok {
-			// Add up to 2 from each category
-			maxFromCat := 2
-			if cat == "Other Projects" {
-				maxFromCat = 1 // Limit "Other Projects"
-			}
-			
-			for i := 0; i < len(projs) && i < maxFromCat && len(featured) < 12; i++ {
-				// Check if not already added
-				alreadyAdded := false
-				for _, f := range featured {
-					if f.ID == projs[i].ID {
-						alreadyAdded = true
-						break
-					}
-				}
-				if !alreadyAdded {
-					featured = append(featured, projs[i])
-				}
-			}
-		}
-	}
-	
-	// Limit to 12 projects
-	if len(featured) > 12 {
-		featured = featured[:12]
-	}
-	
-	return featured
+	// Return all quality projects (let the page decide how many to show)
+	return qualityProjects
 }
 
 // Helper functions

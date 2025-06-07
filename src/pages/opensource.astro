@@ -7,19 +7,8 @@ const pageTitle = 'Open Source | Marcus Ziadé';
 const pageDescription =
   'CLI tools, Swift packages, and desktop applications for macOS, Linux, and cross-platform development.';
 
-// Group projects by category
-const projectsByCategory = openSourceData.projects.reduce(
-  (acc, project) => {
-    if (!acc[project.category]) {
-      acc[project.category] = [];
-    }
-    acc[project.category].push(project);
-    return acc;
-  },
-  {} as Record<string, typeof openSourceData.projects>
-);
-
-const categories = Object.keys(projectsByCategory);
+// Projects are already sorted by quality (stars and commits) from the Go backend
+const projects = openSourceData.projects;
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription}>
@@ -51,20 +40,11 @@ const categories = Object.keys(projectsByCategory);
         </div>
       </header>
 
-      {
-        categories.map((category) => (
-          <section class="mb-8 sm:mb-12">
-            <h2 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4 sm:mb-6">
-              {category}
-            </h2>
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-              {projectsByCategory[category].map((project) => (
-                <OpenSourceCard project={project} />
-              ))}
-            </div>
-          </section>
-        ))
-      }
+      <section>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+          {projects.map((project) => <OpenSourceCard project={project} />)}
+        </div>
+      </section>
 
       <section class="mt-12 sm:mt-16 text-center">
         <div
