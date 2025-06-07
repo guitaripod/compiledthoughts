@@ -22,7 +22,11 @@ const postsByYear = posts.reduce(
 const years = Object.keys(postsByYear).sort((a, b) => Number(b) - Number(a));
 ---
 
-<BaseLayout title="Archive - Compiled Thoughts" description="All blog posts organized by year">
+<BaseLayout 
+  title="Archive - Compiled Thoughts" 
+  description="All blog posts organized by year"
+  image="/archive-preview.svg"
+>
   <div class="py-6 sm:py-8">
     <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4">
       Archive
