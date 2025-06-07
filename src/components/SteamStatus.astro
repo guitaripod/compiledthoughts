@@ -36,6 +36,8 @@
         return;
       }
 
+      console.log('[Steam] Full API response:', data);
+
       // Update online status
       if (data.player && typeof data.player.personastate !== 'undefined') {
         // Ensure personastate is a number
@@ -99,6 +101,9 @@
           statusElement.innerHTML += ` <span class="text-gray-500">· ${data.player.personaname}</span>`;
         }
 
+        // Always show something in the recent games area
+        console.log('[Steam] Checking recent games:', data.recentGames);
+
         // Show current game if playing
         if (data.currentGame) {
           currentGameElement.innerHTML = `
@@ -161,11 +166,25 @@
           ${gamesHtml}
         `;
       } else {
-        // If no recent games, show total games owned from player data
-        if (data.player && data.player.gamecount) {
+        // If no recent games, show profile info
+        if (data.player) {
+          let profileHtml = '<div class="text-xs text-gray-500 dark:text-gray-500 space-y-1">';
+
+          if (data.player.profileurl) {
+            profileHtml += `<div>Steam ID: ${data.player.steamid}</div>`;
+          }
+
+          if (data.player.timecreated) {
+            const memberSince = new Date(data.player.timecreated * 1000).getFullYear();
+            profileHtml += `<div>Member since ${memberSince}</div>`;
+          }
+
+          profileHtml += '</div>';
+          recentGamesElement.innerHTML = profileHtml;
+        } else {
           recentGamesElement.innerHTML = `
             <p class="text-xs text-gray-500 dark:text-gray-500">
-              ${data.player.gamecount} games in library
+              No recent activity
             </p>
           `;
         }
