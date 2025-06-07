@@ -9,23 +9,8 @@ export const GET: APIRoute = async (context) => {
   console.log('[Steam API] Handling request');
 
   // Try multiple ways to access the API key in Cloudflare Pages
-  let apiKey;
-
-  // Method 1: Direct from context.env (Cloudflare Pages Functions)
-  if (context.env?.STEAM_API_KEY) {
-    apiKey = context.env.STEAM_API_KEY;
-    console.log('[Steam API] Found key in context.env');
-  }
-  // Method 2: From locals.runtime.env
-  else if ((context.locals as any)?.runtime?.env?.STEAM_API_KEY) {
-    apiKey = (context.locals as any).runtime.env.STEAM_API_KEY;
-    console.log('[Steam API] Found key in locals.runtime.env');
-  }
-  // Method 3: From import.meta.env (dev environment)
-  else if (import.meta.env.STEAM_API_KEY) {
-    apiKey = import.meta.env.STEAM_API_KEY;
-    console.log('[Steam API] Found key in import.meta.env');
-  }
+  const runtime = (context.locals as any).runtime;
+  const apiKey = runtime?.env?.STEAM_API_KEY || import.meta.env.STEAM_API_KEY;
 
   console.log('[Steam API] API key configured:', !!apiKey);
 
