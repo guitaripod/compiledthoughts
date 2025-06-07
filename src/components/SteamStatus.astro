@@ -162,6 +162,8 @@
         console.log('[Steam] Recent games data:', data.recentGames);
 
         const gamesHtml = data.recentGames
+          .slice(0, 3)
+          .reverse()
           .map((game) => {
             const hours = Math.floor(game.playtime_2weeks / 60);
             const minutes = game.playtime_2weeks % 60;
