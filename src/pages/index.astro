@@ -212,7 +212,7 @@ const socialLinks = [{ name: 'GitHub', url: 'https://github.com/marcusziade', ic
   <section class="mb-16">
     <h2 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-8">Recent Posts</h2>
 
-    <div class="grid gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {
         postsWithReadingTime.map((post) => {
           const formattedDate = post.data.pubDate.toLocaleDateString('en-US', {
@@ -263,7 +263,7 @@ const socialLinks = [{ name: 'GitHub', url: 'https://github.com/marcusziade', ic
                     <img
                       src={post.data.image}
                       alt=""
-                      class="w-full sm:w-24 h-48 sm:h-24 rounded-lg object-cover flex-shrink-0"
+                      class="w-full sm:w-20 h-48 sm:h-20 rounded-lg object-cover flex-shrink-0"
                       loading="lazy"
                     />
                   )}
