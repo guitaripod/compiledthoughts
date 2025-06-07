@@ -74,13 +74,14 @@ const categoryIcons = {
           {project.language}
         </span>
         {
-          project.highlights
-            .slice(0, 2)
-            .map((highlight) => (
-              <span class="text-xs px-2 py-0.5 sm:py-1 bg-gray-100 dark:bg-gray-700 rounded text-gray-600 dark:text-gray-300 line-clamp-1">
-                {highlight}
-              </span>
-            ))
+          project.highlights &&
+            project.highlights
+              .slice(0, 2)
+              .map((highlight) => (
+                <span class="text-xs px-2 py-0.5 sm:py-1 bg-gray-100 dark:bg-gray-700 rounded text-gray-600 dark:text-gray-300 line-clamp-1">
+                  {highlight}
+                </span>
+              ))
         }
       </div>
       <svg

@@ -362,6 +362,9 @@ func getHighlights(repo GitHubRepo) []string {
 	if len(highlights) > 3 {
 		return highlights[:3]
 	}
+	if len(highlights) == 0 {
+		return []string{} // Ensure we always return a non-nil slice
+	}
 	return highlights
 }
 
