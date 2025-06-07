@@ -31,5 +31,5 @@ coverage/
 public/pagefind/
 
 # go binary
-ct
-ct-*
+/ct
+/ct-*
