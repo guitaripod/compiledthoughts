@@ -4,7 +4,7 @@ export interface Props {
 }
 
 const { username } = Astro.props;
-const apiKey = import.meta.env.PUBLIC_LASTFM_API_KEY || 'b25b959554ed76058ac220b7b2e0a026';
+const apiKey = import.meta.env.PUBLIC_LASTFM_API_KEY;
 ---
 
 <div id="lastfm-now-playing" class="text-xs text-gray-600 dark:text-gray-400">
