@@ -4,7 +4,6 @@ export interface Props {
 }
 
 const { username } = Astro.props;
-const apiKey = import.meta.env.PUBLIC_LASTFM_API_KEY;
 ---
 
 <div id="lastfm-now-playing" class="text-xs text-gray-600 dark:text-gray-400">
@@ -22,23 +21,13 @@ const apiKey = import.meta.env.PUBLIC_LASTFM_API_KEY;
   </div>
 </div>
 
-<script define:vars={{ username, apiKey }}>
+<script define:vars={{ username }}>
   async function fetchNowPlaying() {
     try {
       console.log('Fetching Last.fm data for:', username);
-      console.log('API Key exists:', !!apiKey);
 
-      if (!apiKey) {
-        console.error('Last.fm API key is missing!');
-        const trackElement = document.getElementById('track-info');
-        if (trackElement) {
-          trackElement.textContent = 'API key missing';
-        }
-        return;
-      }
-
-      const url = `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${username}&api_key=${apiKey}&format=json&limit=1`;
-      console.log('Fetching from URL:', url.replace(apiKey, 'HIDDEN'));
+      const url = `/api/lastfm.json?username=${username}`;
+      console.log('Fetching from API endpoint:', url);
 
       const response = await fetch(url);
       console.log('Response status:', response.status);

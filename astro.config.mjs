@@ -2,6 +2,7 @@ import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import tailwind from '@astrojs/tailwind';
+import cloudflare from '@astrojs/cloudflare';
 
 export default defineConfig({
   site: 'https://compiledthoughts.pages.dev',
@@ -16,7 +17,10 @@ export default defineConfig({
     sitemap(),
     tailwind(),
   ],
-  output: 'static',
+  output: 'hybrid',
+  adapter: cloudflare({
+    mode: 'directory',
+  }),
   prefetch: {
     prefetchAll: true,
     defaultStrategy: 'hover',
