@@ -7,15 +7,20 @@ const pageTitle = 'Apple Platform Apps | Marcus Ziadé';
 const pageDescription =
   'Explore my portfolio of applications for Apple platforms - iPhone, iPad, Mac, and Apple TV. Featuring machine learning, productivity tools, and innovative experiences.';
 
+// Sort apps by release date (newest first)
+const sortedApps = [...appsData.apps].sort((a, b) => {
+  return new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime();
+});
+
 // Create a more engaging OG description
-const ogDescription = `🚀 ${appsData.apps.length} apps on the App Store • 🤖 ML-powered experiences • 📱 iPhone, iPad, Mac & Apple TV • ⭐ From productivity tools to space exploration`;
+const ogDescription = `🚀 ${sortedApps.length} apps on the App Store • 🤖 ML-powered experiences • 📱 iPhone, iPad, Mac & Apple TV • ⭐ From productivity tools to space exploration`;
 
 // Get featured apps for the OG preview
-const featuredApps = appsData.apps
+const featuredApps = sortedApps
   .slice(0, 3)
   .map((app) => app.name)
   .join(', ');
-const moreAppsCount = Math.max(0, appsData.apps.length - 3);
+const moreAppsCount = Math.max(0, sortedApps.length - 3);
 
 // Create structured data for the apps collection
 const structuredData = {
@@ -29,7 +34,7 @@ const structuredData = {
     name: 'Marcus Ziadé',
     url: 'https://compiledthoughts.pages.dev',
   },
-  hasPart: appsData.apps.map((app) => ({
+  hasPart: sortedApps.map((app) => ({
     '@type': 'SoftwareApplication',
     name: app.name,
     description: app.tagline,
@@ -65,7 +70,7 @@ const structuredData = {
 
       <section>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
-          {appsData.apps.map((app) => <AppCard app={app} />)}
+          {sortedApps.map((app) => <AppCard app={app} />)}
         </div>
       </section>
 
