@@ -17,28 +17,31 @@ const { username } = Astro.props;
     try {
       console.log('[GitHub] Fetching stats for:', username);
 
-      // Fetch user data
-      const userResponse = await fetch(`https://api.github.com/users/${username}`);
-      console.log('[GitHub] User API response status:', userResponse.status);
-
-      // Fetch repos data
-      const reposResponse = await fetch(
-        `https://api.github.com/users/${username}/repos?sort=updated&per_page=3`
-      );
-      console.log('[GitHub] Repos API response status:', reposResponse.status);
+      // Use our API endpoint which handles rate limiting better
+      const response = await fetch(`/api/github.json?username=${username}`);
+      console.log('[GitHub] API response status:', response.status);
 
       const statsElement = document.getElementById('github-stats');
       if (!statsElement) return;
 
-      if (!userResponse.ok) {
-        console.error('[GitHub] Failed to fetch user data:', userResponse.statusText);
+      if (!response.ok) {
+        console.error('[GitHub] Failed to fetch data');
         statsElement.innerHTML =
           '<p class="text-xs text-gray-500 dark:text-gray-500">Unable to load GitHub stats</p>';
         return;
       }
 
-      const userData = await userResponse.json();
-      const recentRepos = reposResponse.ok ? await reposResponse.json() : [];
+      const data = await response.json();
+
+      if (data.error) {
+        console.error('[GitHub] API error:', data.error);
+        statsElement.innerHTML =
+          '<p class="text-xs text-gray-500 dark:text-gray-500">Unable to load GitHub stats</p>';
+        return;
+      }
+
+      const userData = data.user;
+      const recentRepos = data.repos || [];
 
       console.log('[GitHub] User data:', userData);
       console.log('[GitHub] Recent repos:', recentRepos.length);

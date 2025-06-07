@@ -39,7 +39,7 @@ export const GET: APIRoute = async (context) => {
       `https://wakatime.com/api/v1/users/${username}/stats/last_7_days`,
       {
         headers: {
-          Authorization: `Basic ${Buffer.from(apiKey + ':').toString('base64')}`,
+          Authorization: `Basic ${Buffer.from(apiKey).toString('base64')}`,
         },
       }
     );

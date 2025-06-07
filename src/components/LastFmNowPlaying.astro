@@ -75,6 +75,7 @@ const { username, showArtwork = true, size = 'normal' } = Astro.props;
 
           console.log('Track found:', track.name, 'by', track.artist['#text']);
           console.log('Now playing:', isNowPlaying);
+          console.log('Track @attr:', track['@attr']);
 
           // Show album artwork if available
           if (showArtwork && albumArtElement && track.image) {
