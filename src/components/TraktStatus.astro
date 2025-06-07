@@ -1,9 +1,10 @@
 ---
 export interface Props {
   username: string;
+  size?: 'normal' | 'large';
 }
 
-const { username } = Astro.props;
+const { username, size = 'normal' } = Astro.props;
 ---
 
 <div id="trakt-status" class="space-y-3">

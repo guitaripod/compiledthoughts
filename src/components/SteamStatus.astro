@@ -37,19 +37,60 @@
       }
 
       // Update online status
-      if (data.player) {
-        const isOnline = data.player.personastate > 0;
-        const statusText =
-          data.player.personastate === 1
-            ? 'Online'
-            : data.player.personastate === 2
-              ? 'Busy'
-              : data.player.personastate === 3
-                ? 'Away'
-                : 'Offline';
+      if (data.player && typeof data.player.personastate !== 'undefined') {
+        // Ensure personastate is a number
+        const personaState = parseInt(data.player.personastate, 10);
+        const isOnline = personaState > 0;
+
+        // Debug logging
+        console.log('Steam API Response:', {
+          personastate: personaState,
+          personastateflags: data.player.personastateflags,
+          gameextrainfo: data.player.gameextrainfo,
+          gameid: data.player.gameid,
+          player: data.player,
+        });
+
+        // Map all Steam persona states
+        let statusText;
+        let statusColor;
+
+        switch (personaState) {
+          case 0:
+            statusText = 'Offline';
+            statusColor = 'bg-gray-400';
+            break;
+          case 1:
+            statusText = 'Online';
+            statusColor = 'bg-green-500';
+            break;
+          case 2:
+            statusText = 'Busy';
+            statusColor = 'bg-red-500';
+            break;
+          case 3:
+            statusText = 'Away';
+            statusColor = 'bg-yellow-500';
+            break;
+          case 4:
+            statusText = 'Snooze';
+            statusColor = 'bg-yellow-500';
+            break;
+          case 5:
+            statusText = 'Looking to trade';
+            statusColor = 'bg-blue-500';
+            break;
+          case 6:
+            statusText = 'Looking to play';
+            statusColor = 'bg-green-500';
+            break;
+          default:
+            statusText = 'Unknown';
+            statusColor = 'bg-gray-400';
+        }
 
         statusElement.innerHTML = `
-          <div class="w-2 h-2 ${isOnline ? 'bg-green-500' : 'bg-gray-400'} rounded-full"></div>
+          <div class="w-2 h-2 ${statusColor} rounded-full"></div>
           <span class="font-medium">${statusText}</span>
         `;
 
@@ -67,6 +108,13 @@
         } else {
           currentGameElement.classList.add('hidden');
         }
+      } else {
+        // No player data available
+        statusElement.innerHTML = `
+          <div class="w-2 h-2 bg-gray-400 rounded-full"></div>
+          <span class="text-gray-500">Status unavailable</span>
+        `;
+        console.error('No player data in response:', data);
       }
 
       // Display recent games

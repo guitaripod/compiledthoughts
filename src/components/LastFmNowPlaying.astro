@@ -2,9 +2,10 @@
 export interface Props {
   username: string;
   showArtwork?: boolean;
+  size?: 'normal' | 'large';
 }
 
-const { username, showArtwork = true } = Astro.props;
+const { username, showArtwork = true, size = 'normal' } = Astro.props;
 ---
 
 <div id="lastfm-now-playing" class="space-y-3">
@@ -36,7 +37,7 @@ const { username, showArtwork = true } = Astro.props;
   </div>
 </div>
 
-<script define:vars={{ username, showArtwork }}>
+<script define:vars={{ username, showArtwork, size }}>
   async function fetchNowPlaying() {
     try {
       console.log('Fetching Last.fm data for:', username);
@@ -77,15 +78,20 @@ const { username, showArtwork = true } = Astro.props;
 
           // Show album artwork if available
           if (showArtwork && albumArtElement && track.image) {
-            const largeImage =
+            const imageSize = size === 'large' ? 'extralarge' : 'large';
+            const artworkSize = size === 'large' ? 'w-24 h-24' : 'w-16 h-16';
+
+            const selectedImage =
+              track.image.find((img) => img.size === imageSize) ||
               track.image.find((img) => img.size === 'large') ||
               track.image[track.image.length - 1];
-            if (largeImage && largeImage['#text']) {
+
+            if (selectedImage && selectedImage['#text']) {
               albumArtElement.innerHTML = `
                 <img 
-                  src="${largeImage['#text']}" 
+                  src="${selectedImage['#text']}" 
                   alt="${track.album ? track.album['#text'] : 'Album artwork'}"
-                  class="w-16 h-16 rounded-md shadow-sm"
+                  class="${artworkSize} rounded-md shadow-sm object-cover"
                   loading="lazy"
                 />
               `;
@@ -104,10 +110,14 @@ const { username, showArtwork = true } = Astro.props;
 
           // Show track details
           if (trackDetailsElement) {
+            const truncateClass = size === 'large' ? '' : 'truncate';
+            const titleSize = size === 'large' ? 'text-base' : 'text-sm';
+            const artistSize = size === 'large' ? 'text-sm' : 'text-xs';
+
             trackDetailsElement.innerHTML = `
-              <div class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">${track.name}</div>
-              <div class="text-xs text-gray-600 dark:text-gray-400 truncate">${track.artist['#text']}</div>
-              ${track.album && track.album['#text'] ? `<div class="text-xs text-gray-500 dark:text-gray-500 truncate">${track.album['#text']}</div>` : ''}
+              <div class="${titleSize} font-medium text-gray-900 dark:text-gray-100 ${truncateClass}">${track.name}</div>
+              <div class="${artistSize} text-gray-600 dark:text-gray-400 ${truncateClass}">${track.artist['#text']}</div>
+              ${track.album && track.album['#text'] ? `<div class="${artistSize} text-gray-500 dark:text-gray-500 ${truncateClass}">${track.album['#text']}</div>` : ''}
             `;
             trackDetailsElement.classList.remove('hidden');
           }
