@@ -199,7 +199,12 @@ const socialLinks = [{ name: 'GitHub', url: 'https://github.com/marcusziade', ic
       </a>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      {openSourceData.projects.slice(0, 4).map((project) => <OpenSourceCard project={project} />)}
+      {
+        openSourceData.projects
+          .filter((project) => project.stars >= 4)
+          .slice(0, 4)
+          .map((project) => <OpenSourceCard project={project} />)
+      }
     </div>
   </section>
 

@@ -518,20 +518,22 @@ func selectFeaturedProjects(projects []Project, pinnedRepos []string) []Project 
 		}
 	}
 	
-	// Sort by a combination of stars (heavily weighted) and commits
+	// Sort by stars first (for homepage display)
 	sort.Slice(qualityProjects, func(i, j int) bool {
-		// Stars are worth much more than commits for homepage display
-		scoreI := qualityProjects[i].Stars*10 + qualityProjects[i].CommitCount/5
-		scoreJ := qualityProjects[j].Stars*10 + qualityProjects[j].CommitCount/5
-		
-		// If scores are equal, prefer more recent updates
-		if scoreI == scoreJ {
-			ti, _ := time.Parse(time.RFC3339, qualityProjects[i].UpdatedAt)
-			tj, _ := time.Parse(time.RFC3339, qualityProjects[j].UpdatedAt)
-			return ti.After(tj)
+		// Sort primarily by stars
+		if qualityProjects[i].Stars != qualityProjects[j].Stars {
+			return qualityProjects[i].Stars > qualityProjects[j].Stars
 		}
 		
-		return scoreI > scoreJ
+		// If stars are equal, sort by commits
+		if qualityProjects[i].CommitCount != qualityProjects[j].CommitCount {
+			return qualityProjects[i].CommitCount > qualityProjects[j].CommitCount
+		}
+		
+		// If both are equal, prefer more recent updates
+		ti, _ := time.Parse(time.RFC3339, qualityProjects[i].UpdatedAt)
+		tj, _ := time.Parse(time.RFC3339, qualityProjects[j].UpdatedAt)
+		return ti.After(tj)
 	})
 	
 	// Return all quality projects (let the page decide how many to show)
