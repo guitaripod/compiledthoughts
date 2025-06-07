@@ -1,0 +1,254 @@
+---
+title: 'Adding a Last.fm Now Playing Widget to Your Website'
+description: 'Learn how to integrate a dynamic "Now Playing" widget that displays your current Last.fm track with real-time updates using the Last.fm API'
+pubDate: 2025-06-07
+tags: ['last.fm', 'api', 'javascript', 'astro', 'web-development', 'music', 'real-time']
+---
+
+Music is a fundamental part of many developers' workflows, and sharing what you're currently listening to can add a personal touch to your website. In this guide, we'll build a dynamic "Now Playing" widget that displays your current Last.fm track with real-time updates, perfect for your personal site or portfolio.
+
+## Why Add a Now Playing Widget?
+
+Adding a music widget to your personal site serves several purposes:
+
+- **Personal connection**: Shows visitors what inspires you while you work
+- **Dynamic content**: Keeps your site feeling alive with real-time updates
+- **Low maintenance**: Once set up, it runs automatically without intervention
+- **Conversation starter**: Creates common ground with fellow music enthusiasts
+
+## Architecture Overview
+
+Our Now Playing widget consists of two main components:
+
+1. **Astro Component**: Handles the UI and client-side JavaScript
+2. **Last.fm API**: Provides real-time track data
+
+The flow is straightforward:
+
+```
+Browser → Last.fm API → Parse Response → Update UI
+         ↑                              ↓
+         └──────── 30s interval ────────┘
+```
+
+## Implementation
+
+Let's build the widget step by step. We'll create an Astro component that can be easily integrated into any page.
+
+### Part 1: Creating the Component
+
+First, create a new Astro component for the Now Playing widget:
+
+```astro
+---
+// src/components/LastFmNowPlaying.astro
+export interface Props {
+  username: string;
+}
+
+const { username } = Astro.props;
+const apiKey = import.meta.env.PUBLIC_LASTFM_API_KEY || 'b25b959554ed76058ac220b7b2e0a026';
+---
+
+<div id="lastfm-now-playing" class="text-xs text-gray-600 dark:text-gray-400">
+  <div class="flex items-center gap-2">
+    <svg class="w-4 h-4 animate-pulse text-green-500" fill="currentColor" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="3"></circle>
+      <path
+        d="M12 6a6 6 0 0 0-6 6c0 1.66.67 3.16 1.76 4.24l1.42-1.42A4 4 0 0 1 8 12a4 4 0 0 1 4-4V6z"
+        opacity="0.6"></path>
+      <path
+        d="M12 2a10 10 0 0 0-10 10c0 2.76 1.12 5.26 2.93 7.07l1.42-1.42A8 8 0 0 1 4 12a8 8 0 0 1 8-8V2z"
+        opacity="0.3"></path>
+    </svg>
+    <span id="track-info" class="italic">Loading...</span>
+  </div>
+</div>
+```
+
+The component includes:
+- **Animated icon**: A pulsing broadcast icon indicating live status
+- **Loading state**: Shows "Loading..." while fetching data
+- **Flexible styling**: Uses Tailwind classes that adapt to light/dark themes
+
+### Part 2: Fetching Track Data
+
+Now let's add the JavaScript to fetch and display the current track:
+
+```astro
+<script define:vars={{ username, apiKey }}>
+  async function fetchNowPlaying() {
+    try {
+      const response = await fetch(
+        `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${username}&api_key=${apiKey}&format=json&limit=1`
+      );
+      const data = await response.json();
+
+      const trackElement = document.getElementById('track-info');
+      if (!trackElement) return;
+
+      if (data.recenttracks && data.recenttracks.track && data.recenttracks.track.length > 0) {
+        const track = data.recenttracks.track[0];
+        const isNowPlaying = track['@attr'] && track['@attr'].nowplaying === 'true';
+
+        if (isNowPlaying) {
+          trackElement.innerHTML = `Now playing: <strong>${track.name}</strong> by ${track.artist['#text']}`;
+        } else {
+          trackElement.textContent = 'Not currently playing';
+        }
+      } else {
+        trackElement.textContent = 'No recent tracks';
+      }
+    } catch (error) {
+      const trackElement = document.getElementById('track-info');
+      if (trackElement) {
+        trackElement.textContent = 'Unable to load track info';
+      }
+    }
+  }
+
+  // Fetch immediately
+  fetchNowPlaying();
+
+  // Update every 30 seconds
+  setInterval(fetchNowPlaying, 30000);
+</script>
+```
+
+Key implementation details:
+
+- **API endpoint**: Uses Last.fm's `user.getrecenttracks` method
+- **Real-time detection**: Checks the `nowplaying` attribute to determine if a track is currently playing
+- **Error handling**: Gracefully handles network errors and missing data
+- **Auto-refresh**: Updates every 30 seconds to keep the display current
+
+### Part 3: Integration
+
+To use the component in your site, simply import and include it with your Last.fm username:
+
+```astro
+---
+// In your page or component
+import LastFmNowPlaying from '@components/LastFmNowPlaying.astro';
+---
+
+<!-- Basic usage -->
+<LastFmNowPlaying username="yourusername" />
+
+<!-- Integration with a link card -->
+<div class="link-card">
+  <h3>Last.fm</h3>
+  <p>Music tracking and discovery</p>
+  <div class="mt-auto pt-2 border-t border-gray-200 dark:border-gray-700">
+    <LastFmNowPlaying username="yourusername" />
+  </div>
+</div>
+```
+
+## API Configuration
+
+The example uses Last.fm's demo API key as a fallback. For production use:
+
+1. **Register your application** at [Last.fm API](https://www.last.fm/api/account/create)
+2. **Get your API key** from the account dashboard
+3. **Store it as an environment variable** (never commit API keys to your repository)
+
+The component is already configured to use an environment variable:
+
+```javascript
+const apiKey = import.meta.env.PUBLIC_LASTFM_API_KEY || 'b25b959554ed76058ac220b7b2e0a026';
+```
+
+### Local Development
+
+Create a `.env` file in your project root:
+
+```bash
+PUBLIC_LASTFM_API_KEY=your_actual_api_key_here
+```
+
+### Production Deployment
+
+For Cloudflare Pages:
+
+1. **Via Dashboard**: 
+   - Go to your Pages project → Settings → Environment variables
+   - Add `PUBLIC_LASTFM_API_KEY` with your API key
+
+2. **Via Wrangler CLI**:
+   ```bash
+   wrangler pages secret put PUBLIC_LASTFM_API_KEY --project-name=your-project-name
+   ```
+
+For other platforms, consult their documentation on setting environment variables.
+
+## Styling Variations
+
+The widget can be customized to match your site's design. Here are some variations:
+
+```css
+/* Minimal style */
+.now-playing-minimal {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+/* Card style */
+.now-playing-card {
+  padding: 1rem;
+  background: var(--bg-secondary);
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Inline style */
+.now-playing-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+```
+
+## Best Practices
+
+When implementing a Now Playing widget, consider these best practices:
+
+1. **Rate limiting**: Last.fm allows 5 requests per second per API key. The 30-second interval ensures you stay well within limits
+
+2. **Caching**: For high-traffic sites, consider server-side caching to reduce API calls
+
+3. **Privacy**: Only display information you're comfortable sharing publicly
+
+4. **Fallback content**: Always provide meaningful fallback text for error states
+
+5. **Performance**: The widget loads asynchronously and doesn't block page rendering
+
+## Advanced Features
+
+You can extend the widget with additional features:
+
+- **Album artwork**: Display cover art using the `image` field from the API response
+- **Track progress**: Show how long the track has been playing
+- **Recently played**: Display a list of recent tracks when nothing is currently playing
+- **Click to play**: Link to the track on Last.fm or Spotify
+
+Example with album art:
+
+```javascript
+if (isNowPlaying && track.image && track.image[0]) {
+  trackElement.innerHTML = `
+    <div class="flex items-center gap-2">
+      <img src="${track.image[0]['#text']}" alt="Album art" class="w-8 h-8 rounded">
+      <div>
+        Now playing: <strong>${track.name}</strong> by ${track.artist['#text']}
+      </div>
+    </div>
+  `;
+}
+```
+
+## Conclusion
+
+Adding a Last.fm Now Playing widget is a simple way to bring dynamic, personal content to your website. With just a few lines of code, you can share your musical tastes with visitors and create a more engaging experience. The real-time updates keep your site feeling fresh, while the minimal implementation ensures it doesn't impact performance.
+
+Whether you're building a personal portfolio, blog, or any site where you want to add a human touch, this widget provides an easy way to connect with visitors through the universal language of music.

@@ -4,6 +4,7 @@ export interface Props {
 }
 
 const { username } = Astro.props;
+const apiKey = import.meta.env.PUBLIC_LASTFM_API_KEY || 'b25b959554ed76058ac220b7b2e0a026';
 ---
 
 <div id="lastfm-now-playing" class="text-xs text-gray-600 dark:text-gray-400">
@@ -21,11 +22,11 @@ const { username } = Astro.props;
   </div>
 </div>
 
-<script define:vars={{ username }}>
+<script define:vars={{ username, apiKey }}>
   async function fetchNowPlaying() {
     try {
       const response = await fetch(
-        `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${username}&api_key=b25b959554ed76058ac220b7b2e0a026&format=json&limit=1`
+        `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${username}&api_key=${apiKey}&format=json&limit=1`
       );
       const data = await response.json();
 
