@@ -30,32 +30,30 @@ const categoryIcons = {
 ---
 
 <article
-  class="group bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-6 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-all duration-300"
+  class="group bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-5 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-all duration-300"
 >
   <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" class="block">
     <div class="flex items-start justify-between mb-3">
-      <div class="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
-        <span class="text-xl sm:text-2xl flex-shrink-0"
+      <div class="flex items-center gap-2 min-w-0 flex-1">
+        <span class="text-lg sm:text-xl flex-shrink-0"
           >{categoryIcons[project.category] || '💻'}</span
         >
         <h3
-          class="font-semibold text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate"
+          class="font-semibold text-sm sm:text-base text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate"
         >
           {project.name}
         </h3>
       </div>
       <div class="flex items-center gap-2 flex-shrink-0">
         <span
-          class="px-2 py-0.5 sm:py-1 text-xs font-medium rounded-full hidden sm:inline-block"
+          class="px-2 py-0.5 text-xs font-medium rounded-full hidden lg:inline-block"
           style={`background-color: ${languageColors[project.language]}20; color: ${languageColors[project.language]}`}
         >
           {project.language}
         </span>
         {
           project.stars > 0 && (
-            <span class="flex items-center gap-1 text-xs sm:text-sm text-gray-500">
-              ⭐ {project.stars}
-            </span>
+            <span class="flex items-center gap-1 text-xs text-gray-500">⭐ {project.stars}</span>
           )
         }
       </div>
@@ -68,7 +66,7 @@ const categoryIcons = {
     <div class="flex items-center justify-between gap-2">
       <div class="flex flex-wrap gap-1.5 sm:gap-2">
         <span
-          class="px-2 py-0.5 text-xs font-medium rounded-full sm:hidden"
+          class="px-2 py-0.5 text-xs font-medium rounded-full lg:hidden"
           style={`background-color: ${languageColors[project.language]}20; color: ${languageColors[project.language]}`}
         >
           {project.language}
