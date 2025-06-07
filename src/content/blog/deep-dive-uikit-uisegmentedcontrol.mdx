@@ -1,0 +1,373 @@
+---
+title: 'A Deep Dive into UIKit UISegmentedControl'
+description: 'Master every aspect of UISegmentedControl in iOS development, from basic initialization to advanced customization and appearance configuration'
+pubDate: 2023-07-26
+tags: ['swift', 'ios', 'uikit', 'ui-components']
+---
+
+UISegmentedControl is a fundamental UI component in UIKit that provides an intuitive interface for users to make selections from a set of mutually exclusive options. This comprehensive guide explores every property and method available, helping you leverage its full potential in your iOS applications.
+
+## Creating UISegmentedControl
+
+### Basic Initialization with Items
+
+The most common way to create a segmented control is with an array of strings or images:
+
+```swift
+let items = ["Option 1", "Option 2", UIImage(named: "Icon")!]
+let segmentedControl = UISegmentedControl(items: items)
+```
+
+### Modern Initialization with Actions (iOS 14+)
+
+iOS 14 introduced a powerful new way to create segmented controls with UIAction instances, enabling inline action handling:
+
+```swift
+let action1 = UIAction(title: "Option 1") { _ in 
+    print("Option 1 selected") 
+}
+let action2 = UIAction(title: "Option 2") { _ in 
+    print("Option 2 selected") 
+}
+let segmentedControl = UISegmentedControl(frame: .zero, actions: [action1, action2])
+```
+
+### Frame-Based and Storyboard Initialization
+
+```swift
+// Manual frame initialization
+let segmentedControl = UISegmentedControl(frame: CGRect(x: 0, y: 0, width: 200, height: 40))
+
+// Storyboard/XIB initialization handled automatically
+// via init?(coder: NSCoder)
+```
+
+## Managing Segment Content
+
+### Setting and Retrieving Titles
+
+```swift
+// Set title for a specific segment
+segmentedControl.setTitle("New Option", forSegmentAt: 0)
+
+// Retrieve current title
+let currentTitle = segmentedControl.titleForSegment(at: 0)
+```
+
+### Working with Images
+
+```swift
+// Set image for a segment
+if let iconImage = UIImage(named: "icon") {
+    segmentedControl.setImage(iconImage, forSegmentAt: 1)
+}
+
+// Retrieve current image
+let segmentImage = segmentedControl.imageForSegment(at: 1)
+```
+
+## Handling Segment Actions
+
+### Traditional Target-Action Pattern
+
+```swift
+segmentedControl.addTarget(
+    self, 
+    action: #selector(segmentChanged(_:)), 
+    for: .valueChanged
+)
+
+@objc func segmentChanged(_ sender: UISegmentedControl) {
+    print("Selected segment: \(sender.selectedSegmentIndex)")
+}
+```
+
+### Modern UIAction Approach (iOS 14+)
+
+```swift
+// Set action for specific segment
+let action = UIAction(title: "Updated Action") { _ in 
+    print("Segment action triggered")
+}
+segmentedControl.setAction(action, forSegmentAt: 0)
+
+// Retrieve action for segment
+let currentAction = segmentedControl.actionForSegment(at: 0)
+```
+
+## Dynamic Segment Management
+
+### Adding Segments
+
+```swift
+// Get total number of segments
+let totalSegments = segmentedControl.numberOfSegments
+
+// Insert segment with title
+segmentedControl.insertSegment(
+    withTitle: "Option 3", 
+    at: 2, 
+    animated: true
+)
+
+// Insert segment with image
+if let image = UIImage(named: "newIcon") {
+    segmentedControl.insertSegment(
+        with: image, 
+        at: 1, 
+        animated: true
+    )
+}
+
+// Insert segment with action (iOS 14+)
+let newAction = UIAction(title: "Dynamic Option") { _ in 
+    print("Dynamic option selected")
+}
+segmentedControl.insertSegment(
+    action: newAction, 
+    at: 0, 
+    animated: true
+)
+```
+
+### Removing Segments
+
+```swift
+// Remove specific segment
+segmentedControl.removeSegment(at: 0, animated: true)
+
+// Remove all segments
+segmentedControl.removeAllSegments()
+```
+
+## Controlling Segment Selection
+
+### Managing Selected Index
+
+```swift
+// Get currently selected segment
+let selectedIndex = segmentedControl.selectedSegmentIndex
+
+// Select a specific segment
+segmentedControl.selectedSegmentIndex = 1
+
+// Deselect all segments
+segmentedControl.selectedSegmentIndex = UISegmentedControl.noSegment
+```
+
+### Momentary Selection Mode
+
+```swift
+// Enable momentary mode (segments spring back after touch)
+segmentedControl.isMomentary = true
+```
+
+## Segment Behavior Configuration
+
+### Enabling/Disabling Segments
+
+```swift
+// Disable a specific segment
+segmentedControl.setEnabled(false, forSegmentAt: 0)
+
+// Check if segment is enabled
+let isEnabled = segmentedControl.isEnabledForSegment(at: 0)
+```
+
+### Content Positioning
+
+```swift
+// Adjust content offset within segment
+segmentedControl.setContentOffset(
+    CGSize(width: 10, height: 0), 
+    forSegmentAt: 0
+)
+
+// Retrieve current offset
+let offset = segmentedControl.contentOffsetForSegment(at: 0)
+```
+
+### Segment Width Management
+
+```swift
+// Set fixed width for segment
+segmentedControl.setWidth(100, forSegmentAt: 0)
+
+// Get current width
+let width = segmentedControl.widthForSegment(at: 0)
+
+// Enable automatic width distribution based on content
+segmentedControl.apportionsSegmentWidthsByContent = true
+```
+
+## Appearance Customization
+
+### Basic Styling
+
+```swift
+// Set tint color for selected segment
+segmentedControl.selectedSegmentTintColor = .systemBlue
+
+// Set overall tint color
+segmentedControl.tintColor = .label
+```
+
+### Background Images
+
+```swift
+// Set background image for normal state
+segmentedControl.setBackgroundImage(
+    UIImage(named: "segment-bg"), 
+    for: .normal, 
+    barMetrics: .default
+)
+
+// Set background image for selected state
+segmentedControl.setBackgroundImage(
+    UIImage(named: "segment-bg-selected"), 
+    for: .selected, 
+    barMetrics: .default
+)
+```
+
+### Segment Dividers
+
+```swift
+// Customize divider between segments
+segmentedControl.setDividerImage(
+    UIImage(named: "divider"),
+    forLeftSegmentState: .normal,
+    rightSegmentState: .normal,
+    barMetrics: .default
+)
+```
+
+### Text Attributes
+
+```swift
+// Customize text appearance for normal state
+segmentedControl.setTitleTextAttributes([
+    .foregroundColor: UIColor.label,
+    .font: UIFont.systemFont(ofSize: 16)
+], for: .normal)
+
+// Customize text appearance for selected state
+segmentedControl.setTitleTextAttributes([
+    .foregroundColor: UIColor.systemBackground,
+    .font: UIFont.boldSystemFont(ofSize: 16)
+], for: .selected)
+```
+
+### Content Position Adjustment
+
+```swift
+// Fine-tune content positioning
+segmentedControl.setContentPositionAdjustment(
+    UIOffset(horizontal: 5, vertical: 0),
+    forSegmentType: .left,
+    barMetrics: .default
+)
+```
+
+## Best Practices
+
+### 1. Accessibility
+Always provide meaningful titles or accessibility labels:
+
+```swift
+segmentedControl.setTitle("Sort by Date", forSegmentAt: 0)
+segmentedControl.setTitle("Sort by Name", forSegmentAt: 1)
+```
+
+### 2. Consistent Sizing
+Maintain consistent segment widths for better visual balance:
+
+```swift
+// Option 1: Equal widths
+segmentedControl.apportionsSegmentWidthsByContent = false
+
+// Option 2: Content-based with minimum width
+for i in 0..<segmentedControl.numberOfSegments {
+    let width = segmentedControl.widthForSegment(at: i)
+    if width < 80 {
+        segmentedControl.setWidth(80, forSegmentAt: i)
+    }
+}
+```
+
+### 3. State Persistence
+Save and restore selected segment:
+
+```swift
+// Save state
+UserDefaults.standard.set(
+    segmentedControl.selectedSegmentIndex, 
+    forKey: "selectedFilter"
+)
+
+// Restore state
+let savedIndex = UserDefaults.standard.integer(forKey: "selectedFilter")
+if savedIndex < segmentedControl.numberOfSegments {
+    segmentedControl.selectedSegmentIndex = savedIndex
+}
+```
+
+## Common Use Cases
+
+### Filter Control
+
+```swift
+class FilterViewController: UIViewController {
+    let filterControl = UISegmentedControl(items: ["All", "Active", "Completed"])
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        filterControl.selectedSegmentIndex = 0
+        filterControl.addTarget(
+            self, 
+            action: #selector(filterChanged), 
+            for: .valueChanged
+        )
+    }
+    
+    @objc func filterChanged(_ sender: UISegmentedControl) {
+        switch sender.selectedSegmentIndex {
+        case 0: showAllItems()
+        case 1: showActiveItems()
+        case 2: showCompletedItems()
+        default: break
+        }
+    }
+}
+```
+
+### View Switcher
+
+```swift
+class ViewSwitcherController: UIViewController {
+    let viewModes = UISegmentedControl(items: [
+        UIImage(systemName: "list.bullet")!,
+        UIImage(systemName: "square.grid.2x2")!
+    ])
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        navigationItem.titleView = viewModes
+        viewModes.selectedSegmentIndex = 0
+        
+        viewModes.addTarget(
+            self, 
+            action: #selector(viewModeChanged), 
+            for: .valueChanged
+        )
+    }
+}
+```
+
+## Conclusion
+
+UISegmentedControl remains one of UIKit's most versatile components, offering extensive customization options while maintaining ease of use. By mastering its properties and methods, you can create intuitive, visually appealing interfaces that enhance your app's user experience.
+
+Whether you're building simple toggles or complex multi-option selectors, UISegmentedControl provides the flexibility and functionality to meet your needs. Its seamless integration with both traditional target-action patterns and modern UIAction APIs ensures it remains relevant in contemporary iOS development.

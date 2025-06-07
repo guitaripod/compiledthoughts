@@ -1,0 +1,345 @@
+---
+title: 'Structuring REST APIs in Golang: A Simple, Essential Introduction'
+description: 'Learn how to elegantly structure REST APIs in Go using best practices for directory layout, separation of concerns, and idiomatic patterns'
+pubDate: 2023-09-02
+tags: ['go', 'golang', 'rest-api', 'backend', 'web-development']
+---
+
+Go offers a unique blend of simplicity, performance, and powerful concurrency primitives that make it ideal for building REST APIs. Its comprehensive standard library and straightforward syntax enable developers to create scalable, maintainable services without unnecessary complexity. Let's explore how to structure a REST API that embraces Go's philosophy and best practices.
+
+## Directory Structure: The Foundation
+
+A well-organized directory structure is crucial for maintainability and collaboration. Here's the canonical approach that has emerged from the Go community:
+
+### Standard Project Layout
+
+```
+/your-api
+├── cmd/
+│   └── app/
+│       └── main.go
+├── pkg/
+│   └── db/
+│       └── db.go
+├── internal/
+│   └── user/
+│       ├── handler.go
+│       └── service.go
+├── api/
+│   └── openapi/
+│       └── spec.yaml
+├── web/
+│   └── static/
+├── scripts/
+│   └── build.sh
+└── go.mod
+```
+
+### Directory Purposes
+
+**`/cmd/app`**: The sacred ground where your application's entry point resides. Each subdirectory under `cmd` represents an executable.
+
+**`/pkg`**: Houses libraries and packages designed for reusability across multiple services. Code here should be genuinely reusable and well-documented.
+
+**`/internal`**: A sanctuary for packages that should never be imported by external applications. Go enforces this boundary at the compiler level.
+
+**`/api`**: Contains API definitions, OpenAPI specifications, Protocol Buffers, or GraphQL schemas – the contracts that define your service's interface.
+
+**`/web`**: If your service includes web assets, they live here – HTML templates, CSS, JavaScript, and static files.
+
+**`/scripts`**: Utility scripts for building, deployment, and analysis tasks.
+
+## The Entry Point: main.go
+
+The `main.go` file serves as the gatekeeper, initializing dependencies, setting up routes, and starting the server:
+
+```go
+package main
+
+import (
+    "log"
+    "net/http"
+    
+    "github.com/yourusername/yourapi/internal/user"
+    "github.com/yourusername/yourapi/pkg/db"
+)
+
+func main() {
+    // Initialize database
+    database, err := db.New()
+    if err != nil {
+        log.Fatal("Failed to connect to database:", err)
+    }
+    defer database.Close()
+    
+    // Initialize services
+    userService := user.NewService(database)
+    userHandler := user.NewHandler(userService)
+    
+    // Setup routes
+    http.HandleFunc("/users", userHandler.HandleUsers)
+    http.HandleFunc("/users/", userHandler.HandleUser)
+    
+    // Start server
+    log.Println("Server starting on :8080")
+    log.Fatal(http.ListenAndServe(":8080", nil))
+}
+```
+
+## Business Logic: service.go
+
+The service layer contains your business logic, completely divorced from HTTP concerns:
+
+```go
+package user
+
+import (
+    "errors"
+    "github.com/yourusername/yourapi/pkg/db"
+)
+
+type User struct {
+    ID    string `json:"id"`
+    Name  string `json:"name"`
+    Email string `json:"email"`
+}
+
+type Service struct {
+    db *db.DB
+}
+
+func NewService(database *db.DB) *Service {
+    return &Service{db: database}
+}
+
+func (s *Service) GetUserByID(id string) (*User, error) {
+    if id == "" {
+        return nil, errors.New("user ID cannot be empty")
+    }
+    
+    // In real implementation, query the database
+    user := &User{
+        ID:    id,
+        Name:  "John Doe",
+        Email: "john@example.com",
+    }
+    
+    return user, nil
+}
+
+func (s *Service) CreateUser(user *User) error {
+    // Validation logic
+    if user.Email == "" {
+        return errors.New("email is required")
+    }
+    
+    // Save to database
+    return s.db.Save(user)
+}
+
+func (s *Service) ListUsers(limit, offset int) ([]*User, error) {
+    // Fetch from database with pagination
+    return s.db.FindUsers(limit, offset)
+}
+```
+
+## HTTP Layer: handler.go
+
+The handler orchestrates HTTP requests, invoking services and crafting responses:
+
+```go
+package user
+
+import (
+    "encoding/json"
+    "net/http"
+    "strings"
+)
+
+type Handler struct {
+    service *Service
+}
+
+func NewHandler(service *Service) *Handler {
+    return &Handler{service: service}
+}
+
+func (h *Handler) HandleUsers(w http.ResponseWriter, r *http.Request) {
+    switch r.Method {
+    case http.MethodGet:
+        h.listUsers(w, r)
+    case http.MethodPost:
+        h.createUser(w, r)
+    default:
+        http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+    }
+}
+
+func (h *Handler) HandleUser(w http.ResponseWriter, r *http.Request) {
+    // Extract ID from URL path
+    parts := strings.Split(r.URL.Path, "/")
+    if len(parts) < 3 {
+        http.Error(w, "Invalid URL", http.StatusBadRequest)
+        return
+    }
+    id := parts[2]
+    
+    switch r.Method {
+    case http.MethodGet:
+        h.getUser(w, r, id)
+    case http.MethodPut:
+        h.updateUser(w, r, id)
+    case http.MethodDelete:
+        h.deleteUser(w, r, id)
+    default:
+        http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+    }
+}
+
+func (h *Handler) getUser(w http.ResponseWriter, r *http.Request, id string) {
+    user, err := h.service.GetUserByID(id)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusNotFound)
+        return
+    }
+    
+    w.Header().Set("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(user)
+}
+
+func (h *Handler) createUser(w http.ResponseWriter, r *http.Request) {
+    var user User
+    if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
+        http.Error(w, "Invalid request body", http.StatusBadRequest)
+        return
+    }
+    
+    if err := h.service.CreateUser(&user); err != nil {
+        http.Error(w, err.Error(), http.StatusBadRequest)
+        return
+    }
+    
+    w.Header().Set("Content-Type", "application/json")
+    w.WriteHeader(http.StatusCreated)
+    json.NewEncoder(w).Encode(user)
+}
+
+func (h *Handler) listUsers(w http.ResponseWriter, r *http.Request) {
+    // Parse query parameters for pagination
+    // Implementation details omitted for brevity
+    
+    users, err := h.service.ListUsers(10, 0)
+    if err != nil {
+        http.Error(w, "Internal server error", http.StatusInternalServerError)
+        return
+    }
+    
+    w.Header().Set("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(users)
+}
+```
+
+## Advanced Patterns
+
+### Middleware
+
+Implement cross-cutting concerns with middleware:
+
+```go
+func loggingMiddleware(next http.HandlerFunc) http.HandlerFunc {
+    return func(w http.ResponseWriter, r *http.Request) {
+        log.Printf("%s %s", r.Method, r.URL.Path)
+        next(w, r)
+    }
+}
+
+func authMiddleware(next http.HandlerFunc) http.HandlerFunc {
+    return func(w http.ResponseWriter, r *http.Request) {
+        token := r.Header.Get("Authorization")
+        if !isValidToken(token) {
+            http.Error(w, "Unauthorized", http.StatusUnauthorized)
+            return
+        }
+        next(w, r)
+    }
+}
+```
+
+### Error Handling
+
+Create a consistent error response structure:
+
+```go
+type ErrorResponse struct {
+    Error   string `json:"error"`
+    Message string `json:"message"`
+    Code    int    `json:"code"`
+}
+
+func writeError(w http.ResponseWriter, message string, code int) {
+    w.Header().Set("Content-Type", "application/json")
+    w.WriteHeader(code)
+    json.NewEncoder(w).Encode(ErrorResponse{
+        Error:   http.StatusText(code),
+        Message: message,
+        Code:    code,
+    })
+}
+```
+
+### Configuration Management
+
+Use environment variables for configuration:
+
+```go
+type Config struct {
+    Port        string
+    DatabaseURL string
+    LogLevel    string
+}
+
+func LoadConfig() *Config {
+    return &Config{
+        Port:        getEnv("PORT", "8080"),
+        DatabaseURL: getEnv("DATABASE_URL", "postgres://localhost/mydb"),
+        LogLevel:    getEnv("LOG_LEVEL", "info"),
+    }
+}
+
+func getEnv(key, defaultValue string) string {
+    if value := os.Getenv(key); value != "" {
+        return value
+    }
+    return defaultValue
+}
+```
+
+## Best Practices
+
+1. **Separation of Concerns**: Keep HTTP handling separate from business logic
+2. **Dependency Injection**: Pass dependencies explicitly rather than using globals
+3. **Error Handling**: Return errors up the stack; let handlers decide HTTP status codes
+4. **Testing**: Structure code to facilitate unit testing of business logic
+5. **Logging**: Use structured logging for better observability
+6. **Documentation**: Document your API using OpenAPI/Swagger specifications
+
+## Modern Enhancements
+
+Consider these popular libraries to enhance your API:
+
+- **Chi Router**: More powerful routing with middleware support
+- **Gorilla Mux**: Feature-rich HTTP router
+- **GORM**: Object-relational mapping for database operations
+- **Viper**: Configuration management
+- **Zap**: High-performance structured logging
+
+## Conclusion
+
+Go's simplicity doesn't mean sacrificing structure or best practices. By following these patterns, you create APIs that are:
+
+- Easy to understand and maintain
+- Testable at every layer
+- Performant and scalable
+- Idiomatic to the Go ecosystem
+
+The standard library provides everything needed for basic REST APIs, while the ecosystem offers excellent libraries when you need more features. Start simple, add complexity only when necessary, and let Go's strengths – simplicity, performance, and concurrency – shine through in your API design.

@@ -1,0 +1,360 @@
+---
+title: 'UILabel: The Ultimate Guide'
+description: 'A comprehensive deep dive into UILabel properties and methods, covering everything from basic text display to advanced customization options'
+pubDate: 2023-07-26
+tags: ['swift', 'ios', 'uikit', 'ui-components']
+---
+
+UILabel is the cornerstone of text display in iOS applications. While it may seem simple at first glance, UILabel offers a rich set of properties that enable sophisticated text presentation. This comprehensive guide explores every aspect of UILabel, from basic text display to advanced styling techniques.
+
+## Text Display Fundamentals
+
+### Setting Basic Text
+
+The simplest way to display text:
+
+```swift
+label.text = "Hello, world!"
+```
+
+### Using Attributed Text
+
+For more sophisticated styling, use `NSAttributedString` to apply different attributes to portions of your text:
+
+```swift
+let attributedString = NSMutableAttributedString(string: "Hello, world!")
+attributedString.addAttribute(
+    .foregroundColor, 
+    value: UIColor.blue, 
+    range: NSRange(location: 0, length: 5)
+)
+label.attributedText = attributedString
+```
+
+This colors "Hello" blue while leaving "world!" in the default color.
+
+## Font Configuration
+
+### System Fonts
+
+UILabel provides comprehensive font customization:
+
+```swift
+// Standard system font
+label.font = UIFont.systemFont(ofSize: 20)
+
+// Bold system font
+label.font = UIFont.boldSystemFont(ofSize: 20)
+
+// Italic system font
+label.font = UIFont.italicSystemFont(ofSize: 20)
+```
+
+### Custom Fonts
+
+```swift
+// Custom font (falls back to system font if unavailable)
+label.font = UIFont(name: "Helvetica", size: 20)
+
+// Safe custom font usage
+if let customFont = UIFont(name: "Helvetica-Bold", size: 18) {
+    label.font = customFont
+}
+```
+
+### Dynamic Type
+
+Support accessibility with scalable fonts:
+
+```swift
+label.font = UIFont.preferredFont(forTextStyle: .body)
+label.adjustsFontForContentSizeCategory = true
+```
+
+## Color and Appearance
+
+### Text Color
+
+```swift
+// Predefined colors
+label.textColor = .systemBlue
+
+// Custom RGB color
+label.textColor = UIColor(red: 0.5, green: 0.5, blue: 0.5, alpha: 1.0)
+
+// Semantic colors (adapts to dark mode)
+label.textColor = .label
+```
+
+### Text Alignment
+
+```swift
+label.textAlignment = .center  // .left, .right, .justified, .natural
+```
+
+The `.natural` alignment respects the text's language direction (left for English, right for Arabic).
+
+## Text Layout and Line Breaking
+
+### Line Break Modes
+
+Control how text wraps and truncates:
+
+```swift
+// Word wrapping (default)
+label.lineBreakMode = .byWordWrapping
+
+// Character wrapping
+label.lineBreakMode = .byCharWrapping
+
+// Truncation options
+label.lineBreakMode = .byTruncatingTail    // "Hello wo..."
+label.lineBreakMode = .byTruncatingHead    // "...llo world"
+label.lineBreakMode = .byTruncatingMiddle  // "Hello...orld"
+
+// No wrapping, clips overflow
+label.lineBreakMode = .byClipping
+```
+
+### Line Break Strategy (iOS 14+)
+
+Fine-tune line breaking behavior:
+
+```swift
+// Single strategy
+label.lineBreakStrategy = .pushOut
+
+// Multiple strategies
+label.lineBreakStrategy = [.pushOut, .hangulWordPriority]
+```
+
+### Number of Lines
+
+```swift
+// Fixed number of lines
+label.numberOfLines = 2
+
+// Unlimited lines
+label.numberOfLines = 0
+```
+
+## Dynamic Text Sizing
+
+### Automatic Font Scaling
+
+Allow text to shrink to fit within bounds:
+
+```swift
+label.adjustsFontSizeToFitWidth = true
+label.minimumScaleFactor = 0.5  // Can shrink to 50% of original size
+```
+
+### Baseline Adjustment
+
+Control baseline behavior when font size changes:
+
+```swift
+label.baselineAdjustment = .alignCenters  // .alignBaselines, .none
+```
+
+### Character Spacing
+
+Allow tighter character spacing before truncation:
+
+```swift
+label.allowsDefaultTighteningForTruncation = true
+```
+
+## Interactive Features
+
+### Enable User Interaction
+
+Make labels tappable:
+
+```swift
+label.isUserInteractionEnabled = true
+
+let tapGesture = UITapGestureRecognizer(target: self, action: #selector(labelTapped))
+label.addGestureRecognizer(tapGesture)
+```
+
+### Highlighting
+
+```swift
+// Set highlight color
+label.highlightedTextColor = .systemGreen
+
+// Enable highlighting
+label.isHighlighted = true
+```
+
+### Enabled State
+
+```swift
+// Disable label (dims text)
+label.isEnabled = false
+```
+
+## Shadow Effects
+
+Add depth with text shadows:
+
+```swift
+label.shadowColor = .gray
+label.shadowOffset = CGSize(width: 2, height: 2)
+```
+
+## Advanced Features
+
+### Marquee Effect (tvOS)
+
+Enable scrolling text for focused ancestors:
+
+```swift
+label.enablesMarqueeWhenAncestorFocused = true
+```
+
+### Expansion Tooltip
+
+Show full text on hover (devices with pointer support):
+
+```swift
+label.showsExpansionTextWhenTruncated = true
+```
+
+### Preferred Max Width
+
+Control layout in Auto Layout:
+
+```swift
+label.preferredMaxLayoutWidth = 200
+```
+
+## Best Practices
+
+### 1. Accessibility
+
+Always consider accessibility:
+
+```swift
+label.isAccessibilityElement = true
+label.accessibilityLabel = "Welcome message"
+label.accessibilityHint = "Double tap to hear more"
+```
+
+### 2. Performance
+
+For labels with static content:
+
+```swift
+// Disable unnecessary features
+label.isUserInteractionEnabled = false
+label.adjustsFontSizeToFitWidth = false
+```
+
+### 3. Localization
+
+Prepare for different languages:
+
+```swift
+// Use natural text alignment
+label.textAlignment = .natural
+
+// Allow flexible number of lines
+label.numberOfLines = 0
+
+// Consider RTL languages
+label.semanticContentAttribute = .forceRightToLeft  // For testing
+```
+
+## Common Patterns
+
+### Multi-Style Label
+
+```swift
+func createMultiStyleLabel() -> UILabel {
+    let label = UILabel()
+    
+    let text = "Welcome to our app!"
+    let attributedString = NSMutableAttributedString(string: text)
+    
+    // Bold "Welcome"
+    attributedString.addAttributes([
+        .font: UIFont.boldSystemFont(ofSize: 18),
+        .foregroundColor: UIColor.systemBlue
+    ], range: NSRange(location: 0, length: 7))
+    
+    // Italic remainder
+    attributedString.addAttributes([
+        .font: UIFont.italicSystemFont(ofSize: 16),
+        .foregroundColor: UIColor.secondaryLabel
+    ], range: NSRange(location: 8, length: 11))
+    
+    label.attributedText = attributedString
+    return label
+}
+```
+
+### Adaptive Label
+
+```swift
+class AdaptiveLabel: UILabel {
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        if traitCollection.preferredContentSizeCategory.isAccessibilityCategory {
+            numberOfLines = 0  // Allow unlimited lines for larger text
+        } else {
+            numberOfLines = 2  // Limit lines for standard text sizes
+        }
+    }
+}
+```
+
+### Link-Style Label
+
+```swift
+func createLinkLabel(text: String, linkText: String) -> UILabel {
+    let label = UILabel()
+    label.isUserInteractionEnabled = true
+    
+    let attributedString = NSMutableAttributedString(string: text)
+    if let linkRange = text.range(of: linkText) {
+        let nsRange = NSRange(linkRange, in: text)
+        attributedString.addAttributes([
+            .foregroundColor: UIColor.systemBlue,
+            .underlineStyle: NSUnderlineStyle.single.rawValue
+        ], range: nsRange)
+    }
+    
+    label.attributedText = attributedString
+    return label
+}
+```
+
+## Performance Tips
+
+1. **Reuse Labels**: In table/collection views, always reuse cells with labels
+2. **Avoid Frequent Updates**: Batch text changes when possible
+3. **Pre-calculate Sizes**: For dynamic content, cache calculated sizes
+4. **Use Plain Text**: When attributed text isn't needed, use the `text` property
+
+## Debugging Tips
+
+```swift
+// Visual debugging
+label.layer.borderWidth = 1
+label.layer.borderColor = UIColor.red.cgColor
+
+// Content debugging
+print("Text: \(label.text ?? "nil")")
+print("Actual lines: \(label.numberOfLines)")
+print("Font: \(label.font)")
+print("Frame: \(label.frame)")
+```
+
+## Conclusion
+
+UILabel's extensive API makes it suitable for everything from simple text display to complex, interactive text presentations. By mastering these properties and methods, you can create text displays that are not only visually appealing but also accessible, performant, and adaptable to various user needs and device configurations.
+
+Remember that UILabel is often the most frequently used UI component in iOS apps, so investing time in understanding its capabilities pays dividends in creating polished, professional applications.
