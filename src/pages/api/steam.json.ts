@@ -17,9 +17,10 @@ export const GET: APIRoute = async (context) => {
   if (!apiKey) {
     console.error('[Steam API] No API key found in environment');
     return new Response(JSON.stringify({ error: 'Steam API key not configured' }), {
-      status: 500,
+      status: 503, // Service Unavailable is more appropriate
       headers: {
         'Content-Type': 'application/json',
+        'Cache-Control': 'no-cache',
       },
     });
   }

@@ -31,8 +31,6 @@
       });
       clearTimeout(timeoutId);
 
-      const data = await response.json();
-
       const statusElement = document.getElementById('steam-online-status');
       const currentGameElement = document.getElementById('steam-current-game');
       const recentGamesElement = document.getElementById('steam-recent-games');
@@ -45,6 +43,23 @@
         });
         return;
       }
+
+      if (!response.ok) {
+        console.error('[Steam] API error:', response.status);
+        statusElement.innerHTML = `
+          <div class="w-2 h-2 bg-gray-400 rounded-full"></div>
+          <span class="text-gray-500">Steam data unavailable</span>
+        `;
+        currentGameElement.classList.add('hidden');
+        recentGamesElement.innerHTML = `
+          <p class="text-xs text-gray-500 dark:text-gray-500">
+            Configure Steam API key to see activity
+          </p>
+        `;
+        return;
+      }
+
+      const data = await response.json();
 
       if (data.error) {
         statusElement.innerHTML = '<span class="text-gray-500">Unable to load Steam status</span>';
