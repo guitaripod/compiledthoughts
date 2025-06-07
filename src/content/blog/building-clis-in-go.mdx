@@ -10,6 +10,7 @@ Go's simplicity, performance, and excellent standard library make it an ideal ch
 ## Why Go for CLIs?
 
 Go offers several advantages for CLI development:
+
 - Single binary distribution
 - Cross-platform compilation
 - Fast startup times
@@ -35,9 +36,9 @@ func main() {
         verbose = flag.Bool("verbose", false, "enable verbose output")
         count   = flag.Int("count", 1, "number of greetings")
     )
-    
+
     flag.Parse()
-    
+
     for i := 0; i < *count; i++ {
         fmt.Printf("Hello, %s!\n", *name)
         if *verbose {
@@ -129,21 +130,21 @@ func Load() (*Config, error) {
     viper.SetConfigType("yaml")
     viper.AddConfigPath(".")
     viper.AddConfigPath("$HOME/.mycli")
-    
+
     viper.SetEnvPrefix("MYCLI")
     viper.AutomaticEnv()
-    
+
     if err := viper.ReadInConfig(); err != nil {
         if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
             return nil, err
         }
     }
-    
+
     var cfg Config
     if err := viper.Unmarshal(&cfg); err != nil {
         return nil, err
     }
-    
+
     return &cfg, nil
 }
 ```
@@ -165,7 +166,7 @@ func SelectOption() (string, error) {
         Label: "Select an option",
         Items: []string{"Development", "Staging", "Production"},
     }
-    
+
     _, result, err := prompt.Run()
     return result, err
 }
@@ -175,7 +176,7 @@ func GetPassword() (string, error) {
         Label: "Password",
         Mask:  '*',
     }
-    
+
     return prompt.Run()
 }
 ```
@@ -197,7 +198,7 @@ func WithSpinner(message string, fn func() error) error {
     s.Suffix = " " + message
     s.Start()
     defer s.Stop()
-    
+
     return fn()
 }
 ```
@@ -255,12 +256,12 @@ func HandleError(err error) {
     if err == nil {
         return
     }
-    
+
     if exitErr, ok := err.(ExitError); ok {
         fmt.Fprintf(os.Stderr, "Error: %s\n", exitErr.Message)
         os.Exit(exitErr.Code)
     }
-    
+
     fmt.Fprintf(os.Stderr, "Error: %v\n", err)
     os.Exit(1)
 }
@@ -285,7 +286,7 @@ func TestServeCommand(t *testing.T) {
     cmd.SetOut(buf)
     cmd.SetErr(buf)
     cmd.SetArgs([]string{"serve", "--port", "9090"})
-    
+
     err := cmd.Execute()
     assert.NoError(t, err)
     assert.Contains(t, buf.String(), "9090")
@@ -307,11 +308,11 @@ do
     GOOS=${platform_split[0]}
     GOARCH=${platform_split[1]}
     output_name='mycli-'$GOOS'-'$GOARCH
-    
+
     if [ $GOOS = "windows" ]; then
         output_name+='.exe'
     fi
-    
+
     env GOOS=$GOOS GOARCH=$GOARCH go build -o dist/$output_name
 done
 ```
@@ -325,7 +326,7 @@ var rootCmd = &cobra.Command{
     Use:   "mycli [command]",
     Short: "A powerful CLI tool",
     Long: `mycli is a CLI tool that helps you manage your infrastructure.
-    
+
 Complete documentation is available at https://mycli.example.com`,
     Example: `  mycli serve --port 8080
   mycli deploy production
@@ -339,16 +340,16 @@ Complete documentation is available at https://mycli.example.com`,
 func processCommand(cmd *cobra.Command, args []string) error {
     ctx, cancel := context.WithCancel(context.Background())
     defer cancel()
-    
+
     sigChan := make(chan os.Signal, 1)
     signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
-    
+
     go func() {
         <-sigChan
         fmt.Println("\nInterrupted, cleaning up...")
         cancel()
     }()
-    
+
     return process(ctx, args)
 }
 ```

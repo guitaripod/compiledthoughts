@@ -24,8 +24,8 @@ For more sophisticated styling, use `NSAttributedString` to apply different attr
 ```swift
 let attributedString = NSMutableAttributedString(string: "Hello, world!")
 attributedString.addAttribute(
-    .foregroundColor, 
-    value: UIColor.blue, 
+    .foregroundColor,
+    value: UIColor.blue,
     range: NSRange(location: 0, length: 5)
 )
 label.attributedText = attributedString
@@ -274,22 +274,22 @@ label.semanticContentAttribute = .forceRightToLeft  // For testing
 ```swift
 func createMultiStyleLabel() -> UILabel {
     let label = UILabel()
-    
+
     let text = "Welcome to our app!"
     let attributedString = NSMutableAttributedString(string: text)
-    
+
     // Bold "Welcome"
     attributedString.addAttributes([
         .font: UIFont.boldSystemFont(ofSize: 18),
         .foregroundColor: UIColor.systemBlue
     ], range: NSRange(location: 0, length: 7))
-    
+
     // Italic remainder
     attributedString.addAttributes([
         .font: UIFont.italicSystemFont(ofSize: 16),
         .foregroundColor: UIColor.secondaryLabel
     ], range: NSRange(location: 8, length: 11))
-    
+
     label.attributedText = attributedString
     return label
 }
@@ -301,7 +301,7 @@ func createMultiStyleLabel() -> UILabel {
 class AdaptiveLabel: UILabel {
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
-        
+
         if traitCollection.preferredContentSizeCategory.isAccessibilityCategory {
             numberOfLines = 0  // Allow unlimited lines for larger text
         } else {
@@ -317,7 +317,7 @@ class AdaptiveLabel: UILabel {
 func createLinkLabel(text: String, linkText: String) -> UILabel {
     let label = UILabel()
     label.isUserInteractionEnabled = true
-    
+
     let attributedString = NSMutableAttributedString(string: text)
     if let linkRange = text.range(of: linkText) {
         let nsRange = NSRange(linkRange, in: text)
@@ -326,7 +326,7 @@ func createLinkLabel(text: String, linkText: String) -> UILabel {
             .underlineStyle: NSUnderlineStyle.single.rawValue
         ], range: nsRange)
     }
-    
+
     label.attributedText = attributedString
     return label
 }

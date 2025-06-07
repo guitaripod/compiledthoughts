@@ -2,7 +2,8 @@
 title: 'Dream Eater: ML-Powered Dream Journaling for iOS'
 description: 'A technical deep dive into Dream Eater, an iOS app that uses open-source ML models like LLaMA 3.1 and Stable Diffusion to analyze and visualize dreams'
 pubDate: 2024-10-04
-tags: ['ios', 'machine-learning', 'swift', 'uikit', 'cloudflare-workers', 'llama', 'stable-diffusion']
+tags:
+  ['ios', 'machine-learning', 'swift', 'uikit', 'cloudflare-workers', 'llama', 'stable-diffusion']
 ---
 
 Don't forget your dreams. Capture them, visualize them, and have them interpreted based on real scientific and not-so-scientific research. Dream Eater, an ML-powered dream journaling app, brings the power of advanced open-source machine learning models to iOS 18, iPadOS 18, and visionOS 2.0.
@@ -35,16 +36,19 @@ At Dream Eater's core lies integration with cutting-edge, open-source machine le
 ### Client-Side Implementation
 
 **UIKit Foundation**: While SwiftUI gains popularity, Dream Eater chooses UIKit for its:
+
 - **Performance**: Mature optimization for complex concurrent ML tasks
 - **Stability**: Battle-tested framework with extensive documentation
 - **Customization**: Fine-grained control over UI elements for unique user experiences
 
 **Swift Concurrency**: Leveraging modern asynchronous programming:
+
 - **Async/Await**: Simplified asynchronous ML model inference without blocking the main thread
 - **Actors**: Managing shared mutable states for concurrent dream data processing
 - **Structured Concurrency**: Grouped asynchronous operations for predictable, maintainable code
 
 **SwiftData**: Apple's native data framework provides:
+
 - Declarative data modeling for dream journal entries
 - Optimized performance for Apple devices
 - Efficient local storage and retrieval
@@ -54,12 +58,14 @@ At Dream Eater's core lies integration with cutting-edge, open-source machine le
 **Serverless Design**: Dream Eater implements a modern, scalable serverless architecture:
 
 **Cloudflare Workers**: Distributed edge computing platform enabling:
+
 - Processing and sanitizing user inputs before ML model inference
 - Reduced latency through geographically distributed execution
 - Authentication and authorization handling
 - API orchestration across various services
 
 **Replicate API Integration**: All Replicate requests route through Cloudflare for:
+
 - Running computationally intensive models like Flux for dream visualization
 - Batch processing dreams for analysis and pattern recognition
 - Flexible platform for adding new ML capabilities over time

@@ -160,12 +160,12 @@ export interface User {
 }
 
 export interface AppleTokenPayload {
-  iss: string;        // Issuer (Apple)
-  aud: string;        // Audience (your client ID)
-  exp: number;        // Expiration time
-  iat: number;        // Issued at time
-  sub: string;        // Subject (Apple user ID)
-  email?: string;     // User email (optional)
+  iss: string; // Issuer (Apple)
+  aud: string; // Audience (your client ID)
+  exp: number; // Expiration time
+  iat: number; // Issued at time
+  sub: string; // Subject (Apple user ID)
+  email?: string; // User email (optional)
   email_verified?: string;
   auth_time: number;
 }
@@ -196,7 +196,7 @@ export class AppleAuth {
       // 2. Fetch Apple's public keys
       const keysResponse = await fetch('https://appleid.apple.com/auth/keys');
       const keys = await keysResponse.json();
-      
+
       // 3. Find matching public key
       const publicKey = keys.keys.find((key: any) => key.kid === keyId);
       if (!publicKey) {
@@ -244,7 +244,7 @@ export class AppleAuth {
 
       // 7. Validate token claims
       const now = Math.floor(Date.now() / 1000);
-      
+
       if (payload.iss !== 'https://appleid.apple.com') {
         console.error('Invalid issuer');
         return null;
@@ -301,69 +301,72 @@ import { SyncService } from './sync';
 export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
-    
+
     // CORS headers for web compatibility
     const corsHeaders = {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     };
-    
+
     // Handle CORS preflight
     if (request.method === 'OPTIONS') {
       return new Response(null, { headers: corsHeaders });
     }
-    
+
     try {
       // Route: User data synchronization
       if (url.pathname === '/sync' && request.method === 'POST') {
         return await handleSync(request, env, corsHeaders);
       }
-      
+
       // Route: Health check
       if (url.pathname === '/health' && request.method === 'GET') {
         return new Response(JSON.stringify({ status: 'ok' }), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
       }
-      
+
       return new Response('Not Found', { status: 404, headers: corsHeaders });
     } catch (error) {
       console.error('Worker error:', error);
-      return new Response(
-        JSON.stringify({ error: 'Internal Server Error' }), 
-        { 
-          status: 500, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
-      );
+      return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
   },
 };
 
-async function handleSync(request: Request, env: Env, corsHeaders: Record<string, string>): Promise<Response> {
+async function handleSync(
+  request: Request,
+  env: Env,
+  corsHeaders: Record<string, string>
+): Promise<Response> {
   // Use Apple user ID from header for authentication
   const appleUserId = request.headers.get('X-Apple-User-Id');
   if (!appleUserId) {
-    return new Response(
-      JSON.stringify({ error: 'Missing X-Apple-User-Id header' }), 
-      { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
+    return new Response(JSON.stringify({ error: 'Missing X-Apple-User-Id header' }), {
+      status: 401,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
   }
-  
+
   try {
     const syncData: SyncData = await request.json();
     const syncService = new SyncService(env);
     const syncedData = await syncService.syncData(appleUserId, syncData);
-    
-    return new Response(
-      JSON.stringify(syncedData), 
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
+
+    return new Response(JSON.stringify(syncedData), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
   } catch (error) {
     console.error('Sync error:', error);
     return new Response(
-      JSON.stringify({ error: 'Sync failed', details: error instanceof Error ? error.message : 'Unknown error' }), 
+      JSON.stringify({
+        error: 'Sync failed',
+        details: error instanceof Error ? error.message : 'Unknown error',
+      }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
@@ -407,43 +410,43 @@ protocol AuthenticationManagerDelegate: AnyObject {
 
 class AuthenticationManager: NSObject {
     weak var delegate: AuthenticationManagerDelegate?
-    
+
     // MARK: - Public Methods
-    
+
     func signInWithApple() {
         let appleIDProvider = ASAuthorizationAppleIDProvider()
         let request = appleIDProvider.createRequest()
         request.requestedScopes = [.fullName, .email]
-        
+
         // Use nonce for security
         let nonce = randomNonceString()
         request.nonce = sha256(nonce)
-        
+
         let authorizationController = ASAuthorizationController(authorizationRequests: [request])
         authorizationController.delegate = self
         authorizationController.presentationContextProvider = self
         authorizationController.performRequests()
     }
-    
+
     func signOut() {
         UserDefaults.standard.removeObject(forKey: "appleUserId")
         UserDefaults.standard.removeObject(forKey: "appleUserEmail")
         UserDefaults.standard.removeObject(forKey: "appleUserFullName")
         UserDefaults.standard.removeObject(forKey: "appleIdentityToken")
     }
-    
+
     var isSignedIn: Bool {
         return UserDefaults.standard.string(forKey: "appleUserId") != nil
     }
-    
+
     // MARK: - Private Methods
-    
+
     private func randomNonceString(length: Int = 32) -> String {
         precondition(length > 0)
         let charset: [Character] = Array("0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._")
         var result = ""
         var remainingLength = length
-        
+
         while remainingLength > 0 {
             let randoms: [UInt8] = (0..<16).map { _ in
                 var random: UInt8 = 0
@@ -453,29 +456,29 @@ class AuthenticationManager: NSObject {
                 }
                 return random
             }
-            
+
             randoms.forEach { random in
                 if remainingLength == 0 {
                     return
                 }
-                
+
                 if random < charset.count {
                     result.append(charset[Int(random)])
                     remainingLength -= 1
                 }
             }
         }
-        
+
         return result
     }
-    
+
     private func sha256(_ input: String) -> String {
         let inputData = Data(input.utf8)
         let hashedData = SHA256.hash(data: inputData)
         let hashString = hashedData.compactMap {
             String(format: "%02x", $0)
         }.joined()
-        
+
         return hashString
     }
 }
@@ -487,25 +490,25 @@ extension AuthenticationManager: ASAuthorizationControllerDelegate {
         if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential {
             // Store user information
             UserDefaults.standard.set(appleIDCredential.user, forKey: "appleUserId")
-            
+
             if let email = appleIDCredential.email {
                 UserDefaults.standard.set(email, forKey: "appleUserEmail")
             }
-            
+
             if let fullName = appleIDCredential.fullName {
                 let displayName = PersonNameComponentsFormatter().string(from: fullName)
                 UserDefaults.standard.set(displayName, forKey: "appleUserFullName")
             }
-            
+
             if let identityToken = appleIDCredential.identityToken,
                let tokenString = String(data: identityToken, encoding: .utf8) {
                 UserDefaults.standard.set(tokenString, forKey: "appleIdentityToken")
             }
-            
+
             delegate?.authenticationDidComplete(with: .success(appleIDCredential))
         }
     }
-    
+
     func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
         delegate?.authenticationDidComplete(with: .failure(error))
     }
@@ -529,18 +532,18 @@ import Foundation
 
 class SyncManager {
     private let baseURL = "https://your-worker.your-subdomain.workers.dev"
-    
+
     func syncUserData(completion: @escaping (Result<SyncResponse, Error>) -> Void) {
         guard let appleUserId = UserDefaults.standard.string(forKey: "appleUserId") else {
             completion(.failure(SyncError.notAuthenticated))
             return
         }
-        
+
         guard let url = URL(string: "\(baseURL)/sync") else {
             completion(.failure(SyncError.invalidURL))
             return
         }
-        
+
         // Prepare sync data
         let syncData = SyncData(
             user: getCurrentUser(),
@@ -548,62 +551,62 @@ class SyncManager {
             achievements: getLocalAchievements(),
             lastSyncDate: UserDefaults.standard.string(forKey: "lastSyncDate")
         )
-        
+
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue(appleUserId, forHTTPHeaderField: "X-Apple-User-Id")
-        
+
         do {
             request.httpBody = try JSONEncoder().encode(syncData)
         } catch {
             completion(.failure(error))
             return
         }
-        
+
         URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
                 completion(.failure(error))
                 return
             }
-            
+
             guard let data = data else {
                 completion(.failure(SyncError.noData))
                 return
             }
-            
+
             do {
                 let syncResponse = try JSONDecoder().decode(SyncResponse.self, from: data)
-                
+
                 // Update local data with server response
                 self.updateLocalData(with: syncResponse)
-                
+
                 // Update last sync date
                 UserDefaults.standard.set(Date().iso8601String, forKey: "lastSyncDate")
-                
+
                 completion(.success(syncResponse))
             } catch {
                 completion(.failure(error))
             }
         }.resume()
     }
-    
+
     private func getCurrentUser() -> User? {
         // Implement based on your local user data structure
         // Return current user data from local storage/database
         return nil
     }
-    
+
     private func getLocalProgress() -> [Progress] {
         // Implement based on your local progress data structure
         return []
     }
-    
+
     private func getLocalAchievements() -> [UserAchievement] {
         // Implement based on your local achievements data structure
         return []
     }
-    
+
     private func updateLocalData(with syncResponse: SyncResponse) {
         // Implement local data updates based on server response
         // This should merge server data with local data using conflict resolution
@@ -644,6 +647,7 @@ extension Date {
 ### Deploy the Worker
 
 1. **Create D1 Database**:
+
 ```bash
 cd worker
 npx wrangler d1 create your-app-database
@@ -652,11 +656,13 @@ npx wrangler d1 create your-app-database
 2. **Update wrangler.toml** with the database ID from the output
 
 3. **Initialize Database Schema**:
+
 ```bash
 npx wrangler d1 execute your-app-database --file=./schema.sql
 ```
 
 4. **Set Environment Secrets**:
+
 ```bash
 # Set your Apple private key (contents of .p8 file)
 npx wrangler secret put APPLE_PRIVATE_KEY
@@ -668,6 +674,7 @@ npx wrangler secret put APPLE_KEY_ID
 ```
 
 5. **Deploy Worker**:
+
 ```bash
 npx wrangler deploy
 ```
@@ -675,6 +682,7 @@ npx wrangler deploy
 ### Update iOS Configuration
 
 1. **Add Entitlements**: Create `YourApp.entitlements`:
+
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -689,6 +697,7 @@ npx wrangler deploy
 ```
 
 2. **Update SyncManager** with your worker URL:
+
 ```swift
 private let baseURL = "https://your-worker.your-subdomain.workers.dev"
 ```
@@ -696,18 +705,21 @@ private let baseURL = "https://your-worker.your-subdomain.workers.dev"
 ## Part 5: Security Best Practices
 
 ### Token Security
+
 - Always validate tokens on the server side
 - Never trust client-provided authentication data
 - Implement proper token expiration handling
 - Use secure storage for sensitive data
 
 ### Privacy Considerations
+
 - Only request necessary user data scopes
 - Respect user privacy choices
 - Implement proper data retention policies
 - Handle email hiding scenarios gracefully
 
 ### Error Handling
+
 - Implement comprehensive error handling for network failures
 - Handle authentication state changes gracefully
 - Provide meaningful error messages to users

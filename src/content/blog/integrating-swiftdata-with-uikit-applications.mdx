@@ -45,10 +45,12 @@ final class Memory {
 **@Model**: Marks the class as a SwiftData model, enabling its instances to be managed by SwiftData's `ModelContainer`. This annotation is essential for any class that you want to persist using SwiftData.
 
 **@Attribute**: This annotation is used for individual properties in your model. It defines how these properties should be stored and managed by SwiftData.
+
 - `.unique`: Ensures that the `id` property, which is of type `UUID`, is unique across all instances of `Memory`. This is crucial for identifying each memory distinctly within the database.
 - `.externalStorage`: This is typically used with large data types, such as binary data (e.g., images). In the `MemoryImage` model, it ensures that the image data is stored separately from the rest of the model, optimizing memory usage.
 
 **@Relationship**: Defines a relationship between models. Here, the `memoryImages` property is a relationship between `Memory` and `MemoryImage`.
+
 - `deleteRule: .cascade`: This means that if a `Memory` instance is deleted, all related `MemoryImage` instances are also deleted. This is essential for maintaining data integrity, ensuring that orphaned images aren't left behind when a memory is removed.
 
 ### Example Model: `MemoryImage`
@@ -158,6 +160,7 @@ final class MemoriesListVM {
 ```
 
 In this example:
+
 - `modelContext.fetch(descriptor)`: Fetches instances of `Memory` from the SwiftData container, sorting them by date in descending order. This is where the real benefit of SwiftData's integration comes in, allowing you to focus on your application logic without worrying about the intricacies of data management.
 
 ## 4. Using SwiftData in ViewControllers

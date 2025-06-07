@@ -1,8 +1,8 @@
 ---
-title: "Understanding .gitattributes for Better Language Detection"
+title: 'Understanding .gitattributes for Better Language Detection'
 description: "Learn how to use .gitattributes to control GitHub's language statistics and improve repository classification with practical examples and best practices."
 pubDate: 2025-06-05
-tags: ["git", "github", "development-tools", "documentation"]
+tags: ['git', 'github', 'development-tools', 'documentation']
 ---
 
 Have you ever noticed that GitHub sometimes incorrectly identifies your project's primary programming language? Or perhaps your repository is showing up as mostly HTML when it's actually a JavaScript project? The solution lies in a powerful but often overlooked Git feature: `.gitattributes`.
@@ -15,7 +15,7 @@ The `.gitattributes` file is Git's way of defining attributes for specific file 
 
 GitHub uses a tool called [Linguist](https://github.com/github/linguist) to detect languages in your repository and generate those colorful language bars you see on every repo. However, Linguist can sometimes get confused:
 
-- **Documentation files** like README.md might be counted as "Markdown" 
+- **Documentation files** like README.md might be counted as "Markdown"
 - **Generated files** like compiled CSS or bundled JavaScript can skew statistics
 - **Vendor dependencies** in `node_modules` or similar directories can dominate
 - **Configuration files** might be misclassified as the primary language
@@ -33,6 +33,7 @@ This single line tells GitHub's Linguist that all `.mdx` files should be treated
 ### The `linguist-documentation` Attribute
 
 When you mark files with `linguist-documentation`, GitHub:
+
 - **Excludes them from language statistics** - They won't affect your repository's primary language detection
 - **Hides them in diffs by default** - Large documentation changes won't clutter pull request views
 - **Still indexes them for search** - Your documentation remains discoverable
@@ -44,6 +45,7 @@ For a blog like this one, where `.mdx` files contain the actual blog posts, this
 Here are some practical patterns you can use in your projects:
 
 ### Marking Documentation
+
 ```gitattributes
 *.md linguist-documentation
 *.mdx linguist-documentation
@@ -52,6 +54,7 @@ docs/ linguist-documentation
 ```
 
 ### Excluding Generated Files
+
 ```gitattributes
 dist/ linguist-generated
 build/ linguist-generated
@@ -60,6 +63,7 @@ build/ linguist-generated
 ```
 
 ### Excluding Vendor Code
+
 ```gitattributes
 vendor/ linguist-vendored
 node_modules/ linguist-vendored
@@ -67,6 +71,7 @@ third_party/ linguist-vendored
 ```
 
 ### Detecting Specific Languages
+
 ```gitattributes
 *.blade.php linguist-language=PHP
 Dockerfile.* linguist-language=Dockerfile
@@ -75,6 +80,7 @@ Dockerfile.* linguist-language=Dockerfile
 ## Real-World Example: This Blog
 
 Before adding the `.gitattributes` file, GitHub might have shown this repository as:
+
 - 60% MDX (blog posts)
 - 30% TypeScript (actual code)
 - 10% Other files

@@ -50,6 +50,7 @@ print(index) // Output: Optional(2)
 ```
 
 **Time Complexity**: O(n)
+
 - Best case: O(1) - target is first element
 - Worst case: O(n) - target is last or not present
 - Average case: O(n/2) = O(n)
@@ -62,15 +63,15 @@ Binary search leverages sorted data to eliminate half the search space with each
 func binarySearch<T: Comparable>(array: [T], target: T) -> Int? {
     var left = 0
     var right = array.count - 1
-    
+
     while left <= right {
         let middle = (left + right) / 2
         let guess = array[middle]
-        
+
         if guess == target {
             return middle
         }
-        
+
         if guess > target {
             right = middle - 1
         } else {
@@ -87,6 +88,7 @@ print(index) // Output: Optional(6)
 ```
 
 **Time Complexity**: O(log n)
+
 - Each comparison eliminates half the remaining elements
 - Much more efficient than linear search for large datasets
 - **Requirement**: Array must be sorted
@@ -98,17 +100,17 @@ Bubble sort repeatedly compares adjacent elements, "bubbling" larger values to t
 ```swift
 func bubbleSort<T: Comparable>(_ array: inout [T]) {
     guard array.count > 1 else { return }
-    
+
     for i in 0..<array.count {
         var swapped = false
-        
+
         for j in 1..<array.count - i {
             if array[j] < array[j-1] {
                 array.swapAt(j, j-1)
                 swapped = true
             }
         }
-        
+
         // Optimization: stop if no swaps occurred
         if !swapped {
             break
@@ -122,7 +124,8 @@ bubbleSort(&numbers)
 print(numbers) // Output: [1, 2, 3, 4, 5]
 ```
 
-**Time Complexity**: 
+**Time Complexity**:
+
 - Worst case: O(n²) - Reverse sorted array
 - Best case: O(n) - Already sorted (with optimization)
 - Average case: O(n²)
@@ -132,18 +135,21 @@ print(numbers) // Output: [1, 2, 3, 4, 5]
 ### When to Use Each Algorithm
 
 **Linear Search**:
+
 - Small datasets (< 100 elements)
 - Unsorted data
 - One-time searches
 - When simplicity matters more than performance
 
 **Binary Search**:
+
 - Large sorted datasets
 - Repeated searches on the same data
 - When O(log n) performance is crucial
 - Worth the overhead of maintaining sorted data
 
 **Bubble Sort**:
+
 - Educational purposes
 - Very small datasets (< 10 elements)
 - When simplicity is paramount
@@ -162,23 +168,23 @@ struct User {
 class UserDatabase {
     private var usersByID: [Int: User] = [:]      // O(1) lookup
     private var sortedUsers: [User] = []          // For binary search
-    
+
     func addUser(_ user: User) {
         usersByID[user.id] = user
-        
+
         // Maintain sorted array for name searches
         sortedUsers.append(user)
         sortedUsers.sort { $0.name < $1.name }
     }
-    
+
     func findByID(_ id: Int) -> User? {
         return usersByID[id]  // O(1)
     }
-    
+
     func findByName(_ name: String) -> User? {
         // Binary search on sorted array - O(log n)
         let index = sortedUsers.firstIndex { $0.name >= name }
-        
+
         if let index = index, sortedUsers[index].name == name {
             return sortedUsers[index]
         }

@@ -23,11 +23,11 @@ let segmentedControl = UISegmentedControl(items: items)
 iOS 14 introduced a powerful new way to create segmented controls with UIAction instances, enabling inline action handling:
 
 ```swift
-let action1 = UIAction(title: "Option 1") { _ in 
-    print("Option 1 selected") 
+let action1 = UIAction(title: "Option 1") { _ in
+    print("Option 1 selected")
 }
-let action2 = UIAction(title: "Option 2") { _ in 
-    print("Option 2 selected") 
+let action2 = UIAction(title: "Option 2") { _ in
+    print("Option 2 selected")
 }
 let segmentedControl = UISegmentedControl(frame: .zero, actions: [action1, action2])
 ```
@@ -72,8 +72,8 @@ let segmentImage = segmentedControl.imageForSegment(at: 1)
 
 ```swift
 segmentedControl.addTarget(
-    self, 
-    action: #selector(segmentChanged(_:)), 
+    self,
+    action: #selector(segmentChanged(_:)),
     for: .valueChanged
 )
 
@@ -86,7 +86,7 @@ segmentedControl.addTarget(
 
 ```swift
 // Set action for specific segment
-let action = UIAction(title: "Updated Action") { _ in 
+let action = UIAction(title: "Updated Action") { _ in
     print("Segment action triggered")
 }
 segmentedControl.setAction(action, forSegmentAt: 0)
@@ -105,27 +105,27 @@ let totalSegments = segmentedControl.numberOfSegments
 
 // Insert segment with title
 segmentedControl.insertSegment(
-    withTitle: "Option 3", 
-    at: 2, 
+    withTitle: "Option 3",
+    at: 2,
     animated: true
 )
 
 // Insert segment with image
 if let image = UIImage(named: "newIcon") {
     segmentedControl.insertSegment(
-        with: image, 
-        at: 1, 
+        with: image,
+        at: 1,
         animated: true
     )
 }
 
 // Insert segment with action (iOS 14+)
-let newAction = UIAction(title: "Dynamic Option") { _ in 
+let newAction = UIAction(title: "Dynamic Option") { _ in
     print("Dynamic option selected")
 }
 segmentedControl.insertSegment(
-    action: newAction, 
-    at: 0, 
+    action: newAction,
+    at: 0,
     animated: true
 )
 ```
@@ -179,7 +179,7 @@ let isEnabled = segmentedControl.isEnabledForSegment(at: 0)
 ```swift
 // Adjust content offset within segment
 segmentedControl.setContentOffset(
-    CGSize(width: 10, height: 0), 
+    CGSize(width: 10, height: 0),
     forSegmentAt: 0
 )
 
@@ -217,15 +217,15 @@ segmentedControl.tintColor = .label
 ```swift
 // Set background image for normal state
 segmentedControl.setBackgroundImage(
-    UIImage(named: "segment-bg"), 
-    for: .normal, 
+    UIImage(named: "segment-bg"),
+    for: .normal,
     barMetrics: .default
 )
 
 // Set background image for selected state
 segmentedControl.setBackgroundImage(
-    UIImage(named: "segment-bg-selected"), 
-    for: .selected, 
+    UIImage(named: "segment-bg-selected"),
+    for: .selected,
     barMetrics: .default
 )
 ```
@@ -272,6 +272,7 @@ segmentedControl.setContentPositionAdjustment(
 ## Best Practices
 
 ### 1. Accessibility
+
 Always provide meaningful titles or accessibility labels:
 
 ```swift
@@ -280,6 +281,7 @@ segmentedControl.setTitle("Sort by Name", forSegmentAt: 1)
 ```
 
 ### 2. Consistent Sizing
+
 Maintain consistent segment widths for better visual balance:
 
 ```swift
@@ -296,12 +298,13 @@ for i in 0..<segmentedControl.numberOfSegments {
 ```
 
 ### 3. State Persistence
+
 Save and restore selected segment:
 
 ```swift
 // Save state
 UserDefaults.standard.set(
-    segmentedControl.selectedSegmentIndex, 
+    segmentedControl.selectedSegmentIndex,
     forKey: "selectedFilter"
 )
 
@@ -319,18 +322,18 @@ if savedIndex < segmentedControl.numberOfSegments {
 ```swift
 class FilterViewController: UIViewController {
     let filterControl = UISegmentedControl(items: ["All", "Active", "Completed"])
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         filterControl.selectedSegmentIndex = 0
         filterControl.addTarget(
-            self, 
-            action: #selector(filterChanged), 
+            self,
+            action: #selector(filterChanged),
             for: .valueChanged
         )
     }
-    
+
     @objc func filterChanged(_ sender: UISegmentedControl) {
         switch sender.selectedSegmentIndex {
         case 0: showAllItems()
@@ -350,16 +353,16 @@ class ViewSwitcherController: UIViewController {
         UIImage(systemName: "list.bullet")!,
         UIImage(systemName: "square.grid.2x2")!
     ])
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         navigationItem.titleView = viewModes
         viewModes.selectedSegmentIndex = 0
-        
+
         viewModes.addTarget(
-            self, 
-            action: #selector(viewModeChanged), 
+            self,
+            action: #selector(viewModeChanged),
             for: .valueChanged
         )
     }

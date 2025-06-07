@@ -59,7 +59,7 @@ package main
 import (
     "log"
     "net/http"
-    
+
     "github.com/yourusername/yourapi/internal/user"
     "github.com/yourusername/yourapi/pkg/db"
 )
@@ -71,15 +71,15 @@ func main() {
         log.Fatal("Failed to connect to database:", err)
     }
     defer database.Close()
-    
+
     // Initialize services
     userService := user.NewService(database)
     userHandler := user.NewHandler(userService)
-    
+
     // Setup routes
     http.HandleFunc("/users", userHandler.HandleUsers)
     http.HandleFunc("/users/", userHandler.HandleUser)
-    
+
     // Start server
     log.Println("Server starting on :8080")
     log.Fatal(http.ListenAndServe(":8080", nil))
@@ -116,14 +116,14 @@ func (s *Service) GetUserByID(id string) (*User, error) {
     if id == "" {
         return nil, errors.New("user ID cannot be empty")
     }
-    
+
     // In real implementation, query the database
     user := &User{
         ID:    id,
         Name:  "John Doe",
         Email: "john@example.com",
     }
-    
+
     return user, nil
 }
 
@@ -132,7 +132,7 @@ func (s *Service) CreateUser(user *User) error {
     if user.Email == "" {
         return errors.New("email is required")
     }
-    
+
     // Save to database
     return s.db.Save(user)
 }
@@ -183,7 +183,7 @@ func (h *Handler) HandleUser(w http.ResponseWriter, r *http.Request) {
         return
     }
     id := parts[2]
-    
+
     switch r.Method {
     case http.MethodGet:
         h.getUser(w, r, id)
@@ -202,7 +202,7 @@ func (h *Handler) getUser(w http.ResponseWriter, r *http.Request, id string) {
         http.Error(w, err.Error(), http.StatusNotFound)
         return
     }
-    
+
     w.Header().Set("Content-Type", "application/json")
     json.NewEncoder(w).Encode(user)
 }
@@ -213,12 +213,12 @@ func (h *Handler) createUser(w http.ResponseWriter, r *http.Request) {
         http.Error(w, "Invalid request body", http.StatusBadRequest)
         return
     }
-    
+
     if err := h.service.CreateUser(&user); err != nil {
         http.Error(w, err.Error(), http.StatusBadRequest)
         return
     }
-    
+
     w.Header().Set("Content-Type", "application/json")
     w.WriteHeader(http.StatusCreated)
     json.NewEncoder(w).Encode(user)
@@ -227,13 +227,13 @@ func (h *Handler) createUser(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) listUsers(w http.ResponseWriter, r *http.Request) {
     // Parse query parameters for pagination
     // Implementation details omitted for brevity
-    
+
     users, err := h.service.ListUsers(10, 0)
     if err != nil {
         http.Error(w, "Internal server error", http.StatusInternalServerError)
         return
     }
-    
+
     w.Header().Set("Content-Type", "application/json")
     json.NewEncoder(w).Encode(users)
 }

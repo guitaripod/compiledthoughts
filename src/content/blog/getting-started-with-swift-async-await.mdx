@@ -1,6 +1,6 @@
 ---
 title: 'Getting Started with Swift Async/Await'
-description: 'Learn how to use Swift''s modern concurrency features with async/await to write cleaner asynchronous code'
+description: "Learn how to use Swift's modern concurrency features with async/await to write cleaner asynchronous code"
 pubDate: 2024-01-15
 tags: ['swift', 'ios', 'concurrency', 'async-await']
 ---
@@ -18,12 +18,12 @@ func fetchUser(completion: @escaping (Result<User, Error>) -> Void) {
             completion(.failure(error))
             return
         }
-        
+
         guard let data = data else {
             completion(.failure(NetworkError.noData))
             return
         }
-        
+
         do {
             let user = try JSONDecoder().decode(User.self, from: data)
             completion(.success(user))
@@ -82,7 +82,7 @@ struct NetworkManager {
         guard let url = URL(string: urlString) else {
             throw NetworkError.invalidURL
         }
-        
+
         let (data, _) = try await URLSession.shared.data(from: url)
         return try JSONDecoder().decode(type, from: data)
     }
@@ -98,7 +98,7 @@ func fetchUserData() async throws -> (User, [Post], [Friend]) {
     async let user = fetchUser()
     async let posts = fetchPosts()
     async let friends = fetchFriends()
-    
+
     return try await (user, posts, friends)
 }
 ```
@@ -116,7 +116,7 @@ func downloadImages(urls: [URL]) async throws -> [UIImage] {
                 return UIImage(data: data)
             }
         }
-        
+
         var images: [UIImage] = []
         for try await image in group {
             if let image = image {
@@ -137,11 +137,11 @@ Use `@MainActor` to ensure UI updates happen on the main thread:
 class ViewModel: ObservableObject {
     @Published var users: [User] = []
     @Published var isLoading = false
-    
+
     func loadUsers() async {
         isLoading = true
         defer { isLoading = false }
-        
+
         do {
             users = try await networkManager.fetch([User].self, from: apiURL)
         } catch {
@@ -176,13 +176,13 @@ Task {
 ```swift
 func processLargeDataset() async throws -> ProcessedData {
     var processedItems: [Item] = []
-    
+
     for item in largeDataset {
         try Task.checkCancellation() // Check if task was cancelled
         let processed = try await process(item)
         processedItems.append(processed)
     }
-    
+
     return ProcessedData(items: processedItems)
 }
 ```
@@ -195,7 +195,7 @@ func performComplexOperation() async throws {
         group.addTask { try await subtask1() }
         group.addTask { try await subtask2() }
         group.addTask { try await subtask3() }
-        
+
         try await group.waitForAll()
     }
 }

@@ -68,20 +68,17 @@ function getFileHash(filePath) {
 
 function shouldRebuild() {
   if (!fs.existsSync(CACHE_FILE)) return true;
-  
+
   const cache = JSON.parse(fs.readFileSync(CACHE_FILE));
   const currentHashes = {};
-  
+
   // Check source files
-  const sourceFiles = execSync('git ls-files src/')
-    .toString()
-    .split('\n')
-    .filter(Boolean);
-  
+  const sourceFiles = execSync('git ls-files src/').toString().split('\n').filter(Boolean);
+
   for (const file of sourceFiles) {
     currentHashes[file] = getFileHash(file);
   }
-  
+
   return JSON.stringify(cache) !== JSON.stringify(currentHashes);
 }
 
@@ -148,18 +145,18 @@ Leverage Cloudflare Workers for dynamic functionality:
 ```javascript
 export async function onRequest(context) {
   const { request, env, params } = context;
-  
+
   // Add security headers
   const response = await fetch(request);
   const newHeaders = new Headers(response.headers);
-  
+
   newHeaders.set('X-Custom-Header', 'value');
   newHeaders.set('Cache-Control', 'public, max-age=300');
-  
+
   return new Response(response.body, {
     status: response.status,
     statusText: response.statusText,
-    headers: newHeaders
+    headers: newHeaders,
   });
 }
 ```
@@ -178,7 +175,7 @@ class BuildMetrics {
       buildTime: 0,
       bundleSize: 0,
       fileCount: 0,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
   }
 
@@ -201,18 +198,18 @@ class BuildMetrics {
   saveMetrics() {
     const metricsFile = '.build-metrics.json';
     let history = [];
-    
+
     if (fs.existsSync(metricsFile)) {
       history = JSON.parse(fs.readFileSync(metricsFile));
     }
-    
+
     history.push(this.metrics);
-    
+
     // Keep last 50 builds
     if (history.length > 50) {
       history = history.slice(-50);
     }
-    
+
     fs.writeFileSync(metricsFile, JSON.stringify(history, null, 2));
   }
 }
@@ -254,19 +251,19 @@ const glob = require('glob');
 
 async function optimizeImages() {
   const images = glob.sync('dist/**/*.{jpg,jpeg,png}');
-  
+
   for (const image of images) {
     // Generate WebP version
     await sharp(image)
       .webp({ quality: 85 })
       .toFile(image.replace(/\.(jpg|jpeg|png)$/, '.webp'));
-    
+
     // Generate AVIF version for modern browsers
     await sharp(image)
       .avif({ quality: 80 })
       .toFile(image.replace(/\.(jpg|jpeg|png)$/, '.avif'));
   }
-  
+
   console.log(`Optimized ${images.length} images`);
 }
 
@@ -289,7 +286,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Build and Deploy
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -297,14 +294,14 @@ jobs:
           npm ci
           npm run build
           npx wrangler pages deploy dist --project-name=my-site
-      
+
       - name: Purge Cache
         run: |
           curl -X POST "https://api.cloudflare.com/client/v4/zones/${{ secrets.ZONE_ID }}/purge_cache" \
             -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
             -H "Content-Type: application/json" \
             --data '{"purge_everything":true}'
-      
+
       - name: Warm Cache
         run: |
           node scripts/warm-cache.js
@@ -320,9 +317,9 @@ const path = require('path');
 
 const BUDGETS = {
   'index.html': 50 * 1024, // 50KB
-  'main.js': 200 * 1024,   // 200KB
-  'main.css': 50 * 1024,   // 50KB
-  total: 1024 * 1024       // 1MB total
+  'main.js': 200 * 1024, // 200KB
+  'main.css': 50 * 1024, // 50KB
+  total: 1024 * 1024, // 1MB total
 };
 
 function checkBudget() {
@@ -331,18 +328,18 @@ function checkBudget() {
 
   Object.entries(BUDGETS).forEach(([file, limit]) => {
     if (file === 'total') return;
-    
+
     const filePath = path.join('dist', file);
     if (fs.existsSync(filePath)) {
       const size = fs.statSync(filePath).size;
       totalSize += size;
-      
+
       if (size > limit) {
         violations.push({
           file,
           size,
           limit,
-          excess: size - limit
+          excess: size - limit,
         });
       }
     }
@@ -353,13 +350,13 @@ function checkBudget() {
       file: 'total',
       size: totalSize,
       limit: BUDGETS.total,
-      excess: totalSize - BUDGETS.total
+      excess: totalSize - BUDGETS.total,
     });
   }
 
   if (violations.length > 0) {
     console.error('Performance budget violations:');
-    violations.forEach(v => {
+    violations.forEach((v) => {
       console.error(`- ${v.file}: ${v.size} bytes (limit: ${v.limit}, excess: ${v.excess})`);
     });
     process.exit(1);
@@ -378,23 +375,23 @@ Set up monitoring:
 ```javascript
 export async function onRequest(context) {
   const { request, env } = context;
-  
+
   // Log request metrics
   const metrics = {
     timestamp: Date.now(),
     url: request.url,
     method: request.method,
     cf: request.cf,
-    headers: Object.fromEntries(request.headers)
+    headers: Object.fromEntries(request.headers),
   };
-  
+
   // Send to analytics service
   await fetch('https://analytics.example.com/collect', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(metrics)
+    body: JSON.stringify(metrics),
   });
-  
+
   return fetch(request);
 }
 ```

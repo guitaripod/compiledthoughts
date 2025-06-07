@@ -20,6 +20,7 @@ Starting with SwiftUI for your iOS app but need to switch to UIKit's lifecycle? 
 First, remove the `@main` attribute and `App` protocol conformance from your SwiftUI app structure:
 
 **Before:**
+
 ```swift
 import SwiftUI
 
@@ -34,6 +35,7 @@ struct MyApp: App {
 ```
 
 **After:**
+
 ```swift
 import SwiftUI
 
@@ -52,13 +54,13 @@ import UIKit
 @UIApplicationMain
 final class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(
-        _ application: UIApplication, 
+        _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
         // Configure app-wide settings here
         return true
     }
-    
+
     // MARK: UISceneSession Lifecycle
     func application(
         _ application: UIApplication,
@@ -83,15 +85,15 @@ import SwiftUI
 
 final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
-    
+
     func scene(
-        _ scene: UIScene, 
-        willConnectTo session: UISceneSession, 
+        _ scene: UIScene,
+        willConnectTo session: UISceneSession,
         options connectionOptions: UIScene.ConnectionOptions
     ) {
         // Create the SwiftUI view that provides the window contents
         let contentView = ContentView()
-        
+
         // Use a UIHostingController as window root view controller
         if let windowScene = scene as? UIWindowScene {
             let window = UIWindow(windowScene: windowScene)
@@ -100,15 +102,15 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             window.makeKeyAndVisible()
         }
     }
-    
+
     func sceneDidDisconnect(_ scene: UIScene) {
         // Handle scene disconnection
     }
-    
+
     func sceneDidBecomeActive(_ scene: UIScene) {
         // Handle scene activation
     }
-    
+
     func sceneWillResignActive(_ scene: UIScene) {
         // Handle scene deactivation
     }

@@ -1,6 +1,6 @@
 ---
 title: 'Concurrency in Go: An Introduction'
-description: 'Explore Go''s powerful concurrency model with goroutines and channels, learning how to build efficient, scalable concurrent programs'
+description: "Explore Go's powerful concurrency model with goroutines and channels, learning how to build efficient, scalable concurrent programs"
 pubDate: 2022-12-30
 tags: ['go', 'golang', 'concurrency', 'goroutines', 'channels']
 ---
@@ -83,9 +83,11 @@ results := make(chan int, 100)
 Buffered channels offer two key advantages:
 
 ### 1. Performance Optimization
+
 Buffered channels allow goroutines to send and receive values without blocking, improving throughput when production and consumption rates differ. This decoupling prevents faster goroutines from waiting unnecessarily for slower ones.
 
 ### 2. Simplified Coordination
+
 The buffer allows worker goroutines to continue processing until the buffer fills, enabling natural termination without complex shutdown logic. Simply closing the `jobs` channel signals workers to finish their remaining tasks.
 
 ## Trade-offs and Considerations
@@ -116,13 +118,14 @@ Go's concurrency model excels in scenarios involving:
 ## Common Patterns
 
 ### Fan-Out/Fan-In
+
 Distribute work across multiple goroutines and collect results:
 
 ```go
 func fanOut(in <-chan int) (<-chan int, <-chan int) {
     out1 := make(chan int)
     out2 := make(chan int)
-    
+
     go func() {
         for val := range in {
             out1 <- val
@@ -131,12 +134,13 @@ func fanOut(in <-chan int) (<-chan int, <-chan int) {
         close(out1)
         close(out2)
     }()
-    
+
     return out1, out2
 }
 ```
 
 ### Pipeline
+
 Chain operations where each stage processes data concurrently:
 
 ```go
