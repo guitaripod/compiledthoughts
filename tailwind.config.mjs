@@ -37,7 +37,7 @@ export default {
         },
         dark: {
           css: {
-            color: theme('colors.gray.200'),
+            color: theme('colors.white'),
             a: {
               color: theme('colors.blue.400'),
               '&:hover': {
@@ -45,7 +45,7 @@ export default {
               },
             },
             strong: {
-              color: theme('colors.gray.50'),
+              color: theme('colors.blue.400'),
             },
             'ol > li::before': {
               color: theme('colors.gray.400'),
@@ -104,7 +104,7 @@ export default {
               borderBottomColor: theme('colors.gray.700'),
             },
             'tbody td': {
-              color: theme('colors.gray.200'),
+              color: theme('colors.white'),
             },
           },
         },
