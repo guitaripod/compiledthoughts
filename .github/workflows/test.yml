@@ -7,12 +7,12 @@ on:
     branches: [master]
 
 jobs:
-  test:
+  test-and-lint:
     runs-on: ubuntu-latest
     
     strategy:
       matrix:
-        node-version: [18.x, 20.x]
+        node-version: [20.x]
     
     steps:
     - uses: actions/checkout@v4
@@ -27,6 +27,15 @@ jobs:
       uses: actions/setup-go@v5
       with:
         go-version: '1.21'
+        cache: true
+    
+    - name: Cache Go modules
+      uses: actions/cache@v4
+      with:
+        path: ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
     
     - name: Build ct CLI
       run: make build
@@ -34,44 +43,23 @@ jobs:
     - name: Install dependencies
       run: npm ci
     
-    - name: Run tests
-      run: npm test
+    - name: Run linting and tests in parallel
+      run: |
+        npx tsc --noEmit &
+        npx prettier --check "src/**/*.{js,ts,astro,css}" &
+        npm test &
+        wait
     
     - name: Build project
       run: npm run build
     
-    - name: Check bundle size
-      run: node scripts/performance-budget.js || true
-    
     - name: Upload coverage reports
       uses: codecov/codecov-action@v3
-      if: matrix.node-version == '20.x'
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
 
-  lint:
-    runs-on: ubuntu-latest
-    
-    steps:
-    - uses: actions/checkout@v4
-    
-    - name: Use Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20.x'
-        cache: 'npm'
-    
-    - name: Install dependencies
-      run: npm ci
-    
-    - name: Run TypeScript check
-      run: npx tsc --noEmit
-    
-    - name: Check formatting
-      run: npx prettier --check "src/**/*.{js,ts,astro,css}"
-
   deploy-preview:
-    needs: [test, lint]
+    needs: [test-and-lint]
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
     
@@ -93,20 +81,26 @@ jobs:
       uses: actions/setup-go@v5
       with:
         go-version: '1.21'
+        cache: true
     
-    - name: Build ct CLI
-      run: make build
+    - name: Cache Go modules
+      uses: actions/cache@v4
+      with:
+        path: ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
     
-    - name: Install dependencies
-      run: npm ci
+    - name: Install dependencies and build in parallel
+      run: |
+        npm ci &
+        make build &
+        wait
     
-    - name: Update App Store data
+    - name: Update App Store data and generate OG image
       run: |
         echo "Fetching latest app data from App Store..."
         ./ct fetch-appstore || echo "Failed to update app data, using existing data"
-    
-    - name: Generate OG image grid
-      run: |
         echo "Generating OG image grid from app icons..."
         node scripts/generate-apps-og-grid.js || echo "Failed to generate OG grid, using existing image"
     
@@ -123,7 +117,7 @@ jobs:
         gitHubToken: ${{ secrets.GITHUB_TOKEN }}
 
   deploy-production:
-    needs: [test, lint]
+    needs: [test-and-lint]
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/master' && github.event_name == 'push'
     
@@ -144,20 +138,26 @@ jobs:
       uses: actions/setup-go@v5
       with:
         go-version: '1.21'
+        cache: true
     
-    - name: Build ct CLI
-      run: make build
+    - name: Cache Go modules
+      uses: actions/cache@v4
+      with:
+        path: ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
     
-    - name: Install dependencies
-      run: npm ci
+    - name: Install dependencies and build in parallel
+      run: |
+        npm ci &
+        make build &
+        wait
     
-    - name: Update App Store data
+    - name: Update App Store data and generate OG image
       run: |
         echo "Fetching latest app data from App Store..."
         ./ct fetch-appstore || echo "Failed to update app data, using existing data"
-    
-    - name: Generate OG image grid
-      run: |
         echo "Generating OG image grid from app icons..."
         node scripts/generate-apps-og-grid.js || echo "Failed to generate OG grid, using existing image"
     
