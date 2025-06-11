@@ -87,7 +87,7 @@
   /* Override prose-invert colors for better contrast */
   .dark .prose-invert {
     --tw-prose-invert-body: #ffffff;
-    --tw-prose-invert-bold: #60a5fa;
+    --tw-prose-invert-bold: #ffffff;
     --tw-prose-invert-headings: #f3f4f6;
     --tw-prose-invert-td-borders: #4b5563;
     --tw-prose-invert-th-borders: #6b7280;
@@ -102,7 +102,7 @@
   
   .dark .prose-invert strong,
   .dark .prose-invert b {
-    color: #60a5fa;
+    color: #ffffff;
   }
 
   /* Ensure inline code has proper contrast */
