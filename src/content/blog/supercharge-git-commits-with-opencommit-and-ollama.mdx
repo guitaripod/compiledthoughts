@@ -1,0 +1,261 @@
+---
+title: "Supercharge Your Git Commits with OpenCommit and Ollama"
+description: "Generate meaningful commit messages using AI locally with OpenCommit and Ollama - no API keys or cloud services required"
+pubDate: 2025-12-06
+tags: ["git", "ai", "ollama", "productivity", "developer-tools"]
+---
+
+Writing meaningful commit messages is crucial for maintaining a readable project history. [OpenCommit](https://github.com/di-sukharev/opencommit) automates this process by analyzing your staged changes and generating contextual commit messages using AI. By combining it with Ollama, you can run everything locally without API keys or cloud services.
+
+## Benefits of Local AI Commits
+
+Running OpenCommit with Ollama provides several advantages:
+
+- **Complete privacy** - Your code never leaves your machine
+- **No API keys** - No service sign-ups or credential management
+- **Zero costs** - Generate unlimited commits without usage fees
+- **Fast responses** - No network latency
+- **Offline capability** - Works without internet after initial model download
+
+## Prerequisites
+
+- Node.js installed on your system
+- Ollama installed and running ([ollama.com](https://ollama.com))
+- At least one Ollama model downloaded (`ollama pull mistral`)
+
+## Installation
+
+Install OpenCommit globally:
+
+```bash
+npm install -g opencommit
+```
+
+Configure OpenCommit to use Ollama:
+
+```bash
+oco config set OCO_AI_PROVIDER='ollama'
+oco config set OCO_MODEL='mistral'
+oco config set OCO_API_URL='http://localhost:11434/api/chat'
+oco config set OCO_GITPUSH=false  # Disable auto-push for more control
+```
+
+## Basic Usage
+
+Stage your changes and generate a commit:
+
+```bash
+git add .
+oco
+```
+
+OpenCommit analyzes your staged changes and generates a commit message. You can accept, regenerate, or edit the suggestion.
+
+Skip confirmation for faster workflow:
+
+```bash
+oco --yes
+```
+
+## Model Selection
+
+Different Ollama models offer various performance characteristics:
+
+```bash
+# List available models
+ollama list
+
+# Fast and efficient - recommended for most use cases
+oco config set OCO_MODEL='mistral:latest'
+
+# Higher quality, slower generation
+oco config set OCO_MODEL='llama3.2:latest'
+
+# Best quality for complex changes
+oco config set OCO_MODEL='gemma2:27b'
+
+# Code-specialized model
+oco config set OCO_MODEL='devstral:latest'
+```
+
+## Configuration Options
+
+### GitMoji Support
+
+```bash
+# Enable emoji prefixes
+oco config set OCO_EMOJI=true
+
+# Use full GitMoji specification
+oco --fgm
+```
+
+### Detailed Descriptions
+
+```bash
+# Add multi-sentence change descriptions
+oco config set OCO_DESCRIPTION=true
+```
+
+### Language Settings
+
+```bash
+# Generate commits in different languages
+oco config set OCO_LANGUAGE=es  # Spanish
+oco config set OCO_LANGUAGE=fr  # French
+oco config set OCO_LANGUAGE=de  # German
+```
+
+## Per-Project Configuration
+
+Override global settings with a project-specific `.env` file:
+
+```env
+OCO_AI_PROVIDER=ollama
+OCO_MODEL=devstral:latest
+OCO_EMOJI=true
+OCO_DESCRIPTION=false
+OCO_LANGUAGE=en
+```
+
+Useful for maintaining different commit conventions across projects and teams.
+
+## Git Hook Integration
+
+Set up OpenCommit as a prepare-commit-msg hook:
+
+```bash
+# Install hook
+oco hook set
+
+# Regular commits now use OpenCommit
+git add .
+git commit  # Automatically generates message
+
+# Remove hook
+oco hook unset
+```
+
+Integrates seamlessly with IDE source control features.
+
+## Remote Ollama Configuration
+
+Connect to Ollama running on another machine:
+
+```bash
+# Configure remote endpoint
+oco config set OCO_API_URL='http://192.168.1.100:11434/api/chat'
+```
+
+Useful for leveraging more powerful hardware or sharing an Ollama instance across teams.
+
+## Troubleshooting
+
+### Verify Ollama Connection
+
+```bash
+curl http://localhost:11434/api/tags
+```
+
+### Model Errors
+
+```bash
+# Pull model before using
+ollama pull mistral
+oco config set OCO_MODEL='mistral'
+```
+
+### Performance Issues
+
+- Use smaller models (`mistral`, `phi`) for faster generation
+- Verify adequate RAM allocation for Ollama
+- Monitor system resources during generation
+
+### Commit Quality
+
+- Stage meaningful changes before generation
+- Use more capable models for complex diffs
+- Enable descriptions: `oco config set OCO_DESCRIPTION=true`
+
+## Advanced Features
+
+### File Exclusions
+
+Create `.opencommitignore` to exclude files:
+
+```
+*.log
+build/
+dist/
+**/*.min.js
+```
+
+### Template Placeholders
+
+```bash
+# Issue reference
+oco '#123: $msg'
+
+# PR reference
+oco 'PR-456: $msg'
+```
+
+### Configuration Management
+
+```bash
+# View all settings
+oco config describe
+
+# Check specific setting
+oco config describe OCO_MODEL
+```
+
+## Practical Workflow
+
+### Single Commit Workflow
+
+```bash
+# Review changes
+git diff
+
+# Stage and commit
+git add src/
+oco --yes
+
+# Push when ready
+git push
+```
+
+### Multi-Commit Feature Development
+
+```bash
+# Component implementation
+git add src/components/
+oco --yes
+
+# Test coverage
+git add tests/
+oco --yes
+
+# Documentation updates
+git add README.md
+oco --yes
+
+# Review before push
+git log --oneline -5
+git push
+```
+
+## Best Practices
+
+- **Model Selection**: Start with `mistral` for speed, upgrade to larger models as needed
+- **Staging Strategy**: Stage related changes together for coherent commit messages
+- **Review Generated Messages**: Always review AI suggestions before committing
+- **Project Standards**: Use `.env` files to enforce team commit conventions
+- **Security**: Keep `.opencommitignore` updated to exclude sensitive files
+
+## Conclusion
+
+OpenCommit with Ollama provides a powerful, privacy-focused solution for generating meaningful commit messages. The combination delivers professional git history without sacrificing code privacy or incurring API costs. Setup takes minutes, and the workflow enhancement is immediate.
+
+Start using `oco` instead of manual commit messages and watch your git history transform into a searchable, meaningful record of your project's evolution.
