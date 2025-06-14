@@ -8,7 +8,7 @@ export interface Props {
 const { username, showArtwork = true, size = 'normal' } = Astro.props;
 ---
 
-<div id="lastfm-now-playing" class="space-y-3">
+<div id="lastfm-now-playing" class="space-y-2">
   <div id="lastfm-content" class="flex items-start gap-3">
     <div id="album-art" class="hidden flex-shrink-0">
       <!-- Album artwork will be inserted here -->
@@ -29,18 +29,13 @@ const { username, showArtwork = true, size = 'normal' } = Astro.props;
             opacity="0.3"></path>
         </svg>
         <span id="track-info" class="italic">Loading...</span>
+        <span id="user-stats" class="hidden ml-auto"></span>
       </div>
       <div id="track-details" class="mt-1 space-y-0.5 hidden">
         <!-- Additional track details will be shown here -->
       </div>
-      <div id="user-stats" class="mt-2 hidden">
-        <!-- User stats will be shown here -->
-      </div>
-      <div id="recent-tracks" class="mt-2 hidden">
-        <!-- Recent tracks will be shown here -->
-      </div>
-      <div id="top-artists" class="mt-2 hidden">
-        <!-- Top artists will be shown here -->
+      <div id="extra-info" class="mt-1.5 hidden">
+        <!-- Extra info (recent tracks & top artists) will be shown here in a compact format -->
       </div>
     </div>
   </div>
@@ -49,35 +44,25 @@ const { username, showArtwork = true, size = 'normal' } = Astro.props;
 <script define:vars={{ username, showArtwork, size }}>
   async function fetchNowPlaying() {
     try {
-      console.log('Fetching Last.fm data for:', username);
-
       const url = `/api/lastfm.json?username=${username}`;
-      console.log('Fetching from API endpoint:', url);
-
       const response = await fetch(url);
-      console.log('Response status:', response.status);
-
       const data = await response.json();
-      console.log('Last.fm API response:', data);
 
       const trackElement = document.getElementById('track-info');
       const albumArtElement = document.getElementById('album-art');
       const trackDetailsElement = document.getElementById('track-details');
       const userStatsElement = document.getElementById('user-stats');
-      const recentTracksElement = document.getElementById('recent-tracks');
-      const topArtistsElement = document.getElementById('top-artists');
+      const extraInfoElement = document.getElementById('extra-info');
 
       if (!trackElement) return;
 
       if (data.error) {
-        console.error('Last.fm API error:', data.message);
         trackElement.textContent = 'API error';
         return;
       }
 
       // Handle recent tracks
       if (data.recenttracks && data.recenttracks.track) {
-        // Handle both array and single object response
         const tracks = Array.isArray(data.recenttracks.track)
           ? data.recenttracks.track
           : [data.recenttracks.track];
@@ -86,13 +71,10 @@ const { username, showArtwork = true, size = 'normal' } = Astro.props;
           const track = tracks[0];
           const isNowPlaying = track['@attr'] && track['@attr'].nowplaying === 'true';
 
-          console.log('Track found:', track.name, 'by', track.artist['#text']);
-          console.log('Now playing:', isNowPlaying);
-
-          // Show album artwork if available
+          // Show album artwork if available - SMALLER SIZE
           if (showArtwork && albumArtElement && track.image) {
-            const imageSize = size === 'large' ? 'extralarge' : 'large';
-            const artworkSize = size === 'large' ? 'w-24 h-24' : 'w-16 h-16';
+            const imageSize = 'medium'; // Use medium instead of large
+            const artworkSize = size === 'large' ? 'w-12 h-12' : 'w-10 h-10'; // Smaller sizes
 
             const selectedImage =
               track.image.find((img) => img.size === imageSize) ||
@@ -115,88 +97,59 @@ const { username, showArtwork = true, size = 'normal' } = Astro.props;
           if (isNowPlaying) {
             trackElement.innerHTML = `<span class="text-green-600 dark:text-green-400">Now playing</span>`;
           } else {
-            // Show last played track with timestamp
             const date = track.date ? new Date(track.date.uts * 1000) : null;
             const timeAgo = date ? getTimeAgo(date) : '';
             trackElement.innerHTML = `<span class="text-gray-500">Last played${timeAgo ? ' · ' + timeAgo : ''}</span>`;
           }
 
-          // Show track details
+          // Show user stats in the same line (compact)
+          if (userStatsElement && data.user) {
+            const playcount = parseInt(data.user.playcount || '0').toLocaleString();
+            userStatsElement.innerHTML = `<span class="text-xs">${playcount} plays</span>`;
+            userStatsElement.classList.remove('hidden');
+          }
+
+          // Show track details (more compact)
           if (trackDetailsElement) {
-            const truncateClass = size === 'large' ? '' : 'truncate';
-            const titleSize = size === 'large' ? 'text-base' : 'text-sm';
-            const artistSize = size === 'large' ? 'text-sm' : 'text-xs';
+            const truncateClass = 'truncate';
+            const titleSize = size === 'large' ? 'text-sm' : 'text-xs';
+            const artistSize = 'text-xs';
 
             trackDetailsElement.innerHTML = `
               <div class="${titleSize} font-medium text-gray-900 dark:text-gray-100 ${truncateClass}">${track.name}</div>
-              <div class="${artistSize} text-gray-600 dark:text-gray-400 ${truncateClass}">${track.artist['#text']}</div>
-              ${track.album && track.album['#text'] ? `<div class="${artistSize} text-gray-500 dark:text-gray-500 ${truncateClass}">${track.album['#text']}</div>` : ''}
+              <div class="${artistSize} text-gray-600 dark:text-gray-400 ${truncateClass}">${track.artist['#text']}${track.album && track.album['#text'] ? ' · ' + track.album['#text'] : ''}</div>
             `;
             trackDetailsElement.classList.remove('hidden');
           }
 
-          // Show user stats if available
-          if (userStatsElement && data.user) {
-            const playcount = parseInt(data.user.playcount || '0').toLocaleString();
-            const registeredDate = new Date(parseInt(data.user.registered?.unixtime || '0') * 1000);
-            const memberSince = registeredDate.getFullYear();
+          // Show extra info in a very compact format
+          if (extraInfoElement && size === 'large') {
+            let extraHtml = '';
 
-            userStatsElement.innerHTML = `
-              <div class="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400">
-                <span>${playcount} scrobbles</span>
-                <span>·</span>
-                <span>Since ${memberSince}</span>
-              </div>
-            `;
-            userStatsElement.classList.remove('hidden');
-          }
-
-          // Show recent tracks (mini timeline)
-          if (recentTracksElement && tracks.length > 1) {
-            const recentTracksList = tracks.slice(1, 4); // Show up to 3 recent tracks
-            const recentTracksHtml = recentTracksList
-              .map((t) => {
-                const date = t.date ? new Date(t.date.uts * 1000) : null;
-                const timeAgo = date ? getTimeAgo(date) : '';
-                return `
-                <div class="text-xs text-gray-500 dark:text-gray-400 truncate">
-                  <span class="text-gray-400 dark:text-gray-500">${timeAgo}:</span> ${t.artist['#text']} - ${t.name}
-                </div>
-              `;
-              })
-              .join('');
-
-            if (recentTracksHtml) {
-              recentTracksElement.innerHTML = `
-                <div class="pt-2 border-t border-gray-200 dark:border-gray-700 space-y-0.5">
-                  <div class="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Recent tracks</div>
-                  ${recentTracksHtml}
-                </div>
-              `;
-              recentTracksElement.classList.remove('hidden');
+            // Recent tracks inline
+            if (tracks.length > 1) {
+              const recentArtists = tracks
+                .slice(1, 3)
+                .map((t) => t.artist['#text'])
+                .join(', ');
+              extraHtml += `<div class="text-xs text-gray-500 dark:text-gray-400 truncate">Recent: ${recentArtists}</div>`;
             }
-          }
 
-          // Show top artists for the week
-          if (topArtistsElement && data.topartists && data.topartists.artist) {
-            const artists = Array.isArray(data.topartists.artist)
-              ? data.topartists.artist.slice(0, 3)
-              : [data.topartists.artist];
+            // Top artists inline
+            if (data.topartists && data.topartists.artist) {
+              const artists = Array.isArray(data.topartists.artist)
+                ? data.topartists.artist.slice(0, 2)
+                : [data.topartists.artist];
 
-            if (artists.length > 0) {
-              const artistsList = artists
-                .map(
-                  (artist, index) =>
-                    `<span class="text-gray-600 dark:text-gray-400">${artist.name} (${artist.playcount})</span>`
-                )
-                .join(' · ');
+              if (artists.length > 0) {
+                const topArtistNames = artists.map((a) => a.name).join(', ');
+                extraHtml += `<div class="text-xs text-gray-500 dark:text-gray-400 truncate">This week: ${topArtistNames}</div>`;
+              }
+            }
 
-              topArtistsElement.innerHTML = `
-                <div class="text-xs">
-                  <span class="text-gray-500 dark:text-gray-500">This week:</span> ${artistsList}
-                </div>
-              `;
-              topArtistsElement.classList.remove('hidden');
+            if (extraHtml) {
+              extraInfoElement.innerHTML = extraHtml;
+              extraInfoElement.classList.remove('hidden');
             }
           }
         } else {
@@ -238,19 +191,14 @@ const { username, showArtwork = true, size = 'normal' } = Astro.props;
 
   // Function to initialize Last.fm widget with retry
   function initializeLastFm() {
-    // Check if element exists
     const trackElement = document.getElementById('track-info');
 
     if (!trackElement) {
-      // Retry after a short delay if element isn't ready
-      console.log('[Last.fm] Element not ready, retrying in 100ms...');
       setTimeout(initializeLastFm, 100);
       return;
     }
 
-    // Element is ready, fetch data
     fetchNowPlaying();
-    // Update every 10 seconds for better real-time updates
     setInterval(fetchNowPlaying, 10000);
   }
 
@@ -258,7 +206,6 @@ const { username, showArtwork = true, size = 'normal' } = Astro.props;
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initializeLastFm);
   } else {
-    // DOM is already ready, but use requestAnimationFrame to ensure rendering is complete
     requestAnimationFrame(initializeLastFm);
   }
 </script>
