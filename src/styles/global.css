@@ -83,7 +83,7 @@
   .dark {
     @apply text-white;
   }
-  
+
   /* Override prose-invert colors for better contrast */
   .dark .prose-invert {
     --tw-prose-invert-body: #ffffff;
@@ -92,14 +92,14 @@
     --tw-prose-invert-td-borders: #4b5563;
     --tw-prose-invert-th-borders: #6b7280;
   }
-  
+
   /* Force white text in dark mode prose */
   .dark .prose-invert p,
   .dark .prose-invert li,
   .dark .prose-invert td {
     color: #ffffff;
   }
-  
+
   .dark .prose-invert strong,
   .dark .prose-invert b {
     color: #ffffff;

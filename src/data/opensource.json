@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2025-06-07T23:13:35+03:00",
+  "lastUpdated": "2025-06-14T20:40:54+03:00",
   "totalRepos": 100,
   "projects": [
     {
@@ -188,18 +188,48 @@
       "commitCount": 8
     },
     {
-      "id": "weathercli-rust",
-      "name": "weathercli-rust",
-      "description": "Input location, get weather data",
-      "language": "Rust",
+      "id": "omnichat",
+      "name": "omnichat",
+      "description": "work in progress",
+      "language": "TypeScript",
       "platforms": [],
       "stars": 1,
-      "githubUrl": "https://github.com/marcusziade/weathercli-rust",
+      "githubUrl": "https://github.com/marcusziade/omnichat",
       "category": "Other Projects",
       "highlights": [],
-      "updatedAt": "2023-03-11T11:44:04Z",
-      "createdAt": "2023-03-11T11:16:23Z",
+      "updatedAt": "2025-06-14T17:40:30Z",
+      "createdAt": "2025-06-08T08:09:24Z",
       "topics": [],
+      "commitCount": 268
+    },
+    {
+      "id": "songurl",
+      "name": "SongURL",
+      "description": "SongLink macOS. Paste any music link and get a song.link URL back.",
+      "language": "Swift",
+      "platforms": [
+        "macOS"
+      ],
+      "stars": 1,
+      "githubUrl": "https://github.com/marcusziade/SongURL",
+      "category": "Swift Projects",
+      "highlights": [
+        "Cross-platform",
+        "Appkit",
+        "Async-Await"
+      ],
+      "updatedAt": "2023-04-17T13:02:15Z",
+      "createdAt": "2022-08-14T11:00:54Z",
+      "topics": [
+        "appkit",
+        "async-await",
+        "combine",
+        "concurrency",
+        "macos",
+        "mvvm",
+        "swift",
+        "swiftui"
+      ],
       "commitCount": 100
     },
     {
@@ -238,36 +268,6 @@
       "updatedAt": "2025-03-31T09:43:07Z",
       "createdAt": "2025-03-29T10:32:22Z",
       "topics": [],
-      "commitCount": 19
-    },
-    {
-      "id": "songurl",
-      "name": "SongURL",
-      "description": "SongLink macOS. Paste any music link and get a song.link URL back.",
-      "language": "Swift",
-      "platforms": [
-        "macOS"
-      ],
-      "stars": 1,
-      "githubUrl": "https://github.com/marcusziade/SongURL",
-      "category": "Swift Projects",
-      "highlights": [
-        "Cross-platform",
-        "Appkit",
-        "Async-Await"
-      ],
-      "updatedAt": "2023-04-17T13:02:15Z",
-      "createdAt": "2022-08-14T11:00:54Z",
-      "topics": [
-        "appkit",
-        "async-await",
-        "combine",
-        "concurrency",
-        "macos",
-        "mvvm",
-        "swift",
-        "swiftui"
-      ],
       "commitCount": 19
     },
     {
@@ -392,6 +392,21 @@
       "commitCount": 10
     },
     {
+      "id": "compiledthoughts",
+      "name": "compiledthoughts",
+      "description": "blog site",
+      "language": "Astro",
+      "platforms": [],
+      "stars": 0,
+      "githubUrl": "https://github.com/marcusziade/compiledthoughts",
+      "category": "Other Projects",
+      "highlights": [],
+      "updatedAt": "2025-06-12T06:55:48Z",
+      "createdAt": "2025-06-05T17:16:02Z",
+      "topics": [],
+      "commitCount": 102
+    },
+    {
       "id": "timeharvest",
       "name": "timeharvest",
       "description": "A minimalist Pomodoro timer app",
@@ -407,21 +422,6 @@
       "createdAt": "2023-03-18T12:38:04Z",
       "topics": [],
       "commitCount": 100
-    },
-    {
-      "id": "compiledthoughts",
-      "name": "compiledthoughts",
-      "description": "blog site",
-      "language": "Astro",
-      "platforms": [],
-      "stars": 0,
-      "githubUrl": "https://github.com/marcusziade/compiledthoughts",
-      "category": "Other Projects",
-      "highlights": [],
-      "updatedAt": "2025-06-07T20:06:30Z",
-      "createdAt": "2025-06-05T17:16:02Z",
-      "topics": [],
-      "commitCount": 84
     },
     {
       "id": "legendstracker",
@@ -527,10 +527,10 @@
       "githubUrl": "https://github.com/marcusziade/speedrun-cli",
       "category": "CLI Tools",
       "highlights": [],
-      "updatedAt": "2025-06-05T16:08:13Z",
+      "updatedAt": "2025-06-14T15:48:33Z",
       "createdAt": "2025-05-22T19:07:26Z",
       "topics": [],
-      "commitCount": 19
+      "commitCount": 23
     },
     {
       "id": "echo",
