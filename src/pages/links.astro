@@ -229,7 +229,9 @@ const sortedLinks = links.sort((a, b) => a.priority - b.priority);
 
                   {/* Widget rendering */}
                   {link.widget && (
-                    <div class="mt-auto pt-3 border-t border-gray-200 dark:border-gray-700">
+                    <div
+                      class={`mt-auto ${link.widget !== 'lastfm' ? 'pt-3 border-t border-gray-200 dark:border-gray-700' : ''}`}
+                    >
                       {link.widget === 'lastfm' && (
                         <LastFmNowPlaying username="marcusziade" size="large" />
                       )}
