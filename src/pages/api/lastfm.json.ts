@@ -29,13 +29,36 @@ export const GET: APIRoute = async (context) => {
   }
 
   try {
-    const lastFmResponse = await fetch(
-      `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${username}&api_key=${apiKey}&format=json&limit=1`
-    );
+    // Fetch multiple endpoints in parallel
+    const [recentTracksResponse, userInfoResponse, topArtistsResponse] = await Promise.all([
+      // Get recent tracks (last 5)
+      fetch(
+        `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${username}&api_key=${apiKey}&format=json&limit=5`
+      ),
+      // Get user info for total scrobbles
+      fetch(
+        `https://ws.audioscrobbler.com/2.0/?method=user.getinfo&user=${username}&api_key=${apiKey}&format=json`
+      ),
+      // Get top artists (7 day period for recent favorites)
+      fetch(
+        `https://ws.audioscrobbler.com/2.0/?method=user.gettopartists&user=${username}&api_key=${apiKey}&format=json&period=7day&limit=5`
+      ),
+    ]);
 
-    const data = await lastFmResponse.json();
+    const [recentTracks, userInfo, topArtists] = await Promise.all([
+      recentTracksResponse.json(),
+      userInfoResponse.json(),
+      topArtistsResponse.json(),
+    ]);
 
-    return new Response(JSON.stringify(data), {
+    // Combine all data
+    const combinedData = {
+      recenttracks: recentTracks.recenttracks,
+      user: userInfo.user,
+      topartists: topArtists.topartists,
+    };
+
+    return new Response(JSON.stringify(combinedData), {
       status: 200,
       headers: {
         'Content-Type': 'application/json',

@@ -33,6 +33,15 @@ const { username, showArtwork = true, size = 'normal' } = Astro.props;
       <div id="track-details" class="mt-1 space-y-0.5 hidden">
         <!-- Additional track details will be shown here -->
       </div>
+      <div id="user-stats" class="mt-2 hidden">
+        <!-- User stats will be shown here -->
+      </div>
+      <div id="recent-tracks" class="mt-2 hidden">
+        <!-- Recent tracks will be shown here -->
+      </div>
+      <div id="top-artists" class="mt-2 hidden">
+        <!-- Top artists will be shown here -->
+      </div>
     </div>
   </div>
 </div>
@@ -54,6 +63,9 @@ const { username, showArtwork = true, size = 'normal' } = Astro.props;
       const trackElement = document.getElementById('track-info');
       const albumArtElement = document.getElementById('album-art');
       const trackDetailsElement = document.getElementById('track-details');
+      const userStatsElement = document.getElementById('user-stats');
+      const recentTracksElement = document.getElementById('recent-tracks');
+      const topArtistsElement = document.getElementById('top-artists');
 
       if (!trackElement) return;
 
@@ -63,6 +75,7 @@ const { username, showArtwork = true, size = 'normal' } = Astro.props;
         return;
       }
 
+      // Handle recent tracks
       if (data.recenttracks && data.recenttracks.track) {
         // Handle both array and single object response
         const tracks = Array.isArray(data.recenttracks.track)
@@ -75,7 +88,6 @@ const { username, showArtwork = true, size = 'normal' } = Astro.props;
 
           console.log('Track found:', track.name, 'by', track.artist['#text']);
           console.log('Now playing:', isNowPlaying);
-          console.log('Track @attr:', track['@attr']);
 
           // Show album artwork if available
           if (showArtwork && albumArtElement && track.image) {
@@ -121,6 +133,71 @@ const { username, showArtwork = true, size = 'normal' } = Astro.props;
               ${track.album && track.album['#text'] ? `<div class="${artistSize} text-gray-500 dark:text-gray-500 ${truncateClass}">${track.album['#text']}</div>` : ''}
             `;
             trackDetailsElement.classList.remove('hidden');
+          }
+
+          // Show user stats if available
+          if (userStatsElement && data.user) {
+            const playcount = parseInt(data.user.playcount || '0').toLocaleString();
+            const registeredDate = new Date(parseInt(data.user.registered?.unixtime || '0') * 1000);
+            const memberSince = registeredDate.getFullYear();
+
+            userStatsElement.innerHTML = `
+              <div class="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400">
+                <span>${playcount} scrobbles</span>
+                <span>·</span>
+                <span>Since ${memberSince}</span>
+              </div>
+            `;
+            userStatsElement.classList.remove('hidden');
+          }
+
+          // Show recent tracks (mini timeline)
+          if (recentTracksElement && tracks.length > 1) {
+            const recentTracksList = tracks.slice(1, 4); // Show up to 3 recent tracks
+            const recentTracksHtml = recentTracksList
+              .map((t) => {
+                const date = t.date ? new Date(t.date.uts * 1000) : null;
+                const timeAgo = date ? getTimeAgo(date) : '';
+                return `
+                <div class="text-xs text-gray-500 dark:text-gray-400 truncate">
+                  <span class="text-gray-400 dark:text-gray-500">${timeAgo}:</span> ${t.artist['#text']} - ${t.name}
+                </div>
+              `;
+              })
+              .join('');
+
+            if (recentTracksHtml) {
+              recentTracksElement.innerHTML = `
+                <div class="pt-2 border-t border-gray-200 dark:border-gray-700 space-y-0.5">
+                  <div class="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Recent tracks</div>
+                  ${recentTracksHtml}
+                </div>
+              `;
+              recentTracksElement.classList.remove('hidden');
+            }
+          }
+
+          // Show top artists for the week
+          if (topArtistsElement && data.topartists && data.topartists.artist) {
+            const artists = Array.isArray(data.topartists.artist)
+              ? data.topartists.artist.slice(0, 3)
+              : [data.topartists.artist];
+
+            if (artists.length > 0) {
+              const artistsList = artists
+                .map(
+                  (artist, index) =>
+                    `<span class="text-gray-600 dark:text-gray-400">${artist.name} (${artist.playcount})</span>`
+                )
+                .join(' · ');
+
+              topArtistsElement.innerHTML = `
+                <div class="text-xs">
+                  <span class="text-gray-500 dark:text-gray-500">This week:</span> ${artistsList}
+                </div>
+              `;
+              topArtistsElement.classList.remove('hidden');
+            }
           }
         } else {
           trackElement.textContent = 'No recent tracks';
