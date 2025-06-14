@@ -15,25 +15,30 @@ const { username, showArtwork = true, size = 'normal' } = Astro.props;
       <div id="album-art" class="hidden flex-shrink-0">
         <!-- Album artwork will be inserted here -->
       </div>
-      <div class="flex-1 min-w-0 space-y-1">
-        <div class="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
-          <svg
-            class="w-4 h-4 animate-pulse text-green-500 flex-shrink-0"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <circle cx="12" cy="12" r="3"></circle>
-            <path
-              d="M12 6a6 6 0 0 0-6 6c0 1.66.67 3.16 1.76 4.24l1.42-1.42A4 4 0 0 1 8 12a4 4 0 0 1 4-4V6z"
-              opacity="0.6"></path>
-            <path
-              d="M12 2a10 10 0 0 0-10 10c0 2.76 1.12 5.26 2.93 7.07l1.42-1.42A8 8 0 0 1 4 12a8 8 0 0 1 8-8V2z"
-              opacity="0.3"></path>
-          </svg>
-          <span id="track-info" class="italic">Loading...</span>
+      <div class="flex-1 min-w-0 flex flex-col justify-between">
+        <div class="space-y-1">
+          <div class="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
+            <svg
+              class="w-4 h-4 animate-pulse text-green-500 flex-shrink-0"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <circle cx="12" cy="12" r="3"></circle>
+              <path
+                d="M12 6a6 6 0 0 0-6 6c0 1.66.67 3.16 1.76 4.24l1.42-1.42A4 4 0 0 1 8 12a4 4 0 0 1 4-4V6z"
+                opacity="0.6"></path>
+              <path
+                d="M12 2a10 10 0 0 0-10 10c0 2.76 1.12 5.26 2.93 7.07l1.42-1.42A8 8 0 0 1 4 12a8 8 0 0 1 8-8V2z"
+                opacity="0.3"></path>
+            </svg>
+            <span id="track-info" class="italic">Loading...</span>
+          </div>
+          <div id="track-details" class="hidden">
+            <!-- Current track details -->
+          </div>
         </div>
-        <div id="track-details" class="hidden">
-          <!-- Current track details -->
+        <div id="user-stats" class="hidden">
+          <!-- User statistics will be inserted here -->
         </div>
       </div>
     </div>
@@ -56,6 +61,7 @@ const { username, showArtwork = true, size = 'normal' } = Astro.props;
       const albumArtElement = document.getElementById('album-art');
       const trackDetailsElement = document.getElementById('track-details');
       const recentHistoryElement = document.getElementById('recent-history');
+      const userStatsElement = document.getElementById('user-stats');
 
       if (!trackElement) return;
 
@@ -114,6 +120,40 @@ const { username, showArtwork = true, size = 'normal' } = Astro.props;
               <div class="text-xs text-gray-600 dark:text-gray-400 truncate">${track.artist['#text']} · ${track.album?.['#text'] || 'Unknown Album'}</div>
             `;
             trackDetailsElement.classList.remove('hidden');
+          }
+
+          // User statistics in bottom left
+          if (userStatsElement && data.user) {
+            const playcount = data.user.playcount
+              ? parseInt(data.user.playcount).toLocaleString()
+              : '0';
+            const registered = data.user.registered?.unixtime
+              ? new Date(parseInt(data.user.registered.unixtime) * 1000).getFullYear()
+              : null;
+            const statsHtml = `
+              <div class="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400">
+                <div class="flex items-center gap-1">
+                  <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
+                  </svg>
+                  <span>${playcount} scrobbles</span>
+                </div>
+                ${
+                  registered
+                    ? `
+                <div class="flex items-center gap-1">
+                  <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
+                  </svg>
+                  <span>Since ${registered}</span>
+                </div>
+                `
+                    : ''
+                }
+              </div>
+            `;
+            userStatsElement.innerHTML = statsHtml;
+            userStatsElement.classList.remove('hidden');
           }
 
           // Recent history list - vertical on the right
