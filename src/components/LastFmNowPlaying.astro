@@ -8,34 +8,39 @@ export interface Props {
 const { username, showArtwork = true, size = 'normal' } = Astro.props;
 ---
 
-<div id="lastfm-now-playing" class="space-y-2">
+<div id="lastfm-now-playing" class="space-y-3">
   <div id="lastfm-content" class="flex items-start gap-3">
     <div id="album-art" class="hidden flex-shrink-0">
       <!-- Album artwork will be inserted here -->
     </div>
-    <div class="flex-1 min-w-0">
-      <div class="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
-        <svg
-          class="w-4 h-4 animate-pulse text-green-500 flex-shrink-0"
-          fill="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <circle cx="12" cy="12" r="3"></circle>
-          <path
-            d="M12 6a6 6 0 0 0-6 6c0 1.66.67 3.16 1.76 4.24l1.42-1.42A4 4 0 0 1 8 12a4 4 0 0 1 4-4V6z"
-            opacity="0.6"></path>
-          <path
-            d="M12 2a10 10 0 0 0-10 10c0 2.76 1.12 5.26 2.93 7.07l1.42-1.42A8 8 0 0 1 4 12a8 8 0 0 1 8-8V2z"
-            opacity="0.3"></path>
-        </svg>
-        <span id="track-info" class="italic">Loading...</span>
-        <span id="user-stats" class="hidden ml-auto"></span>
+    <div class="flex-1 min-w-0 space-y-2">
+      <div class="flex items-center justify-between gap-2 text-xs text-gray-600 dark:text-gray-400">
+        <div class="flex items-center gap-2">
+          <svg
+            class="w-4 h-4 animate-pulse text-green-500 flex-shrink-0"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <circle cx="12" cy="12" r="3"></circle>
+            <path
+              d="M12 6a6 6 0 0 0-6 6c0 1.66.67 3.16 1.76 4.24l1.42-1.42A4 4 0 0 1 8 12a4 4 0 0 1 4-4V6z"
+              opacity="0.6"></path>
+            <path
+              d="M12 2a10 10 0 0 0-10 10c0 2.76 1.12 5.26 2.93 7.07l1.42-1.42A8 8 0 0 1 4 12a8 8 0 0 1 8-8V2z"
+              opacity="0.3"></path>
+          </svg>
+          <span id="track-info" class="italic">Loading...</span>
+        </div>
+        <span id="user-stats" class="hidden text-xs"></span>
       </div>
-      <div id="track-details" class="mt-1 space-y-0.5 hidden">
-        <!-- Additional track details will be shown here -->
+      <div id="track-details" class="hidden">
+        <!-- Current track details -->
       </div>
-      <div id="extra-info" class="mt-1.5 hidden">
-        <!-- Extra info (recent tracks & top artists) will be shown here in a compact format -->
+      <div id="recent-history" class="hidden">
+        <!-- Recent tracks history -->
+      </div>
+      <div id="weekly-stats" class="hidden">
+        <!-- Weekly stats -->
       </div>
     </div>
   </div>
@@ -52,7 +57,8 @@ const { username, showArtwork = true, size = 'normal' } = Astro.props;
       const albumArtElement = document.getElementById('album-art');
       const trackDetailsElement = document.getElementById('track-details');
       const userStatsElement = document.getElementById('user-stats');
-      const extraInfoElement = document.getElementById('extra-info');
+      const recentHistoryElement = document.getElementById('recent-history');
+      const weeklyStatsElement = document.getElementById('weekly-stats');
 
       if (!trackElement) return;
 
@@ -71,10 +77,10 @@ const { username, showArtwork = true, size = 'normal' } = Astro.props;
           const track = tracks[0];
           const isNowPlaying = track['@attr'] && track['@attr'].nowplaying === 'true';
 
-          // Show album artwork if available - SMALLER SIZE
+          // Show album artwork - keep it small
           if (showArtwork && albumArtElement && track.image) {
-            const imageSize = 'medium'; // Use medium instead of large
-            const artworkSize = size === 'large' ? 'w-12 h-12' : 'w-10 h-10'; // Smaller sizes
+            const imageSize = 'medium';
+            const artworkSize = size === 'large' ? 'w-12 h-12' : 'w-10 h-10';
 
             const selectedImage =
               track.image.find((img) => img.size === imageSize) ||
@@ -94,62 +100,68 @@ const { username, showArtwork = true, size = 'normal' } = Astro.props;
             }
           }
 
+          // Status line
           if (isNowPlaying) {
             trackElement.innerHTML = `<span class="text-green-600 dark:text-green-400">Now playing</span>`;
           } else {
             const date = track.date ? new Date(track.date.uts * 1000) : null;
             const timeAgo = date ? getTimeAgo(date) : '';
-            trackElement.innerHTML = `<span class="text-gray-500">Last played${timeAgo ? ' · ' + timeAgo : ''}</span>`;
+            trackElement.innerHTML = `<span class="text-gray-500">Last played · ${timeAgo}</span>`;
           }
 
-          // Show user stats in the same line (compact)
+          // User stats on same line
           if (userStatsElement && data.user) {
             const playcount = parseInt(data.user.playcount || '0').toLocaleString();
-            userStatsElement.innerHTML = `<span class="text-xs">${playcount} plays</span>`;
+            userStatsElement.innerHTML = `${playcount} plays`;
             userStatsElement.classList.remove('hidden');
           }
 
-          // Show track details (more compact)
+          // Current track details
           if (trackDetailsElement) {
-            const truncateClass = 'truncate';
             const titleSize = size === 'large' ? 'text-sm' : 'text-xs';
-            const artistSize = 'text-xs';
-
             trackDetailsElement.innerHTML = `
-              <div class="${titleSize} font-medium text-gray-900 dark:text-gray-100 ${truncateClass}">${track.name}</div>
-              <div class="${artistSize} text-gray-600 dark:text-gray-400 ${truncateClass}">${track.artist['#text']}${track.album && track.album['#text'] ? ' · ' + track.album['#text'] : ''}</div>
+              <div class="${titleSize} font-medium text-gray-900 dark:text-gray-100 truncate">${track.name}</div>
+              <div class="text-xs text-gray-600 dark:text-gray-400 truncate">${track.artist['#text']} · ${track.album?.['#text'] || 'Unknown Album'}</div>
             `;
             trackDetailsElement.classList.remove('hidden');
           }
 
-          // Show extra info in a very compact format
-          if (extraInfoElement && size === 'large') {
-            let extraHtml = '';
+          // Recent history - show more tracks
+          if (recentHistoryElement && tracks.length > 1 && size === 'large') {
+            const recentTracks = tracks.slice(1, 4);
+            const recentHtml = `
+              <div class="text-xs text-gray-500 dark:text-gray-400 space-y-1">
+                <div class="font-medium">Recent:</div>
+                ${recentTracks
+                  .map((t) => {
+                    const date = t.date ? new Date(t.date.uts * 1000) : null;
+                    const timeAgo = date ? getTimeAgo(date) : '';
+                    return `<div class="truncate pl-2">${t.artist['#text']}, ${t.name}</div>`;
+                  })
+                  .join('')}
+              </div>
+            `;
+            recentHistoryElement.innerHTML = recentHtml;
+            recentHistoryElement.classList.remove('hidden');
+          }
 
-            // Recent tracks inline
-            if (tracks.length > 1) {
-              const recentArtists = tracks
-                .slice(1, 3)
-                .map((t) => t.artist['#text'])
-                .join(', ');
-              extraHtml += `<div class="text-xs text-gray-500 dark:text-gray-400 truncate">Recent: ${recentArtists}</div>`;
-            }
+          // Weekly stats - top artists with play counts
+          if (weeklyStatsElement && data.topartists && data.topartists.artist && size === 'large') {
+            const artists = Array.isArray(data.topartists.artist)
+              ? data.topartists.artist.slice(0, 3)
+              : [data.topartists.artist];
 
-            // Top artists inline
-            if (data.topartists && data.topartists.artist) {
-              const artists = Array.isArray(data.topartists.artist)
-                ? data.topartists.artist.slice(0, 2)
-                : [data.topartists.artist];
-
-              if (artists.length > 0) {
-                const topArtistNames = artists.map((a) => a.name).join(', ');
-                extraHtml += `<div class="text-xs text-gray-500 dark:text-gray-400 truncate">This week: ${topArtistNames}</div>`;
-              }
-            }
-
-            if (extraHtml) {
-              extraInfoElement.innerHTML = extraHtml;
-              extraInfoElement.classList.remove('hidden');
+            if (artists.length > 0) {
+              const weeklyHtml = `
+                <div class="text-xs text-gray-500 dark:text-gray-400 space-y-1">
+                  <div class="font-medium">This week:</div>
+                  ${artists
+                    .map((a) => `<div class="truncate pl-2">${a.name} · ${a.playcount} plays</div>`)
+                    .join('')}
+                </div>
+              `;
+              weeklyStatsElement.innerHTML = weeklyHtml;
+              weeklyStatsElement.classList.remove('hidden');
             }
           }
         } else {
