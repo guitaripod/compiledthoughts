@@ -16,7 +16,7 @@ const (
 	githubUsername = "marcusziade"
 	githubAPIURL   = "https://api.github.com/users/%s/repos?per_page=100&sort=updated"
 	graphQLURL     = "https://api.github.com/graphql"
-	minCommits     = 8  // Increased to filter out minor projects
+	minCommits     = 25 // Increased to filter out minor projects
 )
 
 var excludeRepos = []string{
@@ -512,8 +512,8 @@ func selectFeaturedProjects(projects []Project, pinnedRepos []string) []Project 
 	var qualityProjects []Project
 	
 	for _, p := range projects {
-		// Include projects with >= 10 commits, or projects with > 1 star regardless of commit count
-		if p.CommitCount >= 10 || p.Stars > 1 {
+		// Include projects with >= 25 commits, or projects with > 1 star regardless of commit count
+		if p.CommitCount >= 25 || p.Stars > 1 {
 			qualityProjects = append(qualityProjects, p)
 		}
 	}
