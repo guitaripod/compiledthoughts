@@ -10,32 +10,30 @@ const { username, showArtwork = true, size = 'normal' } = Astro.props;
 
 <div id="lastfm-now-playing">
   <div id="lastfm-content" class="flex gap-4">
-    <!-- Left side: Current track info -->
-    <div class="flex-1 flex items-start gap-3">
-      <div id="album-art" class="hidden flex-shrink-0">
+    <!-- Left side: Large artwork and track info -->
+    <div class="flex-shrink-0 space-y-3">
+      <div id="album-art" class="hidden">
         <!-- Album artwork will be inserted here -->
       </div>
-      <div class="flex-1 min-w-0 flex flex-col justify-between">
-        <div class="space-y-1">
-          <div class="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
-            <svg
-              class="w-4 h-4 animate-pulse text-green-500 flex-shrink-0"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <circle cx="12" cy="12" r="3"></circle>
-              <path
-                d="M12 6a6 6 0 0 0-6 6c0 1.66.67 3.16 1.76 4.24l1.42-1.42A4 4 0 0 1 8 12a4 4 0 0 1 4-4V6z"
-                opacity="0.6"></path>
-              <path
-                d="M12 2a10 10 0 0 0-10 10c0 2.76 1.12 5.26 2.93 7.07l1.42-1.42A8 8 0 0 1 4 12a8 8 0 0 1 8-8V2z"
-                opacity="0.3"></path>
-            </svg>
-            <span id="track-info" class="italic">Loading...</span>
-          </div>
-          <div id="track-details" class="hidden">
-            <!-- Current track details -->
-          </div>
+      <div id="track-section" class="space-y-2">
+        <div class="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
+          <svg
+            class="w-4 h-4 animate-pulse text-green-500 flex-shrink-0"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <circle cx="12" cy="12" r="3"></circle>
+            <path
+              d="M12 6a6 6 0 0 0-6 6c0 1.66.67 3.16 1.76 4.24l1.42-1.42A4 4 0 0 1 8 12a4 4 0 0 1 4-4V6z"
+              opacity="0.6"></path>
+            <path
+              d="M12 2a10 10 0 0 0-10 10c0 2.76 1.12 5.26 2.93 7.07l1.42-1.42A8 8 0 0 1 4 12a8 8 0 0 1 8-8V2z"
+              opacity="0.3"></path>
+          </svg>
+          <span id="track-info" class="italic">Loading...</span>
+        </div>
+        <div id="track-details" class="hidden">
+          <!-- Current track details -->
         </div>
         <div id="user-stats" class="hidden">
           <!-- User statistics will be inserted here -->
@@ -44,7 +42,7 @@ const { username, showArtwork = true, size = 'normal' } = Astro.props;
     </div>
 
     <!-- Right side: Recent history -->
-    <div id="recent-history" class="hidden flex-shrink-0">
+    <div id="recent-history" class="hidden flex-1">
       <!-- Recent tracks history will be inserted here -->
     </div>
   </div>
@@ -80,10 +78,10 @@ const { username, showArtwork = true, size = 'normal' } = Astro.props;
           const track = tracks[0];
           const isNowPlaying = track['@attr'] && track['@attr'].nowplaying === 'true';
 
-          // Show album artwork - small size
+          // Show album artwork - larger size
           if (showArtwork && albumArtElement && track.image) {
-            const imageSize = 'medium';
-            const artworkSize = size === 'large' ? 'w-12 h-12' : 'w-10 h-10';
+            const imageSize = size === 'large' ? 'large' : 'medium';
+            const artworkSize = size === 'large' ? 'w-32 h-32' : 'w-20 h-20';
 
             const selectedImage =
               track.image.find((img) => img.size === imageSize) ||
@@ -95,7 +93,7 @@ const { username, showArtwork = true, size = 'normal' } = Astro.props;
                 <img 
                   src="${selectedImage['#text']}" 
                   alt="${track.album ? track.album['#text'] : 'Album artwork'}"
-                  class="${artworkSize} rounded-md shadow-sm object-cover"
+                  class="${artworkSize} rounded-lg shadow-md object-cover"
                   loading="lazy"
                 />
               `;
@@ -122,7 +120,7 @@ const { username, showArtwork = true, size = 'normal' } = Astro.props;
             trackDetailsElement.classList.remove('hidden');
           }
 
-          // User statistics in bottom left
+          // User statistics below track info
           if (userStatsElement && data.user) {
             const playcount = data.user.playcount
               ? parseInt(data.user.playcount).toLocaleString()
@@ -131,8 +129,8 @@ const { username, showArtwork = true, size = 'normal' } = Astro.props;
               ? new Date(parseInt(data.user.registered.unixtime) * 1000).getFullYear()
               : null;
             const statsHtml = `
-              <div class="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400">
-                <div class="flex items-center gap-1">
+              <div class="space-y-1.5">
+                <div class="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
                   <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
                   </svg>
@@ -141,7 +139,7 @@ const { username, showArtwork = true, size = 'normal' } = Astro.props;
                 ${
                   registered
                     ? `
-                <div class="flex items-center gap-1">
+                <div class="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
                   <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
                   </svg>
