@@ -9,12 +9,17 @@ const { username, showArtwork = true, size = 'normal' } = Astro.props;
 ---
 
 <div id="lastfm-now-playing">
-  <div id="lastfm-content" class="flex items-start gap-3">
-    <div id="album-art" class="hidden flex-shrink-0">
-      <!-- Album artwork will be inserted here -->
+  <div id="lastfm-content" class="flex flex-col gap-3">
+    <!-- Recent history at the top -->
+    <div id="recent-history" class="hidden">
+      <!-- Recent tracks history will be inserted here -->
     </div>
-    <div class="flex-1 flex items-stretch gap-4">
-      <!-- Left side: Current track info -->
+
+    <!-- Current track info below -->
+    <div class="flex items-start gap-3">
+      <div id="album-art" class="hidden flex-shrink-0">
+        <!-- Album artwork will be inserted here -->
+      </div>
       <div class="flex-1 min-w-0 space-y-1">
         <div class="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
           <svg
@@ -35,11 +40,6 @@ const { username, showArtwork = true, size = 'normal' } = Astro.props;
         <div id="track-details" class="hidden">
           <!-- Current track details -->
         </div>
-      </div>
-
-      <!-- Right side: Recent history (full height) -->
-      <div id="recent-history" class="hidden flex-shrink-0">
-        <!-- Recent tracks history will be inserted here -->
       </div>
     </div>
   </div>
@@ -116,13 +116,13 @@ const { username, showArtwork = true, size = 'normal' } = Astro.props;
             trackDetailsElement.classList.remove('hidden');
           }
 
-          // Recent history list - full height from top
+          // Recent history list - now at the top
           if (recentHistoryElement && tracks.length > 1 && size === 'large') {
             const recentTracks = tracks.slice(1, 5); // Show 4 recent tracks
             const historyHtml = `
-              <div class="h-full flex flex-col">
-                <div class="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1.5">Recent History</div>
-                <div class="flex-1 space-y-1.5">
+              <div>
+                <div class="text-xs font-medium text-gray-600 dark:text-gray-400 mb-2">Recent History</div>
+                <div class="grid grid-cols-2 gap-x-4 gap-y-1.5">
                   ${recentTracks
                     .map((t, index) => {
                       const date = t.date ? new Date(t.date.uts * 1000) : null;
