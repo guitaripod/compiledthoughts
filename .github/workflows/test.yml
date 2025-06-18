@@ -29,14 +29,6 @@ jobs:
         go-version: '1.21'
         cache: true
     
-    - name: Cache Go modules
-      uses: actions/cache@v4
-      with:
-        path: ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-
-    
     - name: Build ct CLI
       run: make build
     
@@ -82,14 +74,6 @@ jobs:
       with:
         go-version: '1.21'
         cache: true
-    
-    - name: Cache Go modules
-      uses: actions/cache@v4
-      with:
-        path: ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-
     
     - name: Install dependencies and build in parallel
       run: |
@@ -139,14 +123,6 @@ jobs:
       with:
         go-version: '1.21'
         cache: true
-    
-    - name: Cache Go modules
-      uses: actions/cache@v4
-      with:
-        path: ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-
     
     - name: Install dependencies and build in parallel
       run: |
