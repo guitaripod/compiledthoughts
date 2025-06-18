@@ -17,7 +17,7 @@ Before diving into the implementation, let's understand why you might want to ru
 4. **Low Latency**: No network round-trips
 5. **Predictable Performance**: No dependency on external services
 
-The trade-off? You're limited by device capabilities and model size. But with Apple Silicon's Neural Engine and unified memory architecture, modern iPhones can run impressively capable models.
+The trade-offs? You're limited by device capabilities and model size, and **MLX requires a physical device** - it doesn't work in the iOS Simulator due to Metal GPU requirements. But with Apple Silicon's Neural Engine and unified memory architecture, modern iPhones can run impressively capable models.
 
 ## Setting Up MLX Swift
 
@@ -134,7 +134,20 @@ private func formatProgress(progress: Double, totalSize: Int64) -> String {
 Once downloaded, loading the model requires careful memory management:
 
 ```swift
-func loadModel(configuration: ModelConfiguration) async throws -> LLMModel {
+func loadModel(configuration: ModelConfiguration) async throws -> LLMModel? {
+    // Handle simulator mode gracefully
+    if DeviceUtility.isSimulator {
+        print("🔮 MLX: Running in simulator - using mock mode")
+        // Simulate loading progress
+        let progress = Progress(totalUnitCount: 100)
+        for i in 0...100 {
+            progress.completedUnitCount = Int64(i)
+            progressHandler?(progress)
+            try await Task.sleep(nanoseconds: 10_000_000) // 10ms
+        }
+        return nil // No actual model in simulator
+    }
+    
     // Check cache first
     if let cachedModel = modelCache.object(forKey: configuration.hubId as NSString) {
         return cachedModel
@@ -297,6 +310,88 @@ class ChatViewController: UIViewController {
 }
 ```
 
+## Developing with iOS Simulator
+
+One important consideration when working with MLX is that **models don't run in the iOS Simulator**. The simulator lacks the Metal GPU support required by MLX, which means you'll need to handle this gracefully during development. Here's a pattern I've found works well:
+
+```swift
+// Create a utility to detect simulator environment
+struct DeviceUtility {
+    static var isSimulator: Bool {
+        #if targetEnvironment(simulator)
+        return true
+        #else
+        return false
+        #endif
+    }
+}
+
+// In your MLX service, provide mock responses for simulator
+func generateResponse(
+    prompt: String,
+    systemPrompt: String? = nil
+) -> AsyncThrowingStream<String, Error> {
+    // Handle simulator mode
+    if DeviceUtility.isSimulator {
+        return createSimulatorResponse(for: prompt)
+    }
+    
+    // Normal device flow
+    guard let model = currentModel else {
+        throw MLXError.modelNotLoaded
+    }
+    
+    // ... rest of implementation
+}
+
+private func createSimulatorResponse(
+    for prompt: String
+) -> AsyncThrowingStream<String, Error> {
+    AsyncThrowingStream { continuation in
+        Task {
+            let mockResponse = """
+            🔮 [Simulator Mode] The oracle speaks through the digital void...
+            
+            Regarding your question: '\(prompt)'
+            
+            The true oracle requires a physical device to channel divine wisdom.
+            This is merely a shadow of what could be...
+            """
+            
+            // Simulate streaming for realistic UI testing
+            let words = mockResponse.split(separator: " ")
+            for word in words {
+                continuation.yield(String(word) + " ")
+                try? await Task.sleep(nanoseconds: 50_000_000) // 50ms delay
+            }
+            
+            continuation.finish()
+        }
+    }
+}
+```
+
+This approach lets you:
+- Develop and test your UI in the simulator
+- Provide clear feedback about simulator limitations
+- Maintain the same streaming interface for consistent behavior
+- Avoid runtime crashes from missing Metal support
+
+For the UI, you can show a simulator-specific message:
+
+```swift
+private func updateDownloadUI() {
+    if DeviceUtility.isSimulator {
+        titleLabel.text = "Oracle Simulator Mode"
+        descriptionLabel.text = "You're running in the iOS Simulator. " +
+            "The Oracle will provide mock responses for testing. " +
+            "Deploy to a physical device for real AI conversations."
+        downloadButton.setTitle("Enable Simulator Oracle", for: .normal)
+        iconView.image = UIImage(systemName: "desktopcomputer")
+    }
+}
+```
+
 ## Memory Management and Performance
 
 Running LLMs on mobile devices requires careful attention to memory usage:
@@ -350,8 +445,10 @@ Choose based on your use case and target devices. For chat applications, 1-3B pa
 1. **Preload Models**: Load models on app launch if previously downloaded
 2. **Background Downloads**: Use URLSession background configuration for large models
 3. **Smooth Progress**: Average download progress over time to avoid jumpy UI
-4. **Fallback Options**: Provide cloud-based fallback for older devices
-5. **Testing**: Test on real devices, especially older iPhones with less RAM
+4. **Simulator Development**: Implement mock responses for productive UI development
+5. **Device Testing**: Always test on real devices, especially older iPhones with less RAM
+6. **Fallback Options**: Provide cloud-based fallback for older devices
+7. **Clear Messaging**: When in simulator, clearly communicate limitations to developers
 
 ## Conclusion
 
