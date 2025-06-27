@@ -6,6 +6,9 @@ import cloudflare from '@astrojs/cloudflare';
 
 export default defineConfig({
   site: 'https://compiledthoughts.pages.dev',
+  server: {
+    host: true
+  },
   integrations: [
     mdx({
       syntaxHighlight: 'shiki',
