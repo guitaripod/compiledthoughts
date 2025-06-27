@@ -30,7 +30,7 @@ const categoryIcons = {
 ---
 
 <article
-  class="group bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-6 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-all duration-300"
+  class="group bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-6 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-lg dark:hover:shadow-xl dark:hover:shadow-gray-900/20 hover:-translate-y-0.5 transition-all duration-300 ease-out"
 >
   <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" class="block">
     <div class="flex items-start justify-between mb-3">
@@ -71,7 +71,7 @@ const categoryIcons = {
         {project.language}
       </span>
       <svg
-        class="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"
+        class="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-all duration-300 flex-shrink-0 group-hover:text-blue-500 dark:group-hover:text-blue-400"
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"
