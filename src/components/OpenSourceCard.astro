@@ -30,7 +30,7 @@ const categoryIcons = {
 ---
 
 <article
-  class="group bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-6 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-lg dark:hover:shadow-xl dark:hover:shadow-gray-900/20 hover:-translate-y-0.5 transition-all duration-300 ease-out"
+  class="group bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-5 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-lg dark:hover:shadow-xl dark:hover:shadow-gray-900/20 hover:-translate-y-0.5 transition-all duration-300 ease-out"
 >
   <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" class="block">
     <div class="flex items-start justify-between mb-3">
@@ -59,29 +59,14 @@ const categoryIcons = {
       </div>
     </div>
 
-    <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-2">
+    <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
       {project.description}
     </p>
-
-    <div class="flex items-center justify-between gap-2">
-      <span
-        class="px-2 py-0.5 text-xs font-medium rounded-full lg:hidden"
-        style={`background-color: ${languageColors[project.language]}20; color: ${languageColors[project.language]}`}
-      >
-        {project.language}
-      </span>
-      <svg
-        class="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-all duration-300 flex-shrink-0 group-hover:text-blue-500 dark:group-hover:text-blue-400"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-      </svg>
-    </div>
+    <span
+      class="px-2 py-0.5 text-xs font-medium rounded-full lg:hidden mt-3 inline-block"
+      style={`background-color: ${languageColors[project.language]}20; color: ${languageColors[project.language]}`}
+    >
+      {project.language}
+    </span>
   </a>
 </article>
