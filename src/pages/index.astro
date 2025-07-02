@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro';
-import FeaturedAppCard from '@components/FeaturedAppCard.astro';
+import AppCard from '@components/AppCard.astro';
 import OpenSourceCard from '@components/OpenSourceCard.astro';
 import CLIAppCard from '@components/CLIAppCard.astro';
 import { getCollection } from 'astro:content';
@@ -22,8 +22,8 @@ const postsWithReadingTime = await Promise.all(
   })
 );
 
-// Get featured apps (manually selected)
-const featuredAppIds = ['dream-eater', 'solar-beam', 'psywave'];
+// Get featured apps (Dream Eater and Solar Beam)
+const featuredAppIds = ['dream-eater', 'solar-beam'];
 const featuredApps = featuredAppIds
   .map((id) => appsData.apps.find((app) => app.id === id))
   .filter(Boolean);
@@ -188,20 +188,8 @@ const socialLinks = [{ name: 'GitHub', url: 'https://github.com/marcusziade', ic
         </svg>
       </a>
     </div>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      {
-        featuredApps.map((app) => (
-          <FeaturedAppCard
-            id={app.id}
-            name={app.name}
-            tagline={app.tagline}
-            icon={app.icon}
-            primaryColor={app.primaryColor}
-            platforms={app.platforms}
-            appStoreUrl={app.appStoreUrl}
-          />
-        ))
-      }
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+      {featuredApps.map((app) => <AppCard app={app} />)}
     </div>
   </section>
 
