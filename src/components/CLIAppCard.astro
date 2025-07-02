@@ -71,6 +71,12 @@ const getTerminalDemo = (name: string) => {
   if (lowerName === 'igscraper') {
     return ['igscraper user @username', 'Fetching user data...', 'Posts: 847', 'Downloaded: 50 items'];
   }
+  if (lowerName === 'geminicli') {
+    return ['gemini "explain quantum computing"', 'Thinking...', 'Quantum computing uses quantum bits...', 'Unlike classical bits...'];
+  }
+  if (lowerName === 'swollamacli') {
+    return ['swollama chat "write a haiku"', 'Using model: llama3.2...', 'Morning dew glistens', 'On petals soft and gentle'];
+  }
   return [`${lowerName} --help`, 'Command-line tool', 'Fast and efficient'];
 };
 

@@ -63,6 +63,32 @@ const additionalTools = [
     highlights: [],
     topics: ['cli', 'go', 'instagram', 'scraper'],
     commitCount: 25,
+  },
+  {
+    id: 'geminicli',
+    name: 'GeminiCLI',
+    description: 'Command-line interface for Google Gemini AI. Chat with Gemini from your terminal.',
+    language: 'Swift',
+    platforms: ['macOS'],
+    stars: 0,
+    githubUrl: 'https://github.com/marcusziade/GeminiCLI',
+    category: 'CLI Tools',
+    highlights: [],
+    topics: ['cli', 'swift', 'ai', 'gemini', 'llm'],
+    commitCount: 30,
+  },
+  {
+    id: 'swollamacli',
+    name: 'SwollamaCLI',
+    description: 'Swift CLI for Ollama. Run local LLMs from your terminal with a native Swift interface.',
+    language: 'Swift',
+    platforms: ['macOS'],
+    stars: 0,
+    githubUrl: 'https://github.com/marcusziade/SwollamaCLI',
+    category: 'CLI Tools',
+    highlights: [],
+    topics: ['cli', 'swift', 'ai', 'ollama', 'llm'],
+    commitCount: 45,
   }
 ];
 
@@ -71,6 +97,14 @@ additionalTools.forEach(tool => {
   if (!cliTools.some(t => t.name.toLowerCase() === tool.name.toLowerCase())) {
     cliTools.push(tool);
   }
+});
+
+// Sort by stars first, then by commit count to mix languages naturally
+cliTools.sort((a, b) => {
+  // First sort by stars (descending)
+  if (b.stars !== a.stars) return b.stars - a.stars;
+  // Then by commit count (descending)
+  return b.commitCount - a.commitCount;
 });
 
 // Create structured data for SEO
