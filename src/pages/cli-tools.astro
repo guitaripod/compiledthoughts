@@ -23,7 +23,7 @@ if (!hasPomme) {
     language: 'Go',
     platforms: ['macOS', 'Linux', 'Windows'],
     stars: 0, // Will be fetched from GitHub
-    githubUrl: 'https://github.com/marcusziade/pomme',
+    githubUrl: 'https://marcusziade.github.io/Pomme/',
     category: 'CLI Tools',
     highlights: ['App Store', 'Analytics', 'Reviews'],
     topics: ['cli', 'go', 'app-store-connect', 'ios', 'analytics'],
@@ -47,6 +47,24 @@ if (!hasSpeedrun) {
     highlights: [],
     topics: ['cli', 'go', 'speedrun', 'gaming'],
     commitCount: 27,
+  });
+}
+
+// Add apod-cli if not in list
+const hasApod = cliTools.some((tool) => tool.name.toLowerCase() === 'apod-cli');
+if (!hasApod) {
+  cliTools.push({
+    id: 'apod-cli',
+    name: 'apod-cli',
+    description: 'A command-line tool to browse the NASA Astronomy Picture of the Day archive.',
+    language: 'Go',
+    platforms: ['macOS', 'Linux', 'Windows'],
+    stars: 6,
+    githubUrl: 'https://github.com/marcusziade/apod-cli',
+    category: 'CLI Tools',
+    highlights: ['Homebrew available'],
+    topics: ['cli', 'go', 'nasa', 'astronomy', 'space'],
+    commitCount: 37,
   });
 }
 
