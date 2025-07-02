@@ -68,6 +68,9 @@ const getTerminalDemo = (name: string) => {
   if (lowerName === 'speedrun-cli') {
     return ['speedrun-cli game "Super Mario 64"', 'Loading leaderboards...', '1. cheese05 - 6:41', '2. Simply - 6:45'];
   }
+  if (lowerName === 'initialize') {
+    return ['initialize repos --user marcusziade', 'Fetching repositories...', '100 repos found', 'Generating report...'];
+  }
   return [`${lowerName} --help`, 'Command-line tool', 'Fast and efficient'];
 };
 
