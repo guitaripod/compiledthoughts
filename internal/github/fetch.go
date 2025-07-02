@@ -110,11 +110,16 @@ func FetchData() error {
 		ReleaseCount int
 	}
 
-	for _, repo := range repos {
+	for i, repo := range repos {
 		// Skip if it's in the exclude list or doesn't meet basic criteria
 		if repo.Fork || repo.Private || contains(excludeRepos, repo.Name) ||
 			repo.Description == "" {
 			continue
+		}
+
+		// Add delay between API calls to avoid rate limiting (except for first repo)
+		if i > 0 {
+			time.Sleep(1 * time.Second)
 		}
 
 		// Fetch commit count
@@ -124,6 +129,9 @@ func FetchData() error {
 			continue
 		}
 
+		// Add small delay between API calls
+		time.Sleep(500 * time.Millisecond)
+
 		// Fetch release count
 		releaseCount, err := getReleaseCount(repo)
 		if err != nil {
@@ -131,34 +139,13 @@ func FetchData() error {
 			continue
 		}
 
-		// Apply filtering criteria - must have at least 1 release
-		meetsQualityCriteria := false
+		// Simple filtering: must have at least 1 release and 15 commits
+		// Stars are only used for sorting, not filtering
+		meetsQualityCriteria := releaseCount >= 1 && commitCount >= minCommits
 		criteria := ""
-
-		if releaseCount >= 1 {
-			// Check various quality criteria
-			switch {
-			case commitCount >= minCommits:
-				// Released Project: ≥15 commits AND ≥1 release
-				meetsQualityCriteria = true
-				criteria = "released project"
-			case repo.StargazersCount >= 10:
-				// Popular Project: ≥10 stars AND ≥1 release
-				meetsQualityCriteria = true
-				criteria = "popular project"
-			case repo.StargazersCount >= 5:
-				// Starred Project: ≥5 stars AND ≥1 release
-				meetsQualityCriteria = true
-				criteria = "starred project"
-			case repo.HomepageURL != "":
-				// Documented Project: Has homepage AND ≥1 release
-				meetsQualityCriteria = true
-				criteria = "documented project"
-			case contains(repo.Topics, "library") || contains(repo.Topics, "package") || contains(repo.Topics, "framework"):
-				// Library/Package: Has package keywords AND ≥1 release
-				meetsQualityCriteria = true
-				criteria = "library/package"
-			}
+		
+		if meetsQualityCriteria {
+			criteria = "released project"
 		}
 
 		if meetsQualityCriteria {
@@ -377,6 +364,9 @@ func getReleaseCount(repo GitHubRepo) (int, error) {
 	if err != nil {
 		return 0, err
 	}
+	
+	// Set headers
+	req.Header.Set("User-Agent", "compiledthoughts-static-site")
 	
 	// Add auth if available
 	if token := os.Getenv("GITHUB_TOKEN"); token != "" {
