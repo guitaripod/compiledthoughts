@@ -43,6 +43,8 @@ jobs:
         wait
     
     - name: Build project
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: npm run build
     
     - name: Upload coverage reports
@@ -89,6 +91,8 @@ jobs:
         node scripts/generate-apps-og-grid.js || echo "Failed to generate OG grid, using existing image"
     
     - name: Build project
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: npm run build
     
     - name: Deploy to Cloudflare Pages Preview
@@ -138,6 +142,8 @@ jobs:
         node scripts/generate-apps-og-grid.js || echo "Failed to generate OG grid, using existing image"
     
     - name: Build project
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: npm run build
     
     - name: Deploy to Cloudflare Pages Production

@@ -19,6 +19,8 @@ const (
 	minCommits     = 15 // Minimum commits for a released project
 )
 
+var hasGitHubToken bool
+
 var excludeRepos = []string{
 	"marcusziade",                   // profile repo
 	"isowords",                      // fork
@@ -88,7 +90,18 @@ type PinnedReposResponse struct {
 
 func FetchData() error {
 	fmt.Println("Fetching latest GitHub repository data...")
-	fmt.Println("Fetching GitHub repository data...")
+	
+	// Check if GitHub token is set
+	token := os.Getenv("GITHUB_TOKEN")
+	hasGitHubToken = token != ""
+	
+	if !hasGitHubToken {
+		fmt.Println("⚠️  WARNING: GITHUB_TOKEN not set. API rate limits will be very restrictive.")
+		fmt.Println("   Set GITHUB_TOKEN environment variable to increase rate limits.")
+		fmt.Println("   Using longer delays to avoid rate limiting...")
+	} else {
+		fmt.Println("✓ GitHub token detected")
+	}
 
 	// Fetch pinned repos first
 	pinnedRepos, err := fetchPinnedRepos()
@@ -121,38 +134,47 @@ func FetchData() error {
 
 		// Add significant delay between API calls to avoid rate limiting
 		if i > 0 {
-			// Wait 3 seconds between each repo to be very conservative
-			fmt.Printf("  ⏳ Waiting before checking %s...\n", repo.Name)
-			time.Sleep(3 * time.Second)
+			delay := 3 * time.Second
+			if !hasGitHubToken {
+				delay = 10 * time.Second // Much longer delay without token
+			}
+			fmt.Printf("  ⏳ Waiting %v before checking %s...\n", delay, repo.Name)
+			time.Sleep(delay)
 		}
 
-		// Fetch commit count
+		// Fetch commit count first
 		commitCount, err := getCommitCount(repo)
 		if err != nil {
 			fmt.Printf("  ✗ %s: error fetching commits\n", repo.Name)
 			continue
 		}
 
-		// Add 2 second delay between API calls
-		time.Sleep(2 * time.Second)
+		// Skip repos that don't meet minimum commit threshold
+		if commitCount < minCommits {
+			fmt.Printf("  ✗ %s: %d commits (below threshold of %d)\n", repo.Name, commitCount, minCommits)
+			continue
+		}
 
-		// Fetch release count
+		// Only check releases for repos with enough commits
+		// This reduces API calls significantly
+		apiDelay := 2 * time.Second
+		if !hasGitHubToken {
+			apiDelay = 5 * time.Second
+		}
+		time.Sleep(apiDelay)
+		
 		releaseCount, err := getReleaseCount(repo)
 		if err != nil {
 			fmt.Printf("  ✗ %s: error fetching releases: %v\n", repo.Name, err)
 			continue
 		}
 
-		// Simple filtering: must have at least 1 release and 15 commits
-		// Stars are only used for sorting, not filtering
-		meetsQualityCriteria := releaseCount >= 1 && commitCount >= minCommits
+		// Simple filtering: must have at least 1 release
+		meetsQualityCriteria := releaseCount >= 1
 		criteria := ""
 		
 		if meetsQualityCriteria {
 			criteria = "released project"
-		}
-
-		if meetsQualityCriteria {
 			reposWithMetrics = append(reposWithMetrics, struct {
 				GitHubRepo
 				CommitCount  int
