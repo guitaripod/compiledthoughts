@@ -127,34 +127,38 @@ func FetchData() error {
 		// Fetch release count
 		releaseCount, err := getReleaseCount(repo)
 		if err != nil {
-			fmt.Printf("  ✗ %s: error fetching releases\n", repo.Name)
+			fmt.Printf("  ✗ %s: error fetching releases: %v\n", repo.Name, err)
 			continue
 		}
 
-		// Apply filtering criteria
+		// Apply filtering criteria - must have at least 1 release
 		meetsQualityCriteria := false
 		criteria := ""
 
-		// Released Project: ≥15 commits AND ≥1 release (regardless of stars)
-		if commitCount >= minCommits && releaseCount >= 1 {
-			meetsQualityCriteria = true
-			criteria = "released project"
-		}
-		// Popular Project: ≥10 stars AND ≥1 release
-		if repo.StargazersCount >= 10 && releaseCount >= 1 {
-			meetsQualityCriteria = true
-			criteria = "popular project"
-		}
-		// Active Library: Has package keywords AND ≥5 stars
-		if (contains(repo.Topics, "library") || contains(repo.Topics, "package") || 
-			contains(repo.Topics, "framework")) && repo.StargazersCount >= 5 {
-			meetsQualityCriteria = true
-			criteria = "active library"
-		}
-		// Documented Project: Has homepage AND ≥15 commits AND ≥1 release
-		if repo.HomepageURL != "" && commitCount >= 15 && releaseCount >= 1 {
-			meetsQualityCriteria = true
-			criteria = "documented project"
+		if releaseCount >= 1 {
+			// Check various quality criteria
+			switch {
+			case commitCount >= minCommits:
+				// Released Project: ≥15 commits AND ≥1 release
+				meetsQualityCriteria = true
+				criteria = "released project"
+			case repo.StargazersCount >= 10:
+				// Popular Project: ≥10 stars AND ≥1 release
+				meetsQualityCriteria = true
+				criteria = "popular project"
+			case repo.StargazersCount >= 5:
+				// Starred Project: ≥5 stars AND ≥1 release
+				meetsQualityCriteria = true
+				criteria = "starred project"
+			case repo.HomepageURL != "":
+				// Documented Project: Has homepage AND ≥1 release
+				meetsQualityCriteria = true
+				criteria = "documented project"
+			case contains(repo.Topics, "library") || contains(repo.Topics, "package") || contains(repo.Topics, "framework"):
+				// Library/Package: Has package keywords AND ≥1 release
+				meetsQualityCriteria = true
+				criteria = "library/package"
+			}
 		}
 
 		if meetsQualityCriteria {
@@ -376,16 +380,21 @@ func getReleaseCount(repo GitHubRepo) (int, error) {
 	
 	// Add auth if available
 	if token := os.Getenv("GITHUB_TOKEN"); token != "" {
-		req.Header.Set("Authorization", "Bearer "+token)
+		req.Header.Set("Authorization", "token "+token)
 	}
 	
-	resp, err := http.DefaultClient.Do(req)
+	client := &http.Client{Timeout: 10 * time.Second}
+	resp, err := client.Do(req)
 	if err != nil {
 		return 0, err
 	}
 	defer resp.Body.Close()
 	
 	if resp.StatusCode != http.StatusOK {
+		// Return 0 releases for 404 (no releases) instead of error
+		if resp.StatusCode == http.StatusNotFound {
+			return 0, nil
+		}
 		return 0, fmt.Errorf("GitHub API error: %s", resp.Status)
 	}
 	
