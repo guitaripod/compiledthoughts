@@ -49,23 +49,26 @@ const getInstallCommand = (name: string, language: string) => {
 const getTerminalDemo = (name: string) => {
   const lowerName = name.toLowerCase();
   if (lowerName === 'pomme') {
-    return ['pomme sales', '📊 Sales Report', '💰 Revenue: $486,392.45'];
+    return ['pomme sales', 'Sales Report for December 2024', 'Revenue: $486,392.45', 'Countries: 142 markets'];
   }
   if (lowerName === 'apod-cli') {
     return [
       'apod-cli today',
-      '🌌 Astronomy Picture of the Day',
-      '✨ Loading stunning space imagery...',
+      'Astronomy Picture of the Day',
+      'Loading stunning space imagery...',
     ];
   }
   if (lowerName === 'songlink-cli') {
     return [
       'songlink "artist - song"',
-      '🎵 Generating universal music link...',
-      '🔗 song.link/s/abc123',
+      'Generating universal music link...',
+      'song.link/s/abc123',
     ];
   }
-  return [`${lowerName} --help`, '💻 Command-line tool', '⚡ Fast and efficient'];
+  if (lowerName === 'speedrun-cli') {
+    return ['speedrun-cli game "Super Mario 64"', 'Loading leaderboards...', '1. cheese05 - 6:41', '2. Simply - 6:45'];
+  }
+  return [`${lowerName} --help`, 'Command-line tool', 'Fast and efficient'];
 };
 
 const terminalDemo = getTerminalDemo(project.name);
@@ -131,19 +134,6 @@ const installCmd = getInstallCommand(project.name, project.language);
         </p>
         {terminalDemo.slice(1).map((line) => <p class="text-[#586e75] dark:text-[#908caa] text-xs ml-2">{line}</p>)}
       </div>
-
-      <!-- Features/Highlights -->
-      {
-        project.highlights && project.highlights.length > 0 && (
-          <div class="flex flex-wrap gap-2 mt-4">
-            {project.highlights.map((highlight) => (
-              <span class="px-2 py-1 text-xs bg-[#eee8d5] dark:bg-[#26233a] text-[#586e75] dark:text-[#908caa] rounded border border-[#93a1a1] dark:border-[#403d52]">
-                {highlight}
-              </span>
-            ))}
-          </div>
-        )
-      }
 
       <!-- Platforms -->
       <div class="flex items-center gap-2 mt-4 text-xs text-[#93a1a1] dark:text-[#6e6a86]">
