@@ -230,26 +230,21 @@ const socialLinks = [{ name: 'GitHub', url: 'https://github.com/marcusziade', ic
     <div class="flex items-center justify-between mb-8">
       <h2 class="text-3xl font-bold text-gray-900 dark:text-gray-100">Open Source</h2>
       <a
-        href="https://github.com/marcusziade"
-        target="_blank"
-        rel="noopener noreferrer"
+        href="/opensource"
         class="text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1"
       >
-        View all on GitHub
+        View all projects
         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"
+          ></path>
         </svg>
       </a>
     </div>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {
         openSourceData.projects
           .filter((project) => project.stars >= 4)
-          .slice(0, 4)
+          .slice(0, 6)
           .map((project) => <OpenSourceCard project={project} />)
       }
     </div>
