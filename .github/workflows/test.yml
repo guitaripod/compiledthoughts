@@ -96,13 +96,11 @@ jobs:
       run: npm run build
     
     - name: Deploy to Cloudflare Pages Preview
-      uses: cloudflare/pages-action@v1
+      uses: cloudflare/wrangler-action@v3
       with:
         apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        projectName: compiledthoughts
-        directory: dist
-        gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+        command: pages deploy dist --project-name=compiledthoughts --commit-dirty=true
 
   deploy-production:
     needs: [test-and-lint]
@@ -147,11 +145,8 @@ jobs:
       run: npm run build
     
     - name: Deploy to Cloudflare Pages Production
-      uses: cloudflare/pages-action@v1
+      uses: cloudflare/wrangler-action@v3
       with:
         apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        projectName: compiledthoughts
-        directory: dist
-        gitHubToken: ${{ secrets.GITHUB_TOKEN }}
-        branch: master
+        command: pages deploy dist --project-name=compiledthoughts --branch=master --commit-dirty=true
