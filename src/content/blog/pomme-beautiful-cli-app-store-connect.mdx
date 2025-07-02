@@ -1,0 +1,272 @@
+---
+title: "Pomme: A Beautiful CLI for App Store Connect That Actually Makes Sense"
+description: "Discover how Pomme transforms the painful experience of accessing App Store Connect data into a delightful command-line workflow."
+pubDate: 2025-07-02
+tags: ["go", "cli", "app-store-connect", "ios", "developer-tools", "productivity", "open-source"]
+---
+
+## Before
+
+```bash
+# Logging into App Store Connect...
+# Navigating through multiple screens...
+# Waiting for slow page loads...
+# Manually downloading CSV files...
+# Opening Excel to analyze sales data...
+# Switching tabs to check reviews...
+# Getting frustrated with the UI...
+```
+
+## After
+
+```bash
+$ pomme sales
+┌─────────────┬──────────────┬────────────┬────────────────┐
+│ App         │ Units        │ Revenue    │ Territory      │
+├─────────────┼──────────────┼────────────┼────────────────┤
+│ MyAwesomeApp│ 1,234 units  │ $4,321.00  │ United States  │
+│             │ 567 units    │ €432.10    │ Germany        │
+│             │ 234 units    │ £123.45    │ United Kingdom │
+└─────────────┴──────────────┴────────────┴────────────────┘
+
+$ pomme reviews summary MyApp
+⭐⭐⭐⭐⭐ Average Rating: 4.7/5 (1,234 reviews)
+```
+
+If you're an iOS developer, you know the pain. Accessing your App Store Connect data means navigating through a web interface that feels like it was designed to test your patience. Want to check yesterday's sales? Click, wait, click, wait, download a CSV, open Excel. Need to see recent reviews? More clicking, more waiting. What if you could access all this data instantly from your terminal?
+
+## Why App Store Connect Needs a CLI
+
+Consider how often you check your app's performance. Sales numbers, review ratings, crash reports – these are the metrics that matter. Yet Apple's web interface treats each data point like a treasure hunt. You'll find yourself clicking through the same navigation paths dozens of times per week, wasting precious minutes that add up to hours.
+
+The irony is striking: we build beautiful, efficient apps for our users, but we're stuck with a cumbersome web interface for our own data. That's where **Pomme** comes in – a Go-based CLI that brings the joy back to accessing your App Store data.
+
+## What Makes Pomme Different
+
+### Built for Real Developers
+
+Pomme isn't just another wrapper around Apple's APIs. It's designed with a deep understanding of what developers actually need:
+
+- **Zero Dependencies Philosophy**: Only uses `cobra` for CLI and `jwt` for auth. No bloated framework, no configuration hell.
+- **Smart Defaults**: Handles Apple's quirky 5-day delay for monthly reports automatically.
+- **Beautiful Output**: Data that's actually readable in your terminal, with proper formatting and colors.
+- **Lightning Fast**: In-memory caching and concurrent processing mean instant results after the first request.
+
+### Installation That Just Works
+
+```bash
+# Homebrew (macOS/Linux)
+brew tap username/pomme
+brew install pomme
+
+# Go Install
+go install github.com/username/pomme/cmd/pomme@latest
+
+# Direct Download
+curl -L https://github.com/username/pomme/releases/latest/download/pomme_$(uname -s)_$(uname -m).tar.gz | tar xz
+sudo mv pomme /usr/local/bin/
+```
+
+## Setting Up in 60 Seconds
+
+Pomme features an interactive setup wizard that guides you through the authentication process:
+
+```bash
+$ pomme config init
+🍎 Welcome to Pomme Setup Wizard!
+
+This wizard will help you configure Pomme to access your App Store Connect data.
+
+? Enter your Key ID: ABCD123456
+? Enter your Issuer ID: 12345678-1234-1234-1234-123456789012
+? Enter path to your private key file: ~/Downloads/AuthKey_ABCD123456.p8
+
+✓ Configuration saved to ~/.config/pomme/pomme.yaml
+✓ Private key file found and accessible
+✓ Testing connection to App Store Connect...
+✓ Success! Found 3 apps in your account
+
+🎉 Setup complete! Try running 'pomme apps list' to see your apps.
+```
+
+## Real-World Usage
+
+### Checking Sales Performance
+
+Instead of navigating through multiple screens, get instant insights:
+
+```bash
+# Current month sales (handles the 5-day delay automatically)
+$ pomme sales
+
+# Compare performance
+$ pomme sales compare --months 3
+┌─────────────┬──────────┬──────────┬──────────┬────────┐
+│ App         │ Nov 2024 │ Dec 2024 │ Jan 2025 │ Change │
+├─────────────┼──────────┼──────────┼──────────┼────────┤
+│ MyApp Pro   │ $2,341   │ $3,456   │ $4,567   │ +32.2% ↑│
+│ MyApp Lite  │ $567     │ $432     │ $654     │ +51.4% ↑│
+└─────────────┴──────────┴──────────┴──────────┴────────┘
+
+# Analyze trends
+$ pomme sales trends --period quarterly --group-by country
+```
+
+### Managing Reviews Efficiently
+
+Reviews are your direct line to users. Pomme makes monitoring and responding effortless:
+
+```bash
+# Get a quick summary
+$ pomme reviews summary com.example.myapp
+⭐⭐⭐⭐⭐ Average Rating: 4.7/5 (1,234 total reviews)
+
+Rating Distribution:
+5 ⭐ ████████████████████ 78% (962)
+4 ⭐ ████████             32% (198)
+3 ⭐ ██                    5% (42)
+2 ⭐ █                     2% (21)
+1 ⭐ █                     1% (11)
+
+# Focus on critical feedback
+$ pomme reviews list com.example.myapp --rating 1,2 --sort critical
+┌──────────┬─────────┬──────────────────────────────────┬───────────┐
+│ Rating   │ User    │ Review                           │ Version   │
+├──────────┼─────────┼──────────────────────────────────┼───────────┤
+│ ⭐       │ User123 │ App crashes on startup...        │ 2.1.0     │
+│ ⭐⭐     │ User456 │ Latest update broke widgets...   │ 2.1.0     │
+└──────────┴─────────┴──────────────────────────────────┴───────────┘
+
+# Respond directly from terminal
+$ pomme reviews respond abc123 "Thank you for your feedback. We've identified the issue and a fix is coming in version 2.1.1!"
+```
+
+### Integration with Your Workflow
+
+Pomme's JSON output makes it perfect for automation:
+
+```bash
+# Daily sales notification
+pomme sales --format json | jq '.revenue.total' | \
+  xargs -I {} terminal-notifier -title "Daily Revenue" -message "${}
+
+# Weekly review summary
+pomme reviews summary com.example.myapp --format json | \
+  jq '.average_rating' > metrics/weekly_rating.txt
+
+# Export for spreadsheet analysis
+pomme sales --format csv > ~/Desktop/sales_$(date +%Y%m).csv
+```
+
+## Technical Architecture That Makes Sense
+
+### Service-Oriented Design
+
+Pomme follows a clean service architecture:
+
+```go
+// Each feature is a self-contained service
+type SalesService struct {
+    client *Client
+    cache  *CacheService
+}
+
+// Clear separation of concerns
+cmd/pomme/
+├── commands/       # CLI command definitions
+├── main.go        # Entry point
+internal/
+├── api/           # App Store Connect client
+├── services/      # Business logic
+├── models/        # Data structures
+├── output/        # Formatting logic
+```
+
+### Performance First
+
+- **Concurrent Processing**: Leverages Go's goroutines for parallel API calls
+- **Smart Caching**: In-memory cache with automatic expiration reduces API calls
+- **Minimal Memory Footprint**: Efficient data structures keep memory usage low
+
+### Multi-Currency Intelligence
+
+One of Pomme's standout features is proper multi-currency support:
+
+```bash
+$ pomme sales --detailed
+┌─────────────┬──────────┬────────────┬────────────┬───────────┐
+│ App         │ Units    │ Revenue    │ Territory  │ Currency  │
+├─────────────┼──────────┼────────────┼────────────┼───────────┤
+│ MyApp       │ 234      │ $821.00    │ USA        │ USD       │
+│             │ 123      │ €456.78    │ Germany    │ EUR       │
+│             │ 89       │ ¥12,345    │ Japan      │ JPY       │
+│             │ 45       │ £234.56    │ UK         │ GBP       │
+└─────────────┴──────────┴────────────┴────────────┴───────────┘
+Total Revenue (equivalent): ~$1,843.21 USD
+```
+
+## Privacy and Security Considerations
+
+Pomme takes security seriously:
+
+- **Local Storage Only**: Your credentials never leave your machine
+- **Secure Key Handling**: Private keys are validated but never transmitted
+- **No Analytics**: Zero tracking, zero telemetry
+- **Open Source**: Every line of code is auditable
+
+## Taking It Further
+
+### Custom Scripts and Automation
+
+Create a daily dashboard:
+
+```bash
+#!/bin/bash
+# daily_dashboard.sh
+echo "📊 Daily App Store Dashboard - $(date)"
+echo "================================"
+echo
+echo "💰 Revenue:"
+pomme sales --format json | jq -r '.revenue | "Total: \(.total) (\(.currency))"'
+echo
+echo "⭐ Reviews:"
+pomme reviews summary com.example.myapp --format json | \
+  jq -r '"Average: \(.average_rating)/5 (\(.total_reviews) reviews)"'
+echo
+echo "🔥 Recent Critical Reviews:"
+pomme reviews list com.example.myapp --rating 1,2 --limit 3
+```
+
+### Integration with CI/CD
+
+Monitor app performance in your build pipeline:
+
+```yaml
+# .github/workflows/app-metrics.yml
+- name: Check App Store Metrics
+  env:
+    POMME_AUTH_KEY_ID: ${{ secrets.APP_STORE_KEY_ID }}
+    POMME_AUTH_ISSUER_ID: ${{ secrets.APP_STORE_ISSUER_ID }}
+    POMME_AUTH_PRIVATE_KEY_PATH: ./AuthKey.p8
+  run: |
+    pomme reviews summary ${{ env.APP_ID }} --format json > metrics.json
+    if [ $(jq '.average_rating < 4.0' metrics.json) == "true" ]; then
+      echo "::warning::App rating dropped below 4.0"
+    fi
+```
+
+## The Philosophy Behind Pomme
+
+Building Pomme wasn't just about creating another CLI tool. It was about respecting developers' time and workflows. Every decision – from using minimal dependencies to implementing smart caching – stems from real frustration with the status quo.
+
+The name "Pomme" (French for apple) reflects this philosophy: simple, elegant, and quintessentially connected to the Apple ecosystem without the complexity.
+
+## Your Terminal, Your Data
+
+Stop wasting time clicking through web interfaces. Stop downloading CSV files. Stop context-switching between your terminal and browser. With Pomme, your App Store Connect data lives where you work – in your terminal, instantly accessible, beautifully formatted, and ready to integrate with your workflow.
+
+Whether you're checking morning sales over coffee, investigating a review trend, or building automated dashboards, Pomme transforms App Store Connect from a chore into a delight. Your productivity will thank you, and you'll wonder how you ever managed without it.
+
+Ready to reclaim your time? Install Pomme today and experience App Store Connect the way it should be – fast, beautiful, and built for developers who have better things to do than click through web interfaces.
+
+https://marcusziade.github.io/Pomme/
