@@ -1,0 +1,228 @@
+---
+export interface Props {
+  project: {
+    id: string;
+    name: string;
+    description: string;
+    language: string;
+    platforms: string[];
+    stars: number;
+    githubUrl: string;
+    category: string;
+    highlights: string[];
+    topics?: string[];
+  };
+}
+
+const { project } = Astro.props;
+
+// Solarized colors for light mode, Rose Pine colors for dark mode
+const languageColors = {
+  light: {
+    Go: '#268bd2',      // Solarized blue
+    Swift: '#dc322f',   // Solarized red
+    Rust: '#cb4b16',    // Solarized orange
+    TypeScript: '#2aa198', // Solarized cyan
+    Python: '#859900',  // Solarized green
+    JavaScript: '#b58900', // Solarized yellow
+  },
+  dark: {
+    Go: '#9ccfd8',      // Rose Pine foam
+    Swift: '#eb6f92',   // Rose Pine love
+    Rust: '#f6c177',    // Rose Pine gold
+    TypeScript: '#c4a7e7', // Rose Pine iris
+    Python: '#31748f',  // Rose Pine pine
+    JavaScript: '#ebbcba', // Rose Pine rose
+  }
+};
+
+// Terminal-style installation commands
+const getInstallCommand = (name: string, language: string) => {
+  const lowerName = name.toLowerCase();
+  if (lowerName === 'pomme') return 'brew install pomme';
+  if (language === 'Go') return `go install github.com/marcusziade/${lowerName}@latest`;
+  if (language === 'Swift') return `swift build -c release`;
+  return `# Check README for installation`;
+};
+
+// Get terminal demo based on project
+const getTerminalDemo = (name: string) => {
+  const lowerName = name.toLowerCase();
+  if (lowerName === 'pomme') {
+    return ['pomme sales', '📊 Sales Report', '💰 Revenue: $486,392.45'];
+  }
+  if (lowerName === 'apod-cli') {
+    return [
+      'apod-cli today',
+      '🌌 Astronomy Picture of the Day',
+      '✨ Loading stunning space imagery...',
+    ];
+  }
+  if (lowerName === 'songlink-cli') {
+    return [
+      'songlink "artist - song"',
+      '🎵 Generating universal music link...',
+      '🔗 song.link/s/abc123',
+    ];
+  }
+  return [`${lowerName} --help`, '💻 Command-line tool', '⚡ Fast and efficient'];
+};
+
+const terminalDemo = getTerminalDemo(project.name);
+const installCmd = getInstallCommand(project.name, project.language);
+---
+
+<article
+  class="group bg-[#fdf6e3] dark:bg-[#191724] rounded-xl overflow-hidden border border-[#eee8d5] dark:border-[#26233a] hover:border-[#93a1a1] dark:hover:border-[#403d52] hover:shadow-2xl dark:hover:shadow-[#1f1d2e]/50 transition-all duration-300 ease-out"
+>
+  <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" class="block">
+    <!-- Terminal header -->
+    <div
+      class="flex items-center gap-2 px-4 py-2 bg-[#eee8d5] dark:bg-[#1f1d2e] border-b border-[#93a1a1] dark:border-[#26233a]"
+    >
+      <div class="flex gap-1.5">
+        <div class="w-3 h-3 rounded-full bg-[#dc322f] dark:bg-[#eb6f92]"></div>
+        <div class="w-3 h-3 rounded-full bg-[#b58900] dark:bg-[#f6c177]"></div>
+        <div class="w-3 h-3 rounded-full bg-[#859900] dark:bg-[#31748f]"></div>
+      </div>
+      <span class="text-xs text-[#657b83] dark:text-[#908caa] ml-2 font-mono">{project.name.toLowerCase()}</span>
+      <div class="ml-auto flex items-center gap-2">
+        {
+          project.stars > 0 && (
+            <span class="flex items-center gap-1 text-xs text-[#657b83] dark:text-[#908caa]">
+              <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+              </svg>
+              {project.stars}
+            </span>
+          )
+        }
+        <span
+          class="px-2 py-0.5 text-xs font-medium rounded light-lang-badge dark-lang-badge"
+          data-language={project.language}
+        >
+          {project.language}
+        </span>
+      </div>
+    </div>
+
+    <!-- Terminal content -->
+    <div class="p-4 font-mono text-sm">
+      <!-- Project description -->
+      <div class="mb-4">
+        <p class="text-[#586e75] dark:text-[#e0def4] text-xs sm:text-sm mb-2 font-sans">{project.description}</p>
+      </div>
+
+      <!-- Installation command -->
+      <div class="mb-4">
+        <p class="text-[#93a1a1] dark:text-[#6e6a86] text-xs mb-1"># Install</p>
+        <p class="text-[#657b83] dark:text-[#e0def4]">
+          <span class="text-[#859900] dark:text-[#9ccfd8]">$</span>
+          <span class="text-[#073642] dark:text-[#e0def4]">{installCmd}</span>
+        </p>
+      </div>
+
+      <!-- Demo output -->
+      <div class="mb-4">
+        <p class="text-[#93a1a1] dark:text-[#6e6a86] text-xs mb-1"># Example</p>
+        <p class="text-[#657b83] dark:text-[#e0def4] mb-1">
+          <span class="text-[#859900] dark:text-[#9ccfd8]">$</span>
+          <span class="text-[#073642] dark:text-[#e0def4]">{terminalDemo[0]}</span>
+        </p>
+        {terminalDemo.slice(1).map((line) => <p class="text-[#586e75] dark:text-[#908caa] text-xs ml-2">{line}</p>)}
+      </div>
+
+      <!-- Features/Highlights -->
+      {
+        project.highlights && project.highlights.length > 0 && (
+          <div class="flex flex-wrap gap-2 mt-4">
+            {project.highlights.map((highlight) => (
+              <span class="px-2 py-1 text-xs bg-[#eee8d5] dark:bg-[#26233a] text-[#586e75] dark:text-[#908caa] rounded border border-[#93a1a1] dark:border-[#403d52]">
+                {highlight}
+              </span>
+            ))}
+          </div>
+        )
+      }
+
+      <!-- Platforms -->
+      <div class="flex items-center gap-2 mt-4 text-xs text-[#93a1a1] dark:text-[#6e6a86]">
+        <span>Platforms:</span>
+        {
+          project.platforms.map((platform, index) => (
+            <>
+              <span class="text-[#657b83] dark:text-[#908caa]">{platform}</span>
+              {index < project.platforms.length - 1 && <span>•</span>}
+            </>
+          ))
+        }
+      </div>
+    </div>
+  </a>
+</article>
+
+<style>
+  article:hover {
+    transform: translateY(-2px);
+  }
+
+  .group:hover span.text-\[\#073642\] {
+    color: #268bd2;
+  }
+  
+  .group:hover span.dark\:text-\[\#e0def4\] {
+    color: #c4a7e7;
+  }
+  
+  /* Language badge styles for Solarized Light */
+  .light-lang-badge[data-language="Go"] {
+    background-color: #268bd220;
+    color: #268bd2;
+  }
+  .light-lang-badge[data-language="Swift"] {
+    background-color: #dc322f20;
+    color: #dc322f;
+  }
+  .light-lang-badge[data-language="Rust"] {
+    background-color: #cb4b1620;
+    color: #cb4b16;
+  }
+  .light-lang-badge[data-language="TypeScript"] {
+    background-color: #2aa19820;
+    color: #2aa198;
+  }
+  .light-lang-badge[data-language="Python"] {
+    background-color: #85990020;
+    color: #859900;
+  }
+  .light-lang-badge[data-language="JavaScript"] {
+    background-color: #b5890020;
+    color: #b58900;
+  }
+  
+  /* Language badge styles for Rose Pine (dark mode) */
+  :global(.dark) .dark-lang-badge[data-language="Go"] {
+    background-color: #9ccfd820;
+    color: #9ccfd8;
+  }
+  :global(.dark) .dark-lang-badge[data-language="Swift"] {
+    background-color: #eb6f9220;
+    color: #eb6f92;
+  }
+  :global(.dark) .dark-lang-badge[data-language="Rust"] {
+    background-color: #f6c17720;
+    color: #f6c177;
+  }
+  :global(.dark) .dark-lang-badge[data-language="TypeScript"] {
+    background-color: #c4a7e720;
+    color: #c4a7e7;
+  }
+  :global(.dark) .dark-lang-badge[data-language="Python"] {
+    background-color: #31748f20;
+    color: #31748f;
+  }
+  :global(.dark) .dark-lang-badge[data-language="JavaScript"] {
+    background-color: #ebbcba20;
+    color: #ebbcba;
+  }
+</style>
