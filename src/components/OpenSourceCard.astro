@@ -10,6 +10,9 @@ export interface Props {
     githubUrl: string;
     category: string;
     highlights: string[];
+    releaseCount?: number;
+    commitCount?: number;
+    homepageUrl?: string;
   };
 }
 
@@ -54,6 +57,13 @@ const categoryIcons = {
         {
           project.stars > 0 && (
             <span class="flex items-center gap-1 text-xs text-gray-500">⭐ {project.stars}</span>
+          )
+        }
+        {
+          project.releaseCount > 0 && (
+            <span class="flex items-center gap-1 text-xs text-gray-500">
+              🏷️ {project.releaseCount}
+            </span>
           )
         }
       </div>
