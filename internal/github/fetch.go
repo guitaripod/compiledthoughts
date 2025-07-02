@@ -104,6 +104,8 @@ func FetchData() error {
 
 	// Filter and check commit/release counts
 	fmt.Println("Checking repositories for quality criteria...")
+	fmt.Printf("Note: This may take several minutes due to rate limit protection (3-5 seconds per repo)\n")
+	fmt.Printf("Processing %d repositories...\n", len(repos))
 	var reposWithMetrics []struct {
 		GitHubRepo
 		CommitCount  int
@@ -117,9 +119,11 @@ func FetchData() error {
 			continue
 		}
 
-		// Add delay between API calls to avoid rate limiting (except for first repo)
+		// Add significant delay between API calls to avoid rate limiting
 		if i > 0 {
-			time.Sleep(1 * time.Second)
+			// Wait 3 seconds between each repo to be very conservative
+			fmt.Printf("  ⏳ Waiting before checking %s...\n", repo.Name)
+			time.Sleep(3 * time.Second)
 		}
 
 		// Fetch commit count
@@ -129,8 +133,8 @@ func FetchData() error {
 			continue
 		}
 
-		// Add small delay between API calls
-		time.Sleep(500 * time.Millisecond)
+		// Add 2 second delay between API calls
+		time.Sleep(2 * time.Second)
 
 		// Fetch release count
 		releaseCount, err := getReleaseCount(repo)
@@ -351,6 +355,35 @@ func getCommitCount(repo GitHubRepo) (int, error) {
 				return c.Contributions, nil
 			}
 		}
+	} else if resp.StatusCode == http.StatusForbidden || resp.StatusCode == http.StatusTooManyRequests {
+		// If rate limited, wait and retry once
+		fmt.Printf("    ⚠️  Rate limited on commits, waiting 60 seconds before retry...\n")
+		time.Sleep(60 * time.Second)
+		
+		// Retry the request
+		resp2, err := client.Do(req)
+		if err != nil {
+			return 0, err
+		}
+		defer resp2.Body.Close()
+		
+		if resp2.StatusCode == http.StatusOK {
+			body, err := io.ReadAll(resp2.Body)
+			if err != nil {
+				return 0, err
+			}
+
+			var contributors []Contributor
+			if err := json.Unmarshal(body, &contributors); err != nil {
+				return 0, err
+			}
+
+			for _, c := range contributors {
+				if c.Login == githubUsername {
+					return c.Contributions, nil
+				}
+			}
+		}
 	}
 
 	// Fallback: count commits (simplified - just use 100 as max)
@@ -384,6 +417,27 @@ func getReleaseCount(repo GitHubRepo) (int, error) {
 		// Return 0 releases for 404 (no releases) instead of error
 		if resp.StatusCode == http.StatusNotFound {
 			return 0, nil
+		}
+		// If rate limited, wait and retry once
+		if resp.StatusCode == http.StatusForbidden || resp.StatusCode == http.StatusTooManyRequests {
+			fmt.Printf("    ⚠️  Rate limited, waiting 60 seconds before retry...\n")
+			time.Sleep(60 * time.Second)
+			
+			// Retry the request
+			resp2, err := client.Do(req)
+			if err != nil {
+				return 0, err
+			}
+			defer resp2.Body.Close()
+			
+			if resp2.StatusCode == http.StatusOK {
+				var releases []map[string]interface{}
+				if err := json.NewDecoder(resp2.Body).Decode(&releases); err != nil {
+					return 0, err
+				}
+				return len(releases), nil
+			}
+			return 0, fmt.Errorf("GitHub API error after retry: %s", resp2.Status)
 		}
 		return 0, fmt.Errorf("GitHub API error: %s", resp.Status)
 	}
