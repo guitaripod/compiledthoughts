@@ -16,7 +16,6 @@ const (
 	githubUsername = "marcusziade"
 	githubAPIURL   = "https://api.github.com/users/%s/repos?per_page=100&sort=updated"
 	graphQLURL     = "https://api.github.com/graphql"
-	minCommits     = 15 // Minimum commits for a released project
 )
 
 var hasGitHubToken bool
@@ -115,9 +114,9 @@ func FetchData() error {
 		return fmt.Errorf("failed to fetch GitHub repos: %w", err)
 	}
 
-	// Filter and check commit/release counts
-	fmt.Println("Checking repositories for quality criteria...")
-	fmt.Printf("Note: This may take several minutes due to rate limit protection (3-5 seconds per repo)\n")
+	// Filter repositories by release status
+	fmt.Println("Checking repositories for releases...")
+	fmt.Printf("Note: This may take several minutes due to rate limit protection\n")
 	fmt.Printf("Processing %d repositories...\n", len(repos))
 	var reposWithMetrics []struct {
 		GitHubRepo
@@ -142,27 +141,7 @@ func FetchData() error {
 			time.Sleep(delay)
 		}
 
-		// Fetch commit count first
-		commitCount, err := getCommitCount(repo)
-		if err != nil {
-			fmt.Printf("  ✗ %s: error fetching commits\n", repo.Name)
-			continue
-		}
-
-		// Skip repos that don't meet minimum commit threshold
-		if commitCount < minCommits {
-			fmt.Printf("  ✗ %s: %d commits (below threshold of %d)\n", repo.Name, commitCount, minCommits)
-			continue
-		}
-
-		// Only check releases for repos with enough commits
-		// This reduces API calls significantly
-		apiDelay := 2 * time.Second
-		if !hasGitHubToken {
-			apiDelay = 5 * time.Second
-		}
-		time.Sleep(apiDelay)
-		
+		// Fetch release count
 		releaseCount, err := getReleaseCount(repo)
 		if err != nil {
 			fmt.Printf("  ✗ %s: error fetching releases: %v\n", repo.Name, err)
@@ -170,22 +149,33 @@ func FetchData() error {
 		}
 
 		// Simple filtering: must have at least 1 release
-		meetsQualityCriteria := releaseCount >= 1
-		criteria := ""
-		
-		if meetsQualityCriteria {
-			criteria = "released project"
-			reposWithMetrics = append(reposWithMetrics, struct {
-				GitHubRepo
-				CommitCount  int
-				ReleaseCount int
-			}{repo, commitCount, releaseCount})
-			fmt.Printf("  ✓ %s: %d commits, %d releases, %d stars (%s)\n", 
-				repo.Name, commitCount, releaseCount, repo.StargazersCount, criteria)
-		} else {
-			fmt.Printf("  ✗ %s: %d commits, %d releases, %d stars (skipped)\n", 
-				repo.Name, commitCount, releaseCount, repo.StargazersCount)
+		if releaseCount < 1 {
+			fmt.Printf("  ✗ %s: no releases\n", repo.Name)
+			continue
 		}
+
+		// Now fetch commit count for metadata (not for filtering)
+		apiDelay := 2 * time.Second
+		if !hasGitHubToken {
+			apiDelay = 5 * time.Second
+		}
+		time.Sleep(apiDelay)
+		
+		commitCount, err := getCommitCount(repo)
+		if err != nil {
+			// Use 0 if we can't get commit count, but don't skip the repo
+			commitCount = 0
+			fmt.Printf("  ⚠️  %s: couldn't fetch commit count, using 0\n", repo.Name)
+		}
+
+		// Add to results - we already know it has releases
+		reposWithMetrics = append(reposWithMetrics, struct {
+			GitHubRepo
+			CommitCount  int
+			ReleaseCount int
+		}{repo, commitCount, releaseCount})
+		fmt.Printf("  ✓ %s: %d commits, %d releases, %d stars (released project)\n", 
+			repo.Name, commitCount, releaseCount, repo.StargazersCount)
 	}
 
 	// Transform filtered repos
