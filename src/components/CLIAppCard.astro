@@ -19,21 +19,21 @@ const { project } = Astro.props;
 // Solarized colors for light mode, Rose Pine colors for dark mode
 const languageColors = {
   light: {
-    Go: '#268bd2',      // Solarized blue
-    Swift: '#dc322f',   // Solarized red
-    Rust: '#cb4b16',    // Solarized orange
+    Go: '#268bd2', // Solarized blue
+    Swift: '#dc322f', // Solarized red
+    Rust: '#cb4b16', // Solarized orange
     TypeScript: '#2aa198', // Solarized cyan
-    Python: '#859900',  // Solarized green
+    Python: '#859900', // Solarized green
     JavaScript: '#b58900', // Solarized yellow
   },
   dark: {
-    Go: '#9ccfd8',      // Rose Pine foam
-    Swift: '#eb6f92',   // Rose Pine love
-    Rust: '#f6c177',    // Rose Pine gold
+    Go: '#9ccfd8', // Rose Pine foam
+    Swift: '#eb6f92', // Rose Pine love
+    Rust: '#f6c177', // Rose Pine gold
     TypeScript: '#c4a7e7', // Rose Pine iris
-    Python: '#31748f',  // Rose Pine pine
+    Python: '#31748f', // Rose Pine pine
     JavaScript: '#ebbcba', // Rose Pine rose
-  }
+  },
 };
 
 // Terminal-style installation commands
@@ -49,33 +49,50 @@ const getInstallCommand = (name: string, language: string) => {
 const getTerminalDemo = (name: string) => {
   const lowerName = name.toLowerCase();
   if (lowerName === 'pomme') {
-    return ['pomme sales', 'Sales Report for December 2024', 'Revenue: $486,392.45', 'Countries: 142 markets'];
+    return [
+      'pomme sales',
+      'Sales Report for December 2024',
+      'Revenue: $486,392.45',
+      'Countries: 142 markets',
+    ];
   }
   if (lowerName === 'apod-cli') {
-    return [
-      'apod-cli today',
-      'Astronomy Picture of the Day',
-      'Loading stunning space imagery...',
-    ];
+    return ['apod-cli today', 'Astronomy Picture of the Day', 'Loading stunning space imagery...'];
   }
   if (lowerName === 'songlink-cli') {
-    return [
-      'songlink "artist - song"',
-      'Generating universal music link...',
-      'song.link/s/abc123',
-    ];
+    return ['songlink "artist - song"', 'Generating universal music link...', 'song.link/s/abc123'];
   }
   if (lowerName === 'speedrun-cli') {
-    return ['speedrun-cli game "Super Mario 64"', 'Loading leaderboards...', '1. cheese05 - 6:41', '2. Simply - 6:45'];
+    return [
+      'speedrun-cli game "Super Mario 64"',
+      'Loading leaderboards...',
+      '1. cheese05 - 6:41',
+      '2. Simply - 6:45',
+    ];
   }
   if (lowerName === 'igscraper') {
-    return ['igscraper user @username', 'Fetching user data...', 'Posts: 847', 'Downloaded: 50 items'];
+    return [
+      'igscraper user @username',
+      'Fetching user data...',
+      'Posts: 847',
+      'Downloaded: 50 items',
+    ];
   }
   if (lowerName === 'geminicli') {
-    return ['gemini "explain quantum computing"', 'Thinking...', 'Quantum computing uses quantum bits...', 'Unlike classical bits...'];
+    return [
+      'gemini "explain quantum computing"',
+      'Thinking...',
+      'Quantum computing uses quantum bits...',
+      'Unlike classical bits...',
+    ];
   }
   if (lowerName === 'swollamacli') {
-    return ['swollama chat "write a haiku"', 'Using model: llama3.2...', 'Morning dew glistens', 'On petals soft and gentle'];
+    return [
+      'swollama chat "write a haiku"',
+      'Using model: llama3.2...',
+      'Morning dew glistens',
+      'On petals soft and gentle',
+    ];
   }
   return [`${lowerName} --help`, 'Command-line tool', 'Fast and efficient'];
 };
@@ -97,7 +114,9 @@ const installCmd = getInstallCommand(project.name, project.language);
         <div class="w-3 h-3 rounded-full bg-[#b58900] dark:bg-[#f6c177]"></div>
         <div class="w-3 h-3 rounded-full bg-[#859900] dark:bg-[#31748f]"></div>
       </div>
-      <span class="text-xs text-[#657b83] dark:text-[#908caa] ml-2 font-mono">{project.name.toLowerCase()}</span>
+      <span class="text-xs text-[#657b83] dark:text-[#908caa] ml-2 font-mono"
+        >{project.name.toLowerCase()}</span
+      >
       <div class="ml-auto flex items-center gap-2">
         {
           project.stars > 0 && (
@@ -122,7 +141,9 @@ const installCmd = getInstallCommand(project.name, project.language);
     <div class="p-4 font-mono text-sm">
       <!-- Project description -->
       <div class="mb-4">
-        <p class="text-[#586e75] dark:text-[#e0def4] text-xs sm:text-sm mb-2 font-sans">{project.description}</p>
+        <p class="text-[#586e75] dark:text-[#e0def4] text-xs sm:text-sm mb-2 font-sans">
+          {project.description}
+        </p>
       </div>
 
       <!-- Installation command -->
@@ -141,7 +162,11 @@ const installCmd = getInstallCommand(project.name, project.language);
           <span class="text-[#859900] dark:text-[#9ccfd8]">$</span>
           <span class="text-[#073642] dark:text-[#e0def4]">{terminalDemo[0]}</span>
         </p>
-        {terminalDemo.slice(1).map((line) => <p class="text-[#586e75] dark:text-[#908caa] text-xs ml-2">{line}</p>)}
+        {
+          terminalDemo
+            .slice(1)
+            .map((line) => <p class="text-[#586e75] dark:text-[#908caa] text-xs ml-2">{line}</p>)
+        }
       </div>
 
       <!-- Platforms -->
@@ -168,59 +193,59 @@ const installCmd = getInstallCommand(project.name, project.language);
   .group:hover span.text-\[\#073642\] {
     color: #268bd2;
   }
-  
+
   .group:hover span.dark\:text-\[\#e0def4\] {
     color: #c4a7e7;
   }
-  
+
   /* Language badge styles for Solarized Light */
-  .light-lang-badge[data-language="Go"] {
+  .light-lang-badge[data-language='Go'] {
     background-color: #268bd220;
     color: #268bd2;
   }
-  .light-lang-badge[data-language="Swift"] {
+  .light-lang-badge[data-language='Swift'] {
     background-color: #dc322f20;
     color: #dc322f;
   }
-  .light-lang-badge[data-language="Rust"] {
+  .light-lang-badge[data-language='Rust'] {
     background-color: #cb4b1620;
     color: #cb4b16;
   }
-  .light-lang-badge[data-language="TypeScript"] {
+  .light-lang-badge[data-language='TypeScript'] {
     background-color: #2aa19820;
     color: #2aa198;
   }
-  .light-lang-badge[data-language="Python"] {
+  .light-lang-badge[data-language='Python'] {
     background-color: #85990020;
     color: #859900;
   }
-  .light-lang-badge[data-language="JavaScript"] {
+  .light-lang-badge[data-language='JavaScript'] {
     background-color: #b5890020;
     color: #b58900;
   }
-  
+
   /* Language badge styles for Rose Pine (dark mode) */
-  :global(.dark) .dark-lang-badge[data-language="Go"] {
+  :global(.dark) .dark-lang-badge[data-language='Go'] {
     background-color: #9ccfd820;
     color: #9ccfd8;
   }
-  :global(.dark) .dark-lang-badge[data-language="Swift"] {
+  :global(.dark) .dark-lang-badge[data-language='Swift'] {
     background-color: #eb6f9220;
     color: #eb6f92;
   }
-  :global(.dark) .dark-lang-badge[data-language="Rust"] {
+  :global(.dark) .dark-lang-badge[data-language='Rust'] {
     background-color: #f6c17720;
     color: #f6c177;
   }
-  :global(.dark) .dark-lang-badge[data-language="TypeScript"] {
+  :global(.dark) .dark-lang-badge[data-language='TypeScript'] {
     background-color: #c4a7e720;
     color: #c4a7e7;
   }
-  :global(.dark) .dark-lang-badge[data-language="Python"] {
+  :global(.dark) .dark-lang-badge[data-language='Python'] {
     background-color: #31748f20;
     color: #31748f;
   }
-  :global(.dark) .dark-lang-badge[data-language="JavaScript"] {
+  :global(.dark) .dark-lang-badge[data-language='JavaScript'] {
     background-color: #ebbcba20;
     color: #ebbcba;
   }

@@ -37,7 +37,8 @@ if (!hasSpeedrun) {
   cliTools.push({
     id: 'speedrun-cli',
     name: 'speedrun-cli',
-    description: 'CLI client for speedrun.com. Browse games, categories, and leaderboards from your terminal.',
+    description:
+      'CLI client for speedrun.com. Browse games, categories, and leaderboards from your terminal.',
     language: 'Go',
     platforms: ['macOS', 'Linux', 'Windows'],
     stars: 0,
@@ -67,7 +68,8 @@ const additionalTools = [
   {
     id: 'geminicli',
     name: 'GeminiCLI',
-    description: 'Command-line interface for Google Gemini AI. Chat with Gemini from your terminal.',
+    description:
+      'Command-line interface for Google Gemini AI. Chat with Gemini from your terminal.',
     language: 'Swift',
     platforms: ['macOS'],
     stars: 0,
@@ -80,7 +82,8 @@ const additionalTools = [
   {
     id: 'swollamacli',
     name: 'SwollamaCLI',
-    description: 'Swift CLI for Ollama. Run local LLMs from your terminal with a native Swift interface.',
+    description:
+      'Swift CLI for Ollama. Run local LLMs from your terminal with a native Swift interface.',
     language: 'Swift',
     platforms: ['macOS'],
     stars: 0,
@@ -89,12 +92,12 @@ const additionalTools = [
     highlights: [],
     topics: ['cli', 'swift', 'ai', 'ollama', 'llm'],
     commitCount: 45,
-  }
+  },
 ];
 
 // Add additional tools if they're not already in the list
-additionalTools.forEach(tool => {
-  if (!cliTools.some(t => t.name.toLowerCase() === tool.name.toLowerCase())) {
+additionalTools.forEach((tool) => {
+  if (!cliTools.some((t) => t.name.toLowerCase() === tool.name.toLowerCase())) {
     cliTools.push(tool);
   }
 });
