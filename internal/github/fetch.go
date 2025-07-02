@@ -16,7 +16,7 @@ const (
 	githubUsername = "marcusziade"
 	githubAPIURL   = "https://api.github.com/users/%s/repos?per_page=100&sort=updated"
 	graphQLURL     = "https://api.github.com/graphql"
-	minCommits     = 25 // Increased to filter out minor projects
+	minCommits     = 15 // Minimum commits for a released project
 )
 
 var excludeRepos = []string{
@@ -135,7 +135,7 @@ func FetchData() error {
 		meetsQualityCriteria := false
 		criteria := ""
 
-		// Released Project: ≥25 commits AND ≥1 release (regardless of stars)
+		// Released Project: ≥15 commits AND ≥1 release (regardless of stars)
 		if commitCount >= minCommits && releaseCount >= 1 {
 			meetsQualityCriteria = true
 			criteria = "released project"
