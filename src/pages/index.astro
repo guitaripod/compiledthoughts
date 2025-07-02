@@ -2,6 +2,7 @@
 import BaseLayout from '@layouts/BaseLayout.astro';
 import FeaturedAppCard from '@components/FeaturedAppCard.astro';
 import OpenSourceCard from '@components/OpenSourceCard.astro';
+import CLIAppCard from '@components/CLIAppCard.astro';
 import { getCollection } from 'astro:content';
 import { calculateReadingTime } from '@utils/reading-time';
 import appsData from '../data/apps.json';
@@ -26,6 +27,32 @@ const featuredAppIds = ['dream-eater', 'solar-beam', 'psywave'];
 const featuredApps = featuredAppIds
   .map((id) => appsData.apps.find((app) => app.id === id))
   .filter(Boolean);
+
+// Get featured CLI tools
+const cliTools = openSourceData.projects
+  .filter((project) => project.category === 'CLI Tools')
+  .sort((a, b) => b.stars - a.stars);
+
+// Add pomme if not in list
+const hasPomme = cliTools.some((tool) => tool.name.toLowerCase() === 'pomme');
+if (!hasPomme) {
+  cliTools.unshift({
+    id: 'pomme',
+    name: 'Pomme',
+    description:
+      'Beautiful App Store Connect CLI for sales reports, analytics, and reviews. Built with Go.',
+    language: 'Go',
+    platforms: ['macOS', 'Linux', 'Windows'],
+    stars: 0,
+    githubUrl: 'https://github.com/marcusziade/pomme',
+    category: 'CLI Tools',
+    highlights: ['App Store', 'Analytics', 'Reviews'],
+    topics: ['cli', 'go', 'app-store-connect', 'ios', 'analytics'],
+    commitCount: 0,
+  });
+}
+
+const featuredCLITools = cliTools.slice(0, 2);
 
 // Calculate stats
 const totalPosts = (await getCollection('blog')).filter((post) => !post.data.draft).length;
@@ -175,6 +202,26 @@ const socialLinks = [{ name: 'GitHub', url: 'https://github.com/marcusziade', ic
           />
         ))
       }
+    </div>
+  </section>
+
+  <!-- CLI Tools Section -->
+  <section class="mb-16">
+    <div class="flex items-center justify-between mb-8">
+      <h2 class="text-3xl font-bold text-gray-900 dark:text-gray-100">CLI Tools</h2>
+      <a
+        href="/cli-tools"
+        class="text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1"
+      >
+        View all CLI tools
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"
+          ></path>
+        </svg>
+      </a>
+    </div>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {featuredCLITools.map((tool) => <CLIAppCard project={tool} />)}
     </div>
   </section>
 
