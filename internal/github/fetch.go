@@ -38,6 +38,7 @@ type GitHubRepo struct {
 	UpdatedAt       string    `json:"updated_at"`
 	CreatedAt       string    `json:"created_at"`
 	Topics          []string  `json:"topics"`
+	HomepageURL     string    `json:"homepage"`
 }
 
 type Contributor struct {
@@ -46,19 +47,21 @@ type Contributor struct {
 }
 
 type Project struct {
-	ID          string   `json:"id"`
-	Name        string   `json:"name"`
-	Description string   `json:"description"`
-	Language    string   `json:"language"`
-	Platforms   []string `json:"platforms"`
-	Stars       int      `json:"stars"`
-	GitHubURL   string   `json:"githubUrl"`
-	Category    string   `json:"category"`
-	Highlights  []string `json:"highlights"`
-	UpdatedAt   string   `json:"updatedAt"`
-	CreatedAt   string   `json:"createdAt"`
-	Topics      []string `json:"topics"`
-	CommitCount int      `json:"commitCount"`
+	ID           string   `json:"id"`
+	Name         string   `json:"name"`
+	Description  string   `json:"description"`
+	Language     string   `json:"language"`
+	Platforms    []string `json:"platforms"`
+	Stars        int      `json:"stars"`
+	GitHubURL    string   `json:"githubUrl"`
+	Category     string   `json:"category"`
+	Highlights   []string `json:"highlights"`
+	UpdatedAt    string   `json:"updatedAt"`
+	CreatedAt    string   `json:"createdAt"`
+	Topics       []string `json:"topics"`
+	CommitCount  int      `json:"commitCount"`
+	ReleaseCount int      `json:"releaseCount"`
+	HomepageURL  string   `json:"homepageUrl,omitempty"`
 }
 
 type OpenSourceData struct {
@@ -99,42 +102,78 @@ func FetchData() error {
 		return fmt.Errorf("failed to fetch GitHub repos: %w", err)
 	}
 
-	// Filter and check commit counts
-	fmt.Println("Checking commit counts for repositories...")
-	var reposWithCommits []struct {
+	// Filter and check commit/release counts
+	fmt.Println("Checking repositories for quality criteria...")
+	var reposWithMetrics []struct {
 		GitHubRepo
-		CommitCount int
+		CommitCount  int
+		ReleaseCount int
 	}
 
 	for _, repo := range repos {
 		// Skip if it's in the exclude list or doesn't meet basic criteria
 		if repo.Fork || repo.Private || contains(excludeRepos, repo.Name) ||
-			repo.Description == "" ||
-			(repo.StargazersCount == 0 && len(repo.Topics) == 0 && repo.Language == "") {
+			repo.Description == "" {
 			continue
 		}
 
-		// Check commit count
+		// Fetch commit count
 		commitCount, err := getCommitCount(repo)
 		if err != nil {
 			fmt.Printf("  ✗ %s: error fetching commits\n", repo.Name)
 			continue
 		}
 
-		if commitCount >= minCommits {
-			reposWithCommits = append(reposWithCommits, struct {
+		// Fetch release count
+		releaseCount, err := getReleaseCount(repo)
+		if err != nil {
+			fmt.Printf("  ✗ %s: error fetching releases\n", repo.Name)
+			continue
+		}
+
+		// Apply filtering criteria
+		meetsQualityCriteria := false
+		criteria := ""
+
+		// Quality Project: ≥25 commits AND ≥1 release AND ≥1 star
+		if commitCount >= minCommits && releaseCount >= 1 && repo.StargazersCount >= 1 {
+			meetsQualityCriteria = true
+			criteria = "quality project"
+		}
+		// Popular Project: ≥10 stars AND ≥1 release
+		if !meetsQualityCriteria && repo.StargazersCount >= 10 && releaseCount >= 1 {
+			meetsQualityCriteria = true
+			criteria = "popular project"
+		}
+		// Active Library: Has package keywords AND ≥5 stars
+		if !meetsQualityCriteria && (contains(repo.Topics, "library") || contains(repo.Topics, "package") || 
+			contains(repo.Topics, "framework")) && repo.StargazersCount >= 5 {
+			meetsQualityCriteria = true
+			criteria = "active library"
+		}
+		// Documented Project: Has homepage AND ≥15 commits AND ≥1 release
+		if !meetsQualityCriteria && repo.HomepageURL != "" && commitCount >= 15 && releaseCount >= 1 {
+			meetsQualityCriteria = true
+			criteria = "documented project"
+		}
+
+		if meetsQualityCriteria {
+			reposWithMetrics = append(reposWithMetrics, struct {
 				GitHubRepo
-				CommitCount int
-			}{repo, commitCount})
-			fmt.Printf("  ✓ %s: %d commits\n", repo.Name, commitCount)
+				CommitCount  int
+				ReleaseCount int
+			}{repo, commitCount, releaseCount})
+			fmt.Printf("  ✓ %s: %d commits, %d releases, %d stars (%s)\n", 
+				repo.Name, commitCount, releaseCount, repo.StargazersCount, criteria)
 		} else {
-			fmt.Printf("  ✗ %s: %d commits (skipped)\n", repo.Name, commitCount)
+			fmt.Printf("  ✗ %s: %d commits, %d releases, %d stars (skipped)\n", 
+				repo.Name, commitCount, releaseCount, repo.StargazersCount)
 		}
 	}
 
 	// Transform filtered repos
-	projects := make([]Project, 0, len(reposWithCommits))
-	for _, repo := range reposWithCommits {
+	projects := make([]Project, 0, len(reposWithMetrics))
+	for _, repo := range reposWithMetrics {
 		project := Project{
 			ID:          strings.ToLower(repo.Name),
 			Name:        repo.Name,
@@ -148,7 +187,9 @@ func FetchData() error {
 			UpdatedAt:   repo.UpdatedAt,
 			CreatedAt:   repo.CreatedAt,
 			Topics:      repo.Topics,
-			CommitCount: repo.CommitCount,
+			CommitCount:  repo.CommitCount,
+			ReleaseCount: repo.ReleaseCount,
+			HomepageURL:  repo.HomepageURL,
 		}
 		if project.Language == "" {
 			project.Language = "Unknown"
@@ -323,6 +364,37 @@ func getCommitCount(repo GitHubRepo) (int, error) {
 
 	// Fallback: count commits (simplified - just use 100 as max)
 	return 100, nil // Simplified for now
+}
+
+func getReleaseCount(repo GitHubRepo) (int, error) {
+	url := fmt.Sprintf("https://api.github.com/repos/%s/%s/releases?per_page=100", githubUsername, repo.Name)
+	
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return 0, err
+	}
+	
+	// Add auth if available
+	if token := os.Getenv("GITHUB_TOKEN"); token != "" {
+		req.Header.Set("Authorization", "Bearer "+token)
+	}
+	
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return 0, err
+	}
+	defer resp.Body.Close()
+	
+	if resp.StatusCode != http.StatusOK {
+		return 0, fmt.Errorf("GitHub API error: %s", resp.Status)
+	}
+	
+	var releases []map[string]interface{}
+	if err := json.NewDecoder(resp.Body).Decode(&releases); err != nil {
+		return 0, err
+	}
+	
+	return len(releases), nil
 }
 
 func categorizeProject(repo GitHubRepo) string {
