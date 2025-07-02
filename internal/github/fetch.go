@@ -135,24 +135,24 @@ func FetchData() error {
 		meetsQualityCriteria := false
 		criteria := ""
 
-		// Quality Project: ≥25 commits AND ≥1 release AND ≥1 star
-		if commitCount >= minCommits && releaseCount >= 1 && repo.StargazersCount >= 1 {
+		// Released Project: ≥25 commits AND ≥1 release (regardless of stars)
+		if commitCount >= minCommits && releaseCount >= 1 {
 			meetsQualityCriteria = true
-			criteria = "quality project"
+			criteria = "released project"
 		}
 		// Popular Project: ≥10 stars AND ≥1 release
-		if !meetsQualityCriteria && repo.StargazersCount >= 10 && releaseCount >= 1 {
+		if repo.StargazersCount >= 10 && releaseCount >= 1 {
 			meetsQualityCriteria = true
 			criteria = "popular project"
 		}
 		// Active Library: Has package keywords AND ≥5 stars
-		if !meetsQualityCriteria && (contains(repo.Topics, "library") || contains(repo.Topics, "package") || 
+		if (contains(repo.Topics, "library") || contains(repo.Topics, "package") || 
 			contains(repo.Topics, "framework")) && repo.StargazersCount >= 5 {
 			meetsQualityCriteria = true
 			criteria = "active library"
 		}
 		// Documented Project: Has homepage AND ≥15 commits AND ≥1 release
-		if !meetsQualityCriteria && repo.HomepageURL != "" && commitCount >= 15 && releaseCount >= 1 {
+		if repo.HomepageURL != "" && commitCount >= 15 && releaseCount >= 1 {
 			meetsQualityCriteria = true
 			criteria = "documented project"
 		}
