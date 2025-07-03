@@ -28,13 +28,30 @@ const featuredApps = featuredAppIds
   .map((id) => appsData.apps.find((app) => app.id === id))
   .filter(Boolean);
 
-// Get featured CLI tools
-const cliTools = openSourceData.projects
-  .filter((project) => project.category === 'CLI Tools')
+// Get all CLI tools (including igscraper which might be categorized as "Go Projects")
+const allCLITools = openSourceData.projects
+  .filter((project) => 
+    project.category === 'CLI Tools' || 
+    (project.name.toLowerCase() === 'igscraper' && project.language === 'Go')
+  )
   .sort((a, b) => b.stars - a.stars);
 
-// Ensure pomme and songlink-cli are featured (they should be the top 2 by stars)
-const featuredCLITools = cliTools.slice(0, 2);
+// Explicitly feature Pomme and igscraper
+const pomme = allCLITools.find(tool => tool.name.toLowerCase() === 'pomme');
+const igscraper = allCLITools.find(tool => tool.name.toLowerCase() === 'igscraper');
+
+const featuredCLITools = [];
+if (pomme) featuredCLITools.push(pomme);
+if (igscraper) featuredCLITools.push(igscraper);
+
+// If we don't have both, fill with other CLI tools
+if (featuredCLITools.length < 2) {
+  const otherTools = allCLITools.filter(tool => 
+    tool.name.toLowerCase() !== 'pomme' && tool.name.toLowerCase() !== 'igscraper'
+  );
+  featuredCLITools.push(...otherTools.slice(0, 2 - featuredCLITools.length));
+}
+
 
 // Calculate stats
 const totalPosts = (await getCollection('blog')).filter((post) => !post.data.draft).length;
