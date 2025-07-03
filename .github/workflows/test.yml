@@ -95,26 +95,12 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: npm run build
     
-    - name: Debug - Check environment and files (Preview)
-      run: |
-        echo "=== Environment Debug Info ==="
-        echo "GitHub SHA: ${{ github.sha }}"
-        echo "GitHub Ref: ${{ github.ref }}"
-        echo "PR Number: ${{ github.event.pull_request.number }}"
-        echo "PR Head SHA: ${{ github.event.pull_request.head.sha }}"
-        echo "=== Dist directory info ==="
-        ls -la dist/ | head -10
-        find dist -type f | wc -l
-        du -sh dist/
-
     - name: Deploy to Cloudflare Pages Preview
       uses: cloudflare/wrangler-action@v3
       with:
         apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         command: pages deploy dist --project-name=compiledthoughts --commit-dirty=true
-      env:
-        WRANGLER_LOG: debug
 
   deploy-production:
     needs: [test-and-lint]
@@ -158,70 +144,9 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: npm run build
     
-    - name: Debug - Check environment and files
-      run: |
-        echo "=== Environment Debug Info ==="
-        echo "GitHub SHA: ${{ github.sha }}"
-        echo "GitHub Ref: ${{ github.ref }}"
-        echo "GitHub Actor: ${{ github.actor }}"
-        echo "Runner OS: ${{ runner.os }}"
-        echo "Node version: $(node --version)"
-        echo "NPM version: $(npm --version)"
-        echo "Current directory: $(pwd)"
-        echo "=== Dist directory contents ==="
-        ls -la dist/ | head -20
-        echo "=== Total files in dist ==="
-        find dist -type f | wc -l
-        echo "=== Largest files in dist ==="
-        find dist -type f -exec ls -la {} \; | sort -k5 -n -r | head -10
-        echo "=== Check for any symlinks ==="
-        find dist -type l -ls || echo "No symlinks found"
-        echo "=== Check file permissions ==="
-        find dist -type f ! -perm -644 -ls | head -10 || echo "All files have standard permissions"
-        echo "=== Total size of dist directory ==="
-        du -sh dist/
-        echo "=== Check for hidden files ==="
-        find dist -name ".*" -type f | head -10 || echo "No hidden files found"
-
-    - name: Debug - Check Cloudflare CLI
-      run: |
-        echo "=== Wrangler version check ==="
-        npx wrangler --version
-        echo "=== Check if logged in ==="
-        npx wrangler whoami || echo "Not logged in (using API token)"
-        echo "=== List Pages projects (if possible) ==="
-        npx wrangler pages project list || echo "Unable to list projects"
-
-    - name: Deploy to Cloudflare Pages Production (with verbose logging)
+    - name: Deploy to Cloudflare Pages Production
       uses: cloudflare/wrangler-action@v3
       with:
         apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         command: pages deploy dist --project-name=compiledthoughts --branch=master --commit-dirty=true
-      env:
-        WRANGLER_LOG: debug
-        CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-        CF_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        DEBUG: "*"
-        NODE_DEBUG: "*"
-
-    - name: Debug - Deployment failure analysis
-      if: failure()
-      run: |
-        echo "=== Deployment failed - gathering debug info ==="
-        echo "=== Network connectivity check ==="
-        curl -I https://api.cloudflare.com/client/v4/ || echo "Failed to reach Cloudflare API"
-        echo "=== Check for any error logs ==="
-        find . -name "*.log" -type f -mmin -5 -exec echo "Found log: {}" \; -exec tail -20 {} \; 2>/dev/null || echo "No recent log files found"
-        echo "=== GitHub Actions environment variables (filtered) ==="
-        env | grep -E "(GITHUB_|RUNNER_|CI)" | sort
-        echo "=== Check if dist was modified during build ==="
-        find dist -type f -mmin -10 | head -20 || echo "No recently modified files"
-        echo "=== Try manual wrangler deployment with extra debugging ==="
-        export CLOUDFLARE_API_TOKEN="${{ secrets.CLOUDFLARE_API_TOKEN }}"
-        export CLOUDFLARE_ACCOUNT_ID="${{ secrets.CLOUDFLARE_ACCOUNT_ID }}"
-        npx wrangler pages deploy dist --project-name=compiledthoughts --branch=master --commit-dirty=true --compatibility-date=2023-05-18 2>&1 | tee wrangler-output.log || true
-        echo "=== Wrangler output analysis ==="
-        cat wrangler-output.log | grep -E "(error|Error|ERROR|fail|Fail|FAIL|8000000)" || echo "No obvious errors in output"
-        echo "=== Check API response details ==="
-        cat wrangler-output.log | grep -E "(status|Status|response|Response)" || echo "No status information found"
