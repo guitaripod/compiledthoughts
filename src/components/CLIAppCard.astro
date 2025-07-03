@@ -8,6 +8,7 @@ export interface Props {
     platforms: string[];
     stars: number;
     githubUrl: string;
+    docsUrl?: string;
     category: string;
     highlights: string[];
     topics?: string[];
@@ -104,7 +105,7 @@ const installCmd = getInstallCommand(project.name, project.language);
 <article
   class="group bg-[#fdf6e3] dark:bg-[#191724] rounded-xl overflow-hidden border border-[#eee8d5] dark:border-[#26233a] hover:border-[#93a1a1] dark:hover:border-[#403d52] hover:shadow-2xl dark:hover:shadow-[#1f1d2e]/50 transition-all duration-300 ease-out"
 >
-  <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" class="block">
+  <a href={project.docsUrl || project.githubUrl} target="_blank" rel="noopener noreferrer" class="block">
     <!-- Terminal header -->
     <div
       class="flex items-center gap-2 px-4 py-2 bg-[#eee8d5] dark:bg-[#1f1d2e] border-b border-[#93a1a1] dark:border-[#26233a]"
