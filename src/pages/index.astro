@@ -52,6 +52,40 @@ if (!hasPomme) {
   });
 }
 
+// Add igscraper if not in list
+const hasIgscraper = cliTools.some((tool) => tool.name.toLowerCase() === 'igscraper');
+if (!hasIgscraper) {
+  cliTools.push({
+    id: 'igscraper',
+    name: 'igscraper',
+    description: 'Instagram scraper CLI tool for downloading posts, stories, and user data.',
+    language: 'Go',
+    platforms: ['macOS', 'Linux', 'Windows'],
+    stars: 0,
+    githubUrl: 'https://marcusziade.github.io/igscraper/',
+    category: 'CLI Tools',
+    highlights: [],
+    topics: ['cli', 'go', 'instagram', 'scraper'],
+    commitCount: 25,
+  });
+}
+
+// Ensure pomme and igscraper are featured
+const pommeIndex = cliTools.findIndex((tool) => tool.name.toLowerCase() === 'pomme');
+const igscraperIndex = cliTools.findIndex((tool) => tool.name.toLowerCase() === 'igscraper');
+
+// Move pomme to first position if found
+if (pommeIndex > 0) {
+  const pomme = cliTools.splice(pommeIndex, 1)[0];
+  cliTools.unshift(pomme);
+}
+
+// Move igscraper to second position if found
+if (igscraperIndex > 1) {
+  const igscraper = cliTools.splice(igscraperIndex, 1)[0];
+  cliTools.splice(1, 0, igscraper);
+}
+
 const featuredCLITools = cliTools.slice(0, 2);
 
 // Calculate stats
