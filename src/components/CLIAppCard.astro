@@ -220,7 +220,7 @@ const installCmd = getInstallCommand(project.name, project.language);
 ---
 
 <article
-  class="cli-card group relative h-full w-full rounded-2xl overflow-hidden transform transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl"
+  class="cli-card group relative h-full rounded-2xl overflow-hidden transform transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl"
   style={`--gradient-light: ${toolTheme.gradient}; --gradient-dark: ${toolTheme.darkGradient}; --accent-light: ${toolTheme.accent}; --accent-dark: ${toolTheme.darkAccent};`}
   data-pattern={toolTheme.pattern}
   data-theme={project.id}
@@ -230,11 +230,11 @@ const installCmd = getInstallCommand(project.name, project.language);
   
   <a href={targetUrl} target="_blank" rel="noopener noreferrer" class="relative block h-full">
     <!-- Card header -->
-    <div class="relative z-10 p-4 pb-0">
-      <div class="flex items-start justify-between mb-4">
+    <div class="relative z-10 p-4 pb-3">
+      <div class="flex items-start justify-between mb-3">
         <div class="flex items-center gap-3">
           <div>
-            <h3 class="text-xl font-bold text-gray-100 drop-shadow-sm">
+            <h3 class="text-lg font-bold text-gray-100 drop-shadow-sm">
               {project.name}
             </h3>
             <div class="flex items-center gap-2 mt-1">
@@ -255,28 +255,28 @@ const installCmd = getInstallCommand(project.name, project.language);
       </div>
       
       <!-- Description -->
-      <p class="text-gray-200 dark:text-gray-300 text-sm mb-4 line-clamp-2">
+      <p class="text-gray-200 dark:text-gray-300 text-sm mb-3 line-clamp-2">
         {project.description}
       </p>
     </div>
 
     <!-- Terminal section -->
-    <div class="relative z-10 bg-gray-900/90 dark:bg-gray-900/95 rounded-xl mx-4 mb-4 flex-1 overflow-hidden border border-gray-700 dark:border-gray-600">
+    <div class="relative z-10 bg-gray-900/90 dark:bg-gray-900/95 rounded-xl mx-4 mb-3 overflow-hidden border border-gray-700 dark:border-gray-600">
       <!-- Terminal header -->
-      <div class="flex items-center gap-2 px-3 py-2 bg-gray-800/50 dark:bg-gray-800/70 border-b border-gray-700 dark:border-gray-600">
+      <div class="flex items-center gap-2 px-3 py-1.5 bg-gray-800/50 dark:bg-gray-800/70 border-b border-gray-700 dark:border-gray-600">
         <div class="flex gap-1.5">
-          <div class="w-2.5 h-2.5 rounded-full bg-red-500"></div>
-          <div class="w-2.5 h-2.5 rounded-full bg-yellow-500"></div>
-          <div class="w-2.5 h-2.5 rounded-full bg-green-500"></div>
+          <div class="w-2 h-2 rounded-full bg-red-500"></div>
+          <div class="w-2 h-2 rounded-full bg-yellow-500"></div>
+          <div class="w-2 h-2 rounded-full bg-green-500"></div>
         </div>
         <span class="text-xs text-gray-400 dark:text-gray-500 ml-2 font-mono">terminal</span>
       </div>
       
       <!-- Terminal content -->
-      <div class="p-4 font-mono text-sm space-y-4">
+      <div class="p-3 font-mono text-xs space-y-2">
         <!-- Installation -->
         <div>
-          <p class="text-gray-500 dark:text-gray-400 mb-1"># Install</p>
+          <p class="text-gray-500 dark:text-gray-400 text-xs"># Install</p>
           <p class="text-gray-100 dark:text-gray-200">
             <span class="terminal-prompt">$</span> {installCmd}
           </p>
@@ -284,19 +284,19 @@ const installCmd = getInstallCommand(project.name, project.language);
         
         <!-- Demo -->
         <div>
-          <p class="text-gray-500 dark:text-gray-400 mb-1"># Demo</p>
+          <p class="text-gray-500 dark:text-gray-400 text-xs"># Demo</p>
           <p class="text-gray-100 dark:text-gray-200">
             <span class="terminal-prompt">$</span> {terminalDemo[0]}
           </p>
-          {terminalDemo.slice(1).map((line) => (
-            <p class="text-gray-400 dark:text-gray-500 ml-2">{line}</p>
+          {terminalDemo.slice(1, 3).map((line) => (
+            <p class="text-gray-400 dark:text-gray-500 ml-2 text-xs">{line}</p>
           ))}
         </div>
       </div>
     </div>
     
     <!-- Platforms footer -->
-    <div class="relative z-10 px-4 py-3">
+    <div class="relative z-10 px-4 py-2">
       <div class="flex items-center gap-2 text-xs text-gray-300 dark:text-gray-400">
         <span>Runs on:</span>
         <div class="flex items-center gap-1.5">
@@ -314,9 +314,7 @@ const installCmd = getInstallCommand(project.name, project.language);
 
 <style>
   .cli-card {
-    min-height: 380px;
     background: var(--gradient-light);
-    width: 100%;
   }
   
   :global(.dark) .cli-card {
