@@ -38,18 +38,32 @@ const allCLITools = openSourceData.projects
     return dateB - dateA;
   });
 
-// Explicitly feature Pomme and songlink-cli (most popular CLI tools)
+// Add starcraftcli manually since it's not in the JSON data
+const starcraftcli = {
+  id: 'starcraftcli',
+  name: 'starcraftcli',
+  description: 'Command-line interface for StarCraft data and analytics.',
+  language: 'Swift',
+  platforms: ['macOS', 'Linux'],
+  stars: 0,
+  githubUrl: 'https://marcusziade.github.io/StarCraftKit/',
+  category: 'CLI Tools',
+  highlights: ['StarCraft analytics', 'Real-time data'],
+  topics: ['cli', 'swift', 'starcraft', 'analytics'],
+  commitCount: 62,
+};
+
+// Feature Pomme and starcraftcli
 const pomme = allCLITools.find(tool => tool.name.toLowerCase() === 'pomme');
-const songlink = allCLITools.find(tool => tool.name.toLowerCase() === 'songlink-cli');
 
 const featuredCLITools = [];
 if (pomme) featuredCLITools.push(pomme);
-if (songlink) featuredCLITools.push(songlink);
+featuredCLITools.push(starcraftcli);
 
 // If we don't have both, fill with other CLI tools
 if (featuredCLITools.length < 2) {
   const otherTools = allCLITools.filter(tool => 
-    tool.name.toLowerCase() !== 'pomme' && tool.name.toLowerCase() !== 'songlink-cli'
+    tool.name.toLowerCase() !== 'pomme'
   );
   featuredCLITools.push(...otherTools.slice(0, 2 - featuredCLITools.length));
 }
