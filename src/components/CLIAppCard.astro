@@ -25,24 +25,105 @@ const { project } = Astro.props;
 // URL selection: prefer docs, then homepage, then github
 const targetUrl = project.docsUrl || project.homepageUrl || project.githubUrl;
 
-// Solarized colors for light mode, Rose Pine colors for dark mode
-const languageColors = {
-  light: {
-    Go: '#268bd2', // Solarized blue
-    Swift: '#dc322f', // Solarized red
-    Rust: '#cb4b16', // Solarized orange
-    TypeScript: '#2aa198', // Solarized cyan
-    Python: '#859900', // Solarized green
-    JavaScript: '#b58900', // Solarized yellow
+// Define language-based themes with muted language-specific colors
+const languageThemes = {
+  Go: {
+    gradient: 'linear-gradient(135deg, #1a6b84 0%, #2090b3 40%, #26a3c9 70%, #4db5d9 100%)',
+    darkGradient: 'linear-gradient(135deg, #134f63 0%, #1a6b84 40%, #2090b3 70%, #26a3c9 100%)',
+    accent: '#00ADD8', // Go's official cyan
+    darkAccent: '#5DC9E2',
+    baseIcon: '',
   },
-  dark: {
-    Go: '#9ccfd8', // Rose Pine foam
-    Swift: '#eb6f92', // Rose Pine love
-    Rust: '#f6c177', // Rose Pine gold
-    TypeScript: '#c4a7e7', // Rose Pine iris
-    Python: '#31748f', // Rose Pine pine
-    JavaScript: '#ebbcba', // Rose Pine rose
+  Swift: {
+    gradient: 'linear-gradient(135deg, #c24e2f 0%, #e0633c 40%, #e57854 70%, #ea8d6b 100%)',
+    darkGradient: 'linear-gradient(135deg, #a33e23 0%, #c24e2f 40%, #e0633c 70%, #e57854 100%)',
+    accent: '#FA7343', // Swift's official orange
+    darkAccent: '#FD9A6C',
+    baseIcon: '',
   },
+  Rust: {
+    gradient: 'linear-gradient(135deg, #8f1c3a 0%, #b53628 40%, #c15044 70%, #cd6a60 100%)',
+    darkGradient: 'linear-gradient(135deg, #71162e 0%, #8f1c3a 40%, #b53628 70%, #c15044 100%)',
+    accent: '#CE422B', // Rust's official brown/red
+    darkAccent: '#E48670',
+    baseIcon: '',
+  },
+  Python: {
+    gradient: 'linear-gradient(135deg, #2a5a82 0%, #31689a 40%, #4179b0 70%, #5a8dc4 100%)',
+    darkGradient: 'linear-gradient(135deg, #1f4568 0%, #2a5a82 40%, #31689a 70%, #4179b0 100%)',
+    accent: '#3776AB', // Python's official blue
+    darkAccent: '#6FA4E7',
+    baseIcon: '',
+  },
+  JavaScript: {
+    gradient: 'linear-gradient(135deg, #bfaa15 0%, #d4c01b 40%, #ddc939 70%, #e6d257 100%)',
+    darkGradient: 'linear-gradient(135deg, #a2900f 0%, #bfaa15 40%, #d4c01b 70%, #ddc939 100%)',
+    accent: '#F7DF1E', // JavaScript's official yellow
+    darkAccent: '#F9ED64',
+    baseIcon: '',
+  },
+  TypeScript: {
+    gradient: 'linear-gradient(135deg, #20528a 0%, #2968a8 40%, #3a78bb 70%, #4b88ce 100%)',
+    darkGradient: 'linear-gradient(135deg, #173d6d 0%, #20528a 40%, #2968a8 70%, #3a78bb 100%)',
+    accent: '#3178C6', // TypeScript's official blue
+    darkAccent: '#5299E6',
+    baseIcon: '',
+  },
+  Ruby: {
+    gradient: 'linear-gradient(135deg, #8a231e 0%, #ad2b25 40%, #b54745 70%, #bd6365 100%)',
+    darkGradient: 'linear-gradient(135deg, #6e1a17 0%, #8a231e 40%, #ad2b25 70%, #b54745 100%)',
+    accent: '#CC342D', // Ruby's official red
+    darkAccent: '#E07673',
+    baseIcon: '',
+  },
+  'C++': {
+    gradient: 'linear-gradient(135deg, #003966 0%, #004a85 40%, #155c9b 70%, #2a6eb1 100%)',
+    darkGradient: 'linear-gradient(135deg, #002a4d 0%, #003966 40%, #004a85 70%, #155c9b 100%)',
+    accent: '#00599C', // C++'s official blue
+    darkAccent: '#3485CC',
+    baseIcon: '',
+  },
+  C: {
+    gradient: 'linear-gradient(135deg, #758292 0%, #919daa 40%, #a1acb8 70%, #b1bbc6 100%)',
+    darkGradient: 'linear-gradient(135deg, #5d6876 0%, #758292 40%, #919daa 70%, #a1acb8 100%)',
+    accent: '#A8B9CC', // C's traditional blue-gray
+    darkAccent: '#C4D1E0',
+    baseIcon: '',
+  },
+  Java: {
+    gradient: 'linear-gradient(135deg, #004c65 0%, #00627f 40%, #177491 70%, #2e86a3 100%)',
+    darkGradient: 'linear-gradient(135deg, #00384c 0%, #004c65 40%, #00627f 70%, #177491 100%)',
+    accent: '#007396', // Java's official blue
+    darkAccent: '#339FC2',
+    baseIcon: '',
+  },
+  Shell: {
+    gradient: 'linear-gradient(135deg, #5ea135 0%, #74be47 40%, #83c45a 70%, #92ca6d 100%)',
+    darkGradient: 'linear-gradient(135deg, #4d842b 0%, #5ea135 40%, #74be47 70%, #83c45a 100%)',
+    accent: '#89E051', // Shell/Bash green
+    darkAccent: '#ABE883',
+    baseIcon: '',
+  },
+};
+
+// Get specific icons for each tool - removed emojis
+const toolIcons = {
+  'songlink-cli': '',
+  'pomme': '',
+  'speedrun-cli': '',
+  'apod-cli': '',
+  'starcraftcli': '',
+  'igscraper': '',
+  'geminicli': '',
+  'swollamacli': '',
+};
+
+// Get theme based on language
+const langTheme = languageThemes[project.language] || languageThemes.Go;
+const toolTheme = {
+  ...langTheme,
+  icon: toolIcons[project.id] || langTheme.baseIcon,
+  pattern: project.language === 'Swift' ? 'swift-pattern' : 'go-pattern',
 };
 
 // Terminal-style installation commands
@@ -50,6 +131,7 @@ const getInstallCommand = (name: string, language: string) => {
   const lowerName = name.toLowerCase();
   if (lowerName === 'pomme') return 'brew install pomme';
   if (lowerName === 'starcraftcli') return 'yay -S starcraftcli';
+  if (lowerName === 'apod-cli') return 'brew install marcusziade/tap/apod-cli';
   if (language === 'Go') return `go install github.com/marcusziade/${lowerName}@latest`;
   if (language === 'Swift') return `swift build -c release`;
   return `# Check README for installation`;
@@ -60,56 +142,74 @@ const getTerminalDemo = (name: string) => {
   const lowerName = name.toLowerCase();
   if (lowerName === 'pomme') {
     return [
-      'pomme sales',
-      'Sales Report for December 2024',
+      'pomme sales --month december',
+      'Fetching sales data...',
       'Revenue: $486,392.45',
       'Countries: 142 markets',
+      'Growth: +23.4% YoY',
     ];
   }
   if (lowerName === 'apod-cli') {
-    return ['apod-cli today', 'Astronomy Picture of the Day', 'Loading stunning space imagery...'];
+    return [
+      'apod-cli today',
+      'Fetching today\'s image...',
+      'Title: Pillars of Creation',
+      'Date: 2025-07-05',
+      'Opening in browser...',
+    ];
   }
   if (lowerName === 'songlink-cli') {
-    return ['songlink "artist - song"', 'Generating universal music link...', 'song.link/s/abc123'];
+    return [
+      'songlink "The Weeknd - Blinding Lights"',
+      'Creating universal link...',
+      'song.link/s/abc123xyz',
+      'Copied to clipboard!',
+    ];
   }
   if (lowerName === 'speedrun-cli') {
     return [
       'speedrun-cli game "Super Mario 64"',
       'Loading leaderboards...',
-      '1. cheese05 - 6:41',
-      '2. Simply - 6:45',
+      '1. cheese05 - 6:41.000',
+      '2. Simply - 6:45.200',
+      '3. Puncayshun - 6:47.450',
     ];
   }
   if (lowerName === 'starcraftcli') {
     return [
-      'starcraftcli search "Serral"',
-      'Searching for player Serral...',
-      'Found: Joona "Serral" Sotala',
-      'Total Earnings: $1,897,419',
+      'starcraftcli player "Serral"',
+      'Searching StarCraft database...',
+      'Joona "Serral" Sotala',
+      'Earnings: $1,897,419',
+      'Race: Zerg | WCS: 14,628',
     ];
   }
   if (lowerName === 'igscraper') {
     return [
-      'igscraper user @username',
-      'Fetching user data...',
-      'Posts: 847',
-      'Downloaded: 50 items',
+      'igscraper user @nasa --limit 10',
+      'Scraping Instagram...',
+      'Posts found: 3,847',
+      'Downloaded: 10/10',
+      'Saved to ./nasa/',
     ];
   }
   if (lowerName === 'geminicli') {
     return [
-      'gemini "explain quantum computing"',
+      'gemini chat',
+      'Gemini CLI v1.0.0',
+      '> explain quantum entanglement',
       'Thinking...',
-      'Quantum computing uses quantum bits...',
-      'Unlike classical bits...',
+      'Quantum entanglement is when...',
     ];
   }
   if (lowerName === 'swollamacli') {
     return [
-      'swollama chat "write a haiku"',
-      'Using model: llama3.2...',
-      'Morning dew glistens',
-      'On petals soft and gentle',
+      'swollama run llama3.2',
+      'Loading model...',
+      '> write a haiku about code',
+      'Functions cascade,',
+      'Logic flows like gentle streams,',
+      'Bugs await their fix.',
     ];
   }
   return [`${lowerName} --help`, 'Command-line tool', 'Fast and efficient'];
@@ -120,151 +220,178 @@ const installCmd = getInstallCommand(project.name, project.language);
 ---
 
 <article
-  class="group bg-[#fdf6e3] dark:bg-[#191724] rounded-xl overflow-hidden border border-[#eee8d5] dark:border-[#26233a] hover:border-[#93a1a1] dark:hover:border-[#403d52] hover:shadow-2xl dark:hover:shadow-[#1f1d2e]/50 transition-all duration-300 ease-out"
+  class="cli-card group relative h-full w-full rounded-2xl overflow-hidden transform transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl"
+  style={`--gradient-light: ${toolTheme.gradient}; --gradient-dark: ${toolTheme.darkGradient}; --accent-light: ${toolTheme.accent}; --accent-dark: ${toolTheme.darkAccent};`}
+  data-pattern={toolTheme.pattern}
+  data-theme={project.id}
 >
-  <a href={targetUrl} target="_blank" rel="noopener noreferrer" class="block">
-    <!-- Terminal header -->
-    <div
-      class="flex items-center gap-2 px-4 py-2 bg-[#eee8d5] dark:bg-[#1f1d2e] border-b border-[#93a1a1] dark:border-[#26233a]"
-    >
-      <div class="flex gap-1.5">
-        <div class="w-3 h-3 rounded-full bg-[#dc322f] dark:bg-[#eb6f92]"></div>
-        <div class="w-3 h-3 rounded-full bg-[#b58900] dark:bg-[#f6c177]"></div>
-        <div class="w-3 h-3 rounded-full bg-[#859900] dark:bg-[#31748f]"></div>
+  <!-- Background pattern overlay -->
+  <div class="absolute inset-0 opacity-10 dark:opacity-5 pattern-overlay" data-pattern={toolTheme.pattern}></div>
+  
+  <a href={targetUrl} target="_blank" rel="noopener noreferrer" class="relative block h-full">
+    <!-- Card header -->
+    <div class="relative z-10 p-4 pb-0">
+      <div class="flex items-start justify-between mb-4">
+        <div class="flex items-center gap-3">
+          <div>
+            <h3 class="text-xl font-bold text-gray-100 drop-shadow-sm">
+              {project.name}
+            </h3>
+            <div class="flex items-center gap-2 mt-1">
+              <span class="px-2 py-0.5 text-xs font-medium rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300">
+                {project.language}
+              </span>
+              {project.stars > 0 && (
+                <span class="flex items-center gap-1 text-xs text-gray-300 dark:text-gray-400">
+                  <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                  {project.stars}
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
-      <span class="text-xs text-[#657b83] dark:text-[#908caa] ml-2 font-mono"
-        >{project.name.toLowerCase()}</span
-      >
-      <div class="ml-auto flex items-center gap-2">
-        {
-          project.stars > 0 && (
-            <span class="flex items-center gap-1 text-xs text-[#657b83] dark:text-[#908caa]">
-              <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-              </svg>
-              {project.stars}
-            </span>
-          )
-        }
-        <span
-          class="px-2 py-0.5 text-xs font-medium rounded light-lang-badge dark-lang-badge"
-          data-language={project.language}
-        >
-          {project.language}
-        </span>
-      </div>
+      
+      <!-- Description -->
+      <p class="text-gray-200 dark:text-gray-300 text-sm mb-4 line-clamp-2">
+        {project.description}
+      </p>
     </div>
 
-    <!-- Terminal content -->
-    <div class="p-4 font-mono text-sm">
-      <!-- Project description -->
-      <div class="mb-4">
-        <p class="text-[#586e75] dark:text-[#e0def4] text-xs sm:text-sm mb-2 font-sans">
-          {project.description}
-        </p>
+    <!-- Terminal section -->
+    <div class="relative z-10 bg-gray-900/90 dark:bg-gray-900/95 rounded-xl mx-4 mb-4 flex-1 overflow-hidden border border-gray-700 dark:border-gray-600">
+      <!-- Terminal header -->
+      <div class="flex items-center gap-2 px-3 py-2 bg-gray-800/50 dark:bg-gray-800/70 border-b border-gray-700 dark:border-gray-600">
+        <div class="flex gap-1.5">
+          <div class="w-2.5 h-2.5 rounded-full bg-red-500"></div>
+          <div class="w-2.5 h-2.5 rounded-full bg-yellow-500"></div>
+          <div class="w-2.5 h-2.5 rounded-full bg-green-500"></div>
+        </div>
+        <span class="text-xs text-gray-400 dark:text-gray-500 ml-2 font-mono">terminal</span>
       </div>
-
-      <!-- Installation command -->
-      <div class="mb-4">
-        <p class="text-[#93a1a1] dark:text-[#6e6a86] text-xs mb-1"># Install</p>
-        <p class="text-[#657b83] dark:text-[#e0def4]">
-          <span class="text-[#859900] dark:text-[#9ccfd8]">$</span>
-          <span class="text-[#073642] dark:text-[#e0def4]">{installCmd}</span>
-        </p>
+      
+      <!-- Terminal content -->
+      <div class="p-4 font-mono text-sm space-y-4">
+        <!-- Installation -->
+        <div>
+          <p class="text-gray-500 dark:text-gray-400 mb-1"># Install</p>
+          <p class="text-gray-100 dark:text-gray-200">
+            <span class="terminal-prompt">$</span> {installCmd}
+          </p>
+        </div>
+        
+        <!-- Demo -->
+        <div>
+          <p class="text-gray-500 dark:text-gray-400 mb-1"># Demo</p>
+          <p class="text-gray-100 dark:text-gray-200">
+            <span class="terminal-prompt">$</span> {terminalDemo[0]}
+          </p>
+          {terminalDemo.slice(1).map((line) => (
+            <p class="text-gray-400 dark:text-gray-500 ml-2">{line}</p>
+          ))}
+        </div>
       </div>
-
-      <!-- Demo output -->
-      <div class="mb-4">
-        <p class="text-[#93a1a1] dark:text-[#6e6a86] text-xs mb-1"># Example</p>
-        <p class="text-[#657b83] dark:text-[#e0def4] mb-1">
-          <span class="text-[#859900] dark:text-[#9ccfd8]">$</span>
-          <span class="text-[#073642] dark:text-[#e0def4]">{terminalDemo[0]}</span>
-        </p>
-        {
-          terminalDemo
-            .slice(1)
-            .map((line) => <p class="text-[#586e75] dark:text-[#908caa] text-xs ml-2">{line}</p>)
-        }
-      </div>
-
-      <!-- Platforms -->
-      <div class="flex items-center gap-2 mt-4 text-xs text-[#93a1a1] dark:text-[#6e6a86]">
-        <span>Platforms:</span>
-        {
-          project.platforms.map((platform, index) => (
+    </div>
+    
+    <!-- Platforms footer -->
+    <div class="relative z-10 px-4 py-3">
+      <div class="flex items-center gap-2 text-xs text-gray-300 dark:text-gray-400">
+        <span>Runs on:</span>
+        <div class="flex items-center gap-1.5">
+          {project.platforms.map((platform, index) => (
             <>
-              <span class="text-[#657b83] dark:text-[#908caa]">{platform}</span>
-              {index < project.platforms.length - 1 && <span>•</span>}
+              <span class="text-gray-200 dark:text-gray-300">{platform}</span>
+              {index < project.platforms.length - 1 && <span class="text-gray-500">•</span>}
             </>
-          ))
-        }
+          ))}
+        </div>
       </div>
     </div>
   </a>
 </article>
 
 <style>
-  article:hover {
-    transform: translateY(-2px);
+  .cli-card {
+    min-height: 380px;
+    background: var(--gradient-light);
+    width: 100%;
   }
-
-  .group:hover span.text-\[\#073642\] {
-    color: #268bd2;
+  
+  :global(.dark) .cli-card {
+    background: var(--gradient-dark);
   }
-
-  .group:hover span.dark\:text-\[\#e0def4\] {
-    color: #c4a7e7;
+  
+  .terminal-prompt {
+    color: var(--accent-light);
   }
-
-  /* Language badge styles for Solarized Light */
-  .light-lang-badge[data-language='Go'] {
-    background-color: #268bd220;
-    color: #268bd2;
+  
+  :global(.dark) .terminal-prompt {
+    color: var(--accent-dark);
   }
-  .light-lang-badge[data-language='Swift'] {
-    background-color: #dc322f20;
-    color: #dc322f;
+  
+  /* Pattern overlays for languages with language-specific colors */
+  .pattern-overlay[data-pattern="go-pattern"] {
+    background-image: 
+      repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 20px,
+        rgba(0, 173, 216, 0.1) 20px,
+        rgba(0, 173, 216, 0.1) 22px
+      ),
+      repeating-linear-gradient(
+        -45deg,
+        transparent,
+        transparent 20px,
+        rgba(0, 173, 216, 0.05) 20px,
+        rgba(0, 173, 216, 0.05) 22px
+      );
   }
-  .light-lang-badge[data-language='Rust'] {
-    background-color: #cb4b1620;
-    color: #cb4b16;
+  
+  .pattern-overlay[data-pattern="swift-pattern"] {
+    background-image: 
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 30px,
+        rgba(250, 115, 67, 0.1) 30px,
+        rgba(250, 115, 67, 0.1) 31px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 30px,
+        rgba(250, 115, 67, 0.05) 30px,
+        rgba(250, 115, 67, 0.05) 31px
+      );
   }
-  .light-lang-badge[data-language='TypeScript'] {
-    background-color: #2aa19820;
-    color: #2aa198;
+  
+  
+  /* Ensure consistent card heights */
+  article {
+    display: flex;
+    flex-direction: column;
   }
-  .light-lang-badge[data-language='Python'] {
-    background-color: #85990020;
-    color: #859900;
+  
+  article > a {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
   }
-  .light-lang-badge[data-language='JavaScript'] {
-    background-color: #b5890020;
-    color: #b58900;
+  
+  article > a > div:nth-child(2) {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
   }
-
-  /* Language badge styles for Rose Pine (dark mode) */
-  :global(.dark) .dark-lang-badge[data-language='Go'] {
-    background-color: #9ccfd820;
-    color: #9ccfd8;
-  }
-  :global(.dark) .dark-lang-badge[data-language='Swift'] {
-    background-color: #eb6f9220;
-    color: #eb6f92;
-  }
-  :global(.dark) .dark-lang-badge[data-language='Rust'] {
-    background-color: #f6c17720;
-    color: #f6c177;
-  }
-  :global(.dark) .dark-lang-badge[data-language='TypeScript'] {
-    background-color: #c4a7e720;
-    color: #c4a7e7;
-  }
-  :global(.dark) .dark-lang-badge[data-language='Python'] {
-    background-color: #31748f20;
-    color: #31748f;
-  }
-  :global(.dark) .dark-lang-badge[data-language='JavaScript'] {
-    background-color: #ebbcba20;
-    color: #ebbcba;
+  
+  /* Line clamp utility */
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 </style>

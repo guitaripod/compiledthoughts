@@ -133,12 +133,11 @@ additionalTools.forEach((tool) => {
   }
 });
 
-// Sort by stars first, then by commit count to mix languages naturally
+// Sort by latest commit date (updatedAt)
 cliTools.sort((a, b) => {
-  // First sort by stars (descending)
-  if (b.stars !== a.stars) return b.stars - a.stars;
-  // Then by commit count (descending)
-  return b.commitCount - a.commitCount;
+  const dateA = a.updatedAt ? new Date(a.updatedAt).getTime() : 0;
+  const dateB = b.updatedAt ? new Date(b.updatedAt).getTime() : 0;
+  return dateB - dateA;
 });
 
 // Create structured data for SEO
@@ -167,7 +166,7 @@ const structuredData = {
 
 <BaseLayout title={pageTitle} description={pageDescription}>
   <main>
-    <div class="container mx-auto px-4 py-6 sm:py-8 lg:py-12">
+    <div class="w-full px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
       <header class="text-center mb-8 sm:mb-12">
         <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">CLI Tools</h1>
         <p
@@ -192,8 +191,8 @@ const structuredData = {
         </div>
       </header>
 
-      <section>
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+      <section class="max-w-[1600px] mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-6 lg:gap-8">
           {cliTools.map((tool) => <CLIAppCard project={tool} />)}
         </div>
       </section>
@@ -251,5 +250,20 @@ const structuredData = {
   }
   .grid > *:nth-child(4) {
     animation-delay: 0.4s;
+  }
+  .grid > *:nth-child(5) {
+    animation-delay: 0.5s;
+  }
+  .grid > *:nth-child(6) {
+    animation-delay: 0.6s;
+  }
+  .grid > *:nth-child(7) {
+    animation-delay: 0.7s;
+  }
+  .grid > *:nth-child(8) {
+    animation-delay: 0.8s;
+  }
+  .grid > *:nth-child(9) {
+    animation-delay: 0.9s;
   }
 </style>

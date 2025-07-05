@@ -28,26 +28,28 @@ const featuredApps = featuredAppIds
   .map((id) => appsData.apps.find((app) => app.id === id))
   .filter(Boolean);
 
-// Get all CLI tools (including starcraftcli which might be categorized as "Go Projects")
+// Get all CLI tools
 const allCLITools = openSourceData.projects
-  .filter((project) => 
-    project.category === 'CLI Tools' || 
-    (project.name.toLowerCase() === 'starcraftcli' && project.language === 'Go')
-  )
-  .sort((a, b) => b.stars - a.stars);
+  .filter((project) => project.category === 'CLI Tools')
+  .sort((a, b) => {
+    // Sort by updatedAt date first (most recent first)
+    const dateA = a.updatedAt ? new Date(a.updatedAt).getTime() : 0;
+    const dateB = b.updatedAt ? new Date(b.updatedAt).getTime() : 0;
+    return dateB - dateA;
+  });
 
-// Explicitly feature Pomme and starcraftcli
+// Explicitly feature Pomme and songlink-cli (most popular CLI tools)
 const pomme = allCLITools.find(tool => tool.name.toLowerCase() === 'pomme');
-const starcraftcli = allCLITools.find(tool => tool.name.toLowerCase() === 'starcraftcli');
+const songlink = allCLITools.find(tool => tool.name.toLowerCase() === 'songlink-cli');
 
 const featuredCLITools = [];
 if (pomme) featuredCLITools.push(pomme);
-if (starcraftcli) featuredCLITools.push(starcraftcli);
+if (songlink) featuredCLITools.push(songlink);
 
 // If we don't have both, fill with other CLI tools
 if (featuredCLITools.length < 2) {
   const otherTools = allCLITools.filter(tool => 
-    tool.name.toLowerCase() !== 'pomme' && tool.name.toLowerCase() !== 'starcraftcli'
+    tool.name.toLowerCase() !== 'pomme' && tool.name.toLowerCase() !== 'songlink-cli'
   );
   featuredCLITools.push(...otherTools.slice(0, 2 - featuredCLITools.length));
 }

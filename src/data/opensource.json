@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2025-07-04T00:07:49+03:00",
+  "lastUpdated": "2025-07-05T13:17:59+03:00",
   "totalRepos": 100,
   "projects": [
     {
@@ -188,6 +188,27 @@
       "homepageUrl": "https://marcusziade.github.io/AnthropicKit/"
     },
     {
+      "id": "starcraftkit",
+      "name": "StarCraftKit",
+      "description": "StarCraftKit aims to be the go-to Swift package for developers working with the StarCraft II pro scene.",
+      "language": "Swift",
+      "platforms": [
+        "macOS"
+      ],
+      "stars": 1,
+      "githubUrl": "https://github.com/marcusziade/StarCraftKit",
+      "category": "Swift Packages",
+      "highlights": [
+        "AI-powered"
+      ],
+      "updatedAt": "2025-07-04T20:52:41Z",
+      "createdAt": "2024-02-25T16:47:08Z",
+      "topics": [],
+      "commitCount": 123,
+      "releaseCount": 2,
+      "homepageUrl": "https://marcusziade.github.io/StarCraftKit/"
+    },
+    {
       "id": "pomme",
       "name": "Pomme",
       "description": "App Store Connect CLI tool built with Go.",
@@ -201,32 +222,12 @@
       "githubUrl": "https://github.com/marcusziade/Pomme",
       "category": "CLI Tools",
       "highlights": [],
-      "updatedAt": "2025-07-02T14:46:13Z",
+      "updatedAt": "2025-07-04T07:35:04Z",
       "createdAt": "2025-04-01T15:48:09Z",
       "topics": [],
-      "commitCount": 51,
+      "commitCount": 55,
       "releaseCount": 3,
       "homepageUrl": "https://marcusziade.github.io/Pomme/"
-    },
-    {
-      "id": "starcraftcli",
-      "name": "starcraftcli",
-      "description": "Command-line interface for StarCraft data and analytics",
-      "language": "Swift",
-      "platforms": [
-        "macOS",
-        "Linux"
-      ],
-      "stars": 0,
-      "githubUrl": "https://github.com/marcusziade/StarCraftKit",
-      "category": "CLI Tools",
-      "highlights": ["StarCraft analytics", "Real-time data"],
-      "updatedAt": "2025-07-03T19:51:14Z",
-      "createdAt": "2024-12-30T20:45:07Z",
-      "topics": ["starcraft", "cli", "swift", "analytics"],
-      "commitCount": 62,
-      "releaseCount": 2,
-      "homepageUrl": "https://marcusziade.github.io/StarCraftKit/"
     },
     {
       "id": "igscraper",
@@ -240,12 +241,12 @@
       ],
       "stars": 0,
       "githubUrl": "https://github.com/marcusziade/igscraper",
-      "category": "CLI Tools",
+      "category": "Go Projects",
       "highlights": [],
-      "updatedAt": "2025-07-03T19:51:14Z",
+      "updatedAt": "2025-07-04T07:40:55Z",
       "createdAt": "2024-12-30T20:45:07Z",
       "topics": [],
-      "commitCount": 62,
+      "commitCount": 63,
       "releaseCount": 2,
       "homepageUrl": "https://marcusziade.github.io/igscraper/"
     },
