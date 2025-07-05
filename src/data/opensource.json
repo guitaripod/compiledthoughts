@@ -209,6 +209,26 @@
       "homepageUrl": "https://marcusziade.github.io/Pomme/"
     },
     {
+      "id": "starcraftcli",
+      "name": "starcraftcli",
+      "description": "Command-line interface for StarCraft data and analytics",
+      "language": "Swift",
+      "platforms": [
+        "macOS",
+        "Linux"
+      ],
+      "stars": 0,
+      "githubUrl": "https://github.com/marcusziade/StarCraftKit",
+      "category": "CLI Tools",
+      "highlights": ["StarCraft analytics", "Real-time data"],
+      "updatedAt": "2025-07-03T19:51:14Z",
+      "createdAt": "2024-12-30T20:45:07Z",
+      "topics": ["starcraft", "cli", "swift", "analytics"],
+      "commitCount": 62,
+      "releaseCount": 2,
+      "homepageUrl": "https://marcusziade.github.io/StarCraftKit/"
+    },
+    {
       "id": "igscraper",
       "name": "igscraper",
       "description": "ig photo scraper",
@@ -220,7 +240,7 @@
       ],
       "stars": 0,
       "githubUrl": "https://github.com/marcusziade/igscraper",
-      "category": "Go Projects",
+      "category": "CLI Tools",
       "highlights": [],
       "updatedAt": "2025-07-03T19:51:14Z",
       "createdAt": "2024-12-30T20:45:07Z",

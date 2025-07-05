@@ -49,6 +49,7 @@ const languageColors = {
 const getInstallCommand = (name: string, language: string) => {
   const lowerName = name.toLowerCase();
   if (lowerName === 'pomme') return 'brew install pomme';
+  if (lowerName === 'starcraftcli') return 'yay -S starcraftcli';
   if (language === 'Go') return `go install github.com/marcusziade/${lowerName}@latest`;
   if (language === 'Swift') return `swift build -c release`;
   return `# Check README for installation`;
@@ -77,6 +78,14 @@ const getTerminalDemo = (name: string) => {
       'Loading leaderboards...',
       '1. cheese05 - 6:41',
       '2. Simply - 6:45',
+    ];
+  }
+  if (lowerName === 'starcraftcli') {
+    return [
+      'starcraftcli search "Serral"',
+      'Searching for player Serral...',
+      'Found: Joona "Serral" Sotala',
+      'Total Earnings: $1,897,419',
     ];
   }
   if (lowerName === 'igscraper') {

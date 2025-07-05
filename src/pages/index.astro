@@ -28,26 +28,26 @@ const featuredApps = featuredAppIds
   .map((id) => appsData.apps.find((app) => app.id === id))
   .filter(Boolean);
 
-// Get all CLI tools (including igscraper which might be categorized as "Go Projects")
+// Get all CLI tools (including starcraftcli which might be categorized as "Go Projects")
 const allCLITools = openSourceData.projects
   .filter((project) => 
     project.category === 'CLI Tools' || 
-    (project.name.toLowerCase() === 'igscraper' && project.language === 'Go')
+    (project.name.toLowerCase() === 'starcraftcli' && project.language === 'Go')
   )
   .sort((a, b) => b.stars - a.stars);
 
-// Explicitly feature Pomme and igscraper
+// Explicitly feature Pomme and starcraftcli
 const pomme = allCLITools.find(tool => tool.name.toLowerCase() === 'pomme');
-const igscraper = allCLITools.find(tool => tool.name.toLowerCase() === 'igscraper');
+const starcraftcli = allCLITools.find(tool => tool.name.toLowerCase() === 'starcraftcli');
 
 const featuredCLITools = [];
 if (pomme) featuredCLITools.push(pomme);
-if (igscraper) featuredCLITools.push(igscraper);
+if (starcraftcli) featuredCLITools.push(starcraftcli);
 
 // If we don't have both, fill with other CLI tools
 if (featuredCLITools.length < 2) {
   const otherTools = allCLITools.filter(tool => 
-    tool.name.toLowerCase() !== 'pomme' && tool.name.toLowerCase() !== 'igscraper'
+    tool.name.toLowerCase() !== 'pomme' && tool.name.toLowerCase() !== 'starcraftcli'
   );
   featuredCLITools.push(...otherTools.slice(0, 2 - featuredCLITools.length));
 }
