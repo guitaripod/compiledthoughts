@@ -1,0 +1,616 @@
+---
+title: 'Secure OAuth Implementation Without Local API Keys Using Rust and Cloudflare Workers'
+description: 'Learn how to build a secure OAuth flow where API credentials never leave your server, using Rust-based Cloudflare Workers for authentication proxying'
+pubDate: 2025-07-07
+tags: ['rust', 'cloudflare', 'workers', 'oauth', 'authentication', 'security', 'wasm']
+---
+
+Building secure OAuth implementations often requires managing API keys and secrets in client applications. This creates security risks - hardcoded credentials can be extracted, and rotating compromised keys becomes a nightmare. In this guide, we'll build a completely secure OAuth system where credentials never leave your Cloudflare Worker, using Rust compiled to WebAssembly.
+
+## The Problem with Traditional OAuth
+
+Traditional OAuth implementations face several challenges:
+
+- **Client-side credentials**: API keys often end up in client code or configuration files
+- **Key rotation complexity**: Updating compromised keys requires rebuilding and redistributing clients
+- **Git history exposure**: Credentials accidentally committed remain in version control forever
+- **Platform limitations**: Mobile apps and CLIs can't hide credentials from determined attackers
+
+The solution? Move all credential management to a secure proxy that handles the OAuth dance server-side.
+
+## Architecture Overview
+
+Our implementation uses three key components:
+
+1. **Client Application**: Initiates OAuth flow but never sees credentials
+2. **Cloudflare Worker**: Holds credentials and handles all OAuth operations
+3. **OAuth Provider**: The service you're authenticating with (e.g., Last.fm, Spotify, GitHub)
+
+The flow looks like this:
+
+```
+Client → Worker (/auth/url) → Returns OAuth URL with embedded credentials
+  ↓
+User authorizes in browser
+  ↓
+OAuth provider redirects with auth token
+  ↓
+Client → Worker (/auth/getSession) → Exchanges token for session
+                                      using stored credentials
+  ↓
+Client stores session key for future authenticated requests
+```
+
+## Why Rust and Cloudflare Workers?
+
+This combination offers unique advantages:
+
+- **Zero cold starts**: Rust compiles to efficient WASM that starts instantly
+- **Type safety**: Catch credential handling errors at compile time
+- **Global edge deployment**: Workers run at 300+ locations worldwide
+- **Secure secrets management**: Credentials stored encrypted in Worker environment
+- **Automatic scaling**: Handle millions of auth requests without infrastructure management
+
+## Implementation
+
+Let's build a complete OAuth system using Last.fm as an example. The principles apply to any OAuth provider.
+
+### Part 1: Setting Up the Rust Worker Project
+
+First, create a new Cloudflare Worker project:
+
+```bash
+mkdir oauth-worker && cd oauth-worker
+npm create cloudflare@latest . -- --type rust
+```
+
+Update your `Cargo.toml` with necessary dependencies:
+
+```toml
+[package]
+name = "oauth-proxy-worker"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+worker = "0.0.21"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+hex = "0.4"
+md5 = "0.7"
+url = "2.5"
+
+[dev-dependencies]
+wasm-bindgen-test = "0.3"
+```
+
+### Part 2: Core OAuth Handler
+
+Create the main request handler in `src/lib.rs`:
+
+```rust
+use worker::*;
+use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
+
+mod auth;
+mod utils;
+mod error;
+
+#[event(fetch)]
+pub async fn main(req: Request, env: Env, _ctx: Context) -> Result<Response> {
+    utils::log_request(&req);
+    
+    // Create router
+    let router = Router::new();
+    
+    router
+        // OAuth endpoints
+        .get_async("/auth/url", auth::get_auth_url)
+        .get_async("/auth/getSession", auth::get_session)
+        // Health check
+        .get("/health", |_, _| Response::ok("OK"))
+        // Catch all
+        .or_else_any_method_async("/:path", |_, _| async move { 
+            Response::error("Not Found", 404) 
+        })
+        .run(req, env)
+        .await
+}
+```
+
+### Part 3: Authentication Module
+
+Create `src/auth.rs` to handle OAuth operations:
+
+```rust
+use worker::{Request, Response, RouteContext, Env};
+use serde_json::json;
+use std::collections::HashMap;
+
+/// Returns the OAuth authorization URL with embedded API key
+pub async fn get_auth_url(
+    _req: Request,
+    ctx: RouteContext<()>,
+) -> Result<Response, worker::Error> {
+    // Get API key from secure environment
+    let api_key = ctx
+        .env
+        .secret("OAUTH_API_KEY")
+        .map_err(|_| worker::Error::from("OAUTH_API_KEY not configured"))?
+        .to_string();
+    
+    // Build auth URL with your specific OAuth provider
+    let callback = "http://localhost:8080/auth/callback"; // Adjust for your app
+    let auth_url = format!(
+        "https://provider.com/auth?api_key={}&callback={}",
+        api_key, 
+        urlencoding::encode(&callback)
+    );
+    
+    let response = json!({
+        "auth_url": auth_url,
+        "expires_in": 600 // URL valid for 10 minutes
+    });
+    
+    Response::from_json(&response)
+}
+
+/// Exchange auth token for session credentials
+pub async fn get_session(
+    req: Request,
+    ctx: RouteContext<()>,
+) -> Result<Response, worker::Error> {
+    let url = req.url()?;
+    let params = parse_query_params(&url);
+    
+    // Extract auth token
+    let token = params
+        .get("token")
+        .ok_or_else(|| worker::Error::from("Missing token parameter"))?;
+    
+    // Get credentials from environment
+    let api_key = ctx.env.secret("OAUTH_API_KEY")?.to_string();
+    let api_secret = ctx.env.secret("OAUTH_API_SECRET")?.to_string();
+    
+    // Build request parameters for session exchange
+    let mut session_params = HashMap::new();
+    session_params.insert("method", "auth.getSession");
+    session_params.insert("api_key", &api_key);
+    session_params.insert("token", token);
+    
+    // Generate signature (MD5 for Last.fm, adjust for your provider)
+    let signature = generate_signature(&session_params, &api_secret);
+    
+    // Make request to OAuth provider
+    let provider_url = format!(
+        "https://api.provider.com/auth/session?method=auth.getSession&api_key={}&token={}&api_sig={}",
+        api_key, token, signature
+    );
+    
+    let response = Fetch::Url(provider_url.parse()?)
+        .send()
+        .await?;
+    
+    // Parse provider response
+    let body = response.text().await?;
+    let result: serde_json::Value = serde_json::from_str(&body)?;
+    
+    // Check for errors
+    if let Some(error) = result.get("error") {
+        let message = result.get("message")
+            .and_then(|m| m.as_str())
+            .unwrap_or("Authentication failed");
+        return Response::error(message, 401);
+    }
+    
+    // Extract session data
+    let session = result
+        .get("session")
+        .ok_or_else(|| worker::Error::from("Invalid response: missing session"))?;
+    
+    Response::from_json(&session)
+}
+
+/// Generate MD5 signature for OAuth requests
+fn generate_signature(params: &HashMap<&str, &str>, secret: &str) -> String {
+    // Sort parameters alphabetically
+    let mut sorted_params: Vec<_> = params.iter()
+        .filter(|(k, _)| *k != "api_sig" && *k != "format")
+        .collect();
+    sorted_params.sort_by_key(|(k, _)| *k);
+    
+    // Build signature string
+    let mut sig_string = String::new();
+    for (key, value) in sorted_params {
+        sig_string.push_str(key);
+        sig_string.push_str(value);
+    }
+    sig_string.push_str(secret);
+    
+    // Calculate MD5 hash
+    format!("{:x}", md5::compute(sig_string))
+}
+
+/// Parse query parameters from URL
+fn parse_query_params(url: &Url) -> HashMap<String, String> {
+    url.query_pairs()
+        .map(|(k, v)| (k.to_string(), v.to_string()))
+        .collect()
+}
+```
+
+### Part 4: Error Handling
+
+Create `src/error.rs` for consistent error responses:
+
+```rust
+use worker::{Response, Error};
+use serde_json::json;
+
+pub enum ApiError {
+    InvalidToken,
+    MissingParameter(String),
+    ProviderError(String),
+    InternalError,
+}
+
+impl ApiError {
+    pub fn to_response(self) -> Result<Response, Error> {
+        let (status, message) = match self {
+            ApiError::InvalidToken => (401, "Invalid or expired token"),
+            ApiError::MissingParameter(param) => {
+                (400, &format!("Missing required parameter: {}", param))
+            }
+            ApiError::ProviderError(msg) => (502, &msg),
+            ApiError::InternalError => (500, "Internal server error"),
+        };
+        
+        let body = json!({
+            "error": true,
+            "message": message,
+            "status": status
+        });
+        
+        Response::from_json(&body)
+            .map(|resp| resp.with_status(status))
+    }
+}
+```
+
+### Part 5: Client Implementation
+
+Here's how clients interact with the worker without ever seeing credentials:
+
+```rust
+// Example CLI client code
+use reqwest::Client;
+use serde_json::Value;
+
+pub struct AuthManager {
+    worker_url: String,
+    client: Client,
+}
+
+impl AuthManager {
+    pub fn new(worker_url: String) -> Self {
+        Self {
+            worker_url,
+            client: Client::new(),
+        }
+    }
+    
+    /// Get auth URL from worker
+    pub async fn get_auth_url(&self) -> Result<String, Box<dyn Error>> {
+        let response = self.client
+            .get(format!("{}/auth/url", self.worker_url))
+            .send()
+            .await?;
+        
+        let data: Value = response.json().await?;
+        let auth_url = data["auth_url"]
+            .as_str()
+            .ok_or("Missing auth_url in response")?;
+        
+        Ok(auth_url.to_string())
+    }
+    
+    /// Exchange token for session
+    pub async fn get_session(&self, token: &str) -> Result<Session, Box<dyn Error>> {
+        let response = self.client
+            .get(format!("{}/auth/getSession", self.worker_url))
+            .query(&[("token", token)])
+            .send()
+            .await?;
+        
+        if !response.status().is_success() {
+            let error: Value = response.json().await?;
+            return Err(error["message"].as_str().unwrap_or("Unknown error").into());
+        }
+        
+        let session: Session = response.json().await?;
+        Ok(session)
+    }
+}
+
+/// Usage example
+pub async fn login() -> Result<(), Box<dyn Error>> {
+    let auth = AuthManager::new("https://your-worker.workers.dev".to_string());
+    
+    // Step 1: Get auth URL
+    let auth_url = auth.get_auth_url().await?;
+    println!("Visit this URL to authorize: {}", auth_url);
+    
+    // Step 2: User authorizes and gets token
+    print!("Enter token: ");
+    let mut token = String::new();
+    std::io::stdin().read_line(&mut token)?;
+    
+    // Step 3: Exchange for session
+    let session = auth.get_session(token.trim()).await?;
+    println!("Logged in as: {}", session.username);
+    
+    // Store session key locally for future use
+    save_session_key(&session.key)?;
+    
+    Ok(())
+}
+```
+
+### Part 6: Deployment and Configuration
+
+Deploy your worker with secure credential management:
+
+1. **Configure wrangler.toml**:
+
+```toml
+name = "oauth-proxy-worker"
+main = "build/worker/shim.mjs"
+compatibility_date = "2024-01-01"
+
+[build]
+command = "cargo install -q worker-build && worker-build --release"
+
+[vars]
+ENVIRONMENT = "production"
+
+# Secrets are set via wrangler, not in config
+# wrangler secret put OAUTH_API_KEY
+# wrangler secret put OAUTH_API_SECRET
+```
+
+2. **Set secrets securely**:
+
+```bash
+# Never put secrets in wrangler.toml!
+wrangler secret put OAUTH_API_KEY
+# Enter your API key when prompted
+
+wrangler secret put OAUTH_API_SECRET
+# Enter your API secret when prompted
+```
+
+3. **Deploy to Cloudflare**:
+
+```bash
+wrangler deploy
+```
+
+## Security Best Practices
+
+### 1. Credential Isolation
+
+- Store all OAuth credentials as Worker secrets
+- Never log or return credentials in responses
+- Use environment-specific secrets for dev/staging/prod
+
+### 2. Request Validation
+
+```rust
+/// Validate and rate limit requests
+pub async fn validate_request(
+    req: &Request,
+    env: &Env,
+) -> Result<(), ApiError> {
+    // Check rate limits
+    let client_ip = req.headers()
+        .get("CF-Connecting-IP")?
+        .unwrap_or_else(|| "unknown".to_string());
+    
+    let rate_limit_key = format!("rate_limit:{}", client_ip);
+    let rate_limit = env.kv("RATE_LIMITS")?;
+    
+    // Implement sliding window rate limiting
+    let count = rate_limit
+        .get(&rate_limit_key)
+        .json::<u32>()
+        .await?
+        .unwrap_or(0);
+    
+    if count > 60 { // 60 requests per minute
+        return Err(ApiError::RateLimitExceeded);
+    }
+    
+    // Increment counter with TTL
+    rate_limit
+        .put(&rate_limit_key, (count + 1).to_string())?
+        .expiration_ttl(60)
+        .execute()
+        .await?;
+    
+    Ok(())
+}
+```
+
+### 3. Token Expiry and Rotation
+
+Implement token expiry to limit exposure:
+
+```rust
+/// Generate time-limited auth URLs
+pub fn generate_auth_url_with_expiry(
+    api_key: &str,
+    expires_in_seconds: u64,
+) -> (String, String) {
+    let expires_at = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .unwrap()
+        .as_secs() + expires_in_seconds;
+    
+    let state = generate_secure_state();
+    let auth_url = format!(
+        "https://provider.com/auth?api_key={}&state={}&expires={}",
+        api_key, state, expires_at
+    );
+    
+    (auth_url, state)
+}
+```
+
+### 4. CORS and Security Headers
+
+Add security headers to all responses:
+
+```rust
+pub fn add_security_headers(mut response: Response) -> Result<Response, Error> {
+    let headers = response.headers_mut();
+    
+    // CORS headers for web clients
+    headers.set("Access-Control-Allow-Origin", "https://yourdomain.com")?;
+    headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")?;
+    headers.set("Access-Control-Allow-Headers", "Content-Type")?;
+    
+    // Security headers
+    headers.set("X-Content-Type-Options", "nosniff")?;
+    headers.set("X-Frame-Options", "DENY")?;
+    headers.set("X-XSS-Protection", "1; mode=block")?;
+    
+    Ok(response)
+}
+```
+
+## Advanced Features
+
+### State Parameter for CSRF Protection
+
+Implement state validation to prevent CSRF attacks:
+
+```rust
+/// Generate cryptographically secure state parameter
+fn generate_state() -> String {
+    let mut bytes = [0u8; 32];
+    getrandom::getrandom(&mut bytes).unwrap();
+    base64::encode_config(bytes, base64::URL_SAFE_NO_PAD)
+}
+
+/// Store state in KV with expiry
+async fn store_state(env: &Env, state: &str) -> Result<(), Error> {
+    env.kv("AUTH_STATES")?
+        .put(state, "pending")?
+        .expiration_ttl(600) // 10 minutes
+        .execute()
+        .await
+}
+
+/// Validate state on callback
+async fn validate_state(env: &Env, state: &str) -> Result<bool, Error> {
+    let stored = env.kv("AUTH_STATES")?
+        .get(state)
+        .text()
+        .await?;
+    
+    Ok(stored.is_some())
+}
+```
+
+### Multi-Provider Support
+
+Extend the worker to support multiple OAuth providers:
+
+```rust
+pub enum OAuthProvider {
+    LastFm,
+    Spotify,
+    GitHub,
+}
+
+impl OAuthProvider {
+    fn auth_url(&self, api_key: &str, callback: &str) -> String {
+        match self {
+            OAuthProvider::LastFm => format!(
+                "https://www.last.fm/api/auth/?api_key={}&cb={}",
+                api_key, callback
+            ),
+            OAuthProvider::Spotify => format!(
+                "https://accounts.spotify.com/authorize?client_id={}&redirect_uri={}",
+                api_key, callback
+            ),
+            OAuthProvider::GitHub => format!(
+                "https://github.com/login/oauth/authorize?client_id={}&redirect_uri={}",
+                api_key, callback
+            ),
+        }
+    }
+}
+```
+
+## Monitoring and Debugging
+
+Add comprehensive logging for production debugging:
+
+```rust
+/// Log OAuth operations for debugging
+pub fn log_auth_operation(
+    operation: &str,
+    success: bool,
+    details: Option<&str>,
+) {
+    console_log!(
+        "[AUTH] {} - Success: {} - Details: {}",
+        operation,
+        success,
+        details.unwrap_or("N/A")
+    );
+}
+
+/// Metrics tracking
+pub async fn track_auth_metrics(
+    env: &Env,
+    provider: &str,
+    success: bool,
+) -> Result<(), Error> {
+    let key = format!("metrics:{}:{}:{}", 
+        provider,
+        if success { "success" } else { "failure" },
+        chrono::Utc::now().format("%Y-%m-%d")
+    );
+    
+    let metrics = env.kv("METRICS")?;
+    let count = metrics
+        .get(&key)
+        .json::<u32>()
+        .await?
+        .unwrap_or(0);
+    
+    metrics
+        .put(&key, (count + 1).to_string())?
+        .execute()
+        .await?;
+    
+    Ok(())
+}
+```
+
+## Conclusion
+
+This architecture provides a secure, scalable OAuth implementation where credentials never leave your control. By using Rust and Cloudflare Workers, you get:
+
+- **Zero credential exposure**: API keys stay in the Worker environment
+- **Global performance**: Sub-50ms response times worldwide
+- **Type-safe implementation**: Rust catches security issues at compile time
+- **Easy key rotation**: Update secrets without touching client code
+- **Cost efficiency**: Pay only for actual auth requests
+
+The pattern works for any OAuth provider - simply adjust the signature algorithm and endpoints for your specific service. Your clients remain simple while all security complexity lives in the Worker.
+
+Remember: the best place to store secrets is where attackers can't reach them. With this approach, that's exactly what you achieve.
