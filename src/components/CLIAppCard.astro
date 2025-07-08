@@ -112,11 +112,11 @@ const toolIcons = {
   pomme: '',
   'speedrun-cli': '',
   'apod-cli': '',
-  starcraftcli: '',
   igscraper: '',
   geminicli: '',
   swollamacli: '',
   'lastfm-rs': '',
+  'nasa-rs': '',
 };
 
 // Get theme based on language
@@ -141,7 +141,7 @@ const toolTheme = {
 const getInstallCommand = (name: string, language: string) => {
   const lowerName = name.toLowerCase();
   if (lowerName === 'pomme') return 'brew install pomme';
-  if (lowerName === 'starcraftcli') return 'yay -S starcraftcli';
+  if (lowerName === 'nasa-rs') return 'cargo install nasa-rs';
   if (lowerName === 'apod-cli') return 'brew install marcusziade/tap/apod-cli';
   if (lowerName === 'lastfm-rs') return 'cargo install --path . --bin lastfm-cli';
   if (language === 'Go') return `go install github.com/marcusziade/${lowerName}@latest`;
@@ -187,15 +187,6 @@ const getTerminalDemo = (name: string) => {
       '3. Puncayshun - 6:47.450',
     ];
   }
-  if (lowerName === 'starcraftcli') {
-    return [
-      'starcraftcli player "Serral"',
-      'Searching StarCraft database...',
-      'Joona "Serral" Sotala',
-      'Earnings: $1,897,419',
-      'Race: Zerg | WCS: 14,628',
-    ];
-  }
   if (lowerName === 'igscraper') {
     return [
       'igscraper user @nasa --limit 10',
@@ -231,6 +222,15 @@ const getTerminalDemo = (name: string) => {
       '🎵 Paranoid Android (6:23)',
       '🎵 Karma Police (4:21)',
       '🎵 Exit Music (4:24)',
+    ];
+  }
+  if (lowerName === 'nasa-rs') {
+    return [
+      'nasa apod today',
+      'Fetching NASA APOD...',
+      'Title: Pillars of Creation',
+      'Date: 2025-07-08',
+      'Downloading HD image...',
     ];
   }
   return [`${lowerName} --help`, 'Command-line tool', 'Fast and efficient'];

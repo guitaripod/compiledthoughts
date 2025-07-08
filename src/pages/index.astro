@@ -38,27 +38,27 @@ const allCLITools = openSourceData.projects
     return dateB - dateA;
   });
 
-// Add starcraftcli manually since it's not in the JSON data
-const starcraftcli = {
-  id: 'starcraftcli',
-  name: 'starcraftcli',
-  description: 'Command-line interface for StarCraft data and analytics.',
-  language: 'Swift',
-  platforms: ['macOS', 'Linux'],
+// Add nasa-rs manually since it's not in the JSON data
+const nasars = {
+  id: 'nasa-rs',
+  name: 'nasa-rs',
+  description: 'Comprehensive CLI tool for accessing NASA APIs - APOD, Mars rovers, asteroids, and more.',
+  language: 'Rust',
+  platforms: ['macOS', 'Linux', 'Windows'],
   stars: 0,
-  githubUrl: 'https://marcusziade.github.io/StarCraftKit/',
+  githubUrl: 'https://marcusziade.github.io/nasa-rs/',
   category: 'CLI Tools',
-  highlights: ['StarCraft analytics', 'Real-time data'],
-  topics: ['cli', 'swift', 'starcraft', 'analytics'],
-  commitCount: 62,
+  highlights: ['NASA APIs', 'Space data', 'Astronomy'],
+  topics: ['cli', 'rust', 'nasa', 'space', 'astronomy'],
+  commitCount: 0,
 };
 
-// Feature Pomme and starcraftcli
+// Feature Pomme and nasa-rs
 const pomme = allCLITools.find((tool) => tool.name.toLowerCase() === 'pomme');
 
 const featuredCLITools = [];
 if (pomme) featuredCLITools.push(pomme);
-featuredCLITools.push(starcraftcli);
+featuredCLITools.push(nasars);
 
 // If we don't have both, fill with other CLI tools
 if (featuredCLITools.length < 2) {
