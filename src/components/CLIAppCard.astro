@@ -116,14 +116,22 @@ const toolIcons = {
   'igscraper': '',
   'geminicli': '',
   'swollamacli': '',
+  'lastfm-rs': '',
 };
 
 // Get theme based on language
 const langTheme = languageThemes[project.language] || languageThemes.Go;
+const getPattern = (language: string) => {
+  switch (language) {
+    case 'Swift': return 'swift-pattern';
+    case 'Rust': return 'rust-pattern';
+    default: return 'go-pattern';
+  }
+};
 const toolTheme = {
   ...langTheme,
   icon: toolIcons[project.id] || langTheme.baseIcon,
-  pattern: project.language === 'Swift' ? 'swift-pattern' : 'go-pattern',
+  pattern: getPattern(project.language),
 };
 
 // Terminal-style installation commands
@@ -132,6 +140,7 @@ const getInstallCommand = (name: string, language: string) => {
   if (lowerName === 'pomme') return 'brew install pomme';
   if (lowerName === 'starcraftcli') return 'yay -S starcraftcli';
   if (lowerName === 'apod-cli') return 'brew install marcusziade/tap/apod-cli';
+  if (lowerName === 'lastfm-rs') return 'cargo install --path . --bin lastfm-cli';
   if (language === 'Go') return `go install github.com/marcusziade/${lowerName}@latest`;
   if (language === 'Swift') return `swift build -c release`;
   return `# Check README for installation`;
@@ -210,6 +219,15 @@ const getTerminalDemo = (name: string) => {
       'Functions cascade,',
       'Logic flows like gentle streams,',
       'Bugs await their fix.',
+    ];
+  }
+  if (lowerName === 'lastfm-rs') {
+    return [
+      'lastfm-cli user recent-tracks radiohead',
+      'Fetching recent tracks...',
+      '🎵 Paranoid Android (6:23)',
+      '🎵 Karma Police (4:21)',
+      '🎵 Exit Music (4:24)',
     ];
   }
   return [`${lowerName} --help`, 'Command-line tool', 'Fast and efficient'];
@@ -363,6 +381,24 @@ const installCmd = getInstallCommand(project.name, project.language);
         transparent 30px,
         rgba(250, 115, 67, 0.05) 30px,
         rgba(250, 115, 67, 0.05) 31px
+      );
+  }
+  
+  .pattern-overlay[data-pattern="rust-pattern"] {
+    background-image: 
+      repeating-linear-gradient(
+        60deg,
+        transparent,
+        transparent 25px,
+        rgba(206, 66, 43, 0.1) 25px,
+        rgba(206, 66, 43, 0.1) 27px
+      ),
+      repeating-linear-gradient(
+        -60deg,
+        transparent,
+        transparent 25px,
+        rgba(206, 66, 43, 0.05) 25px,
+        rgba(206, 66, 43, 0.05) 27px
       );
   }
   

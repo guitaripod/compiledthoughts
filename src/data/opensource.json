@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2025-07-05T13:17:59+03:00",
+  "lastUpdated": "2025-07-08T22:47:20+03:00",
   "totalRepos": 100,
   "projects": [
     {
@@ -109,6 +109,35 @@
       "releaseCount": 9
     },
     {
+      "id": "pomme",
+      "name": "Pomme",
+      "description": "App Store Connect CLI tool built with Go.",
+      "language": "Go",
+      "platforms": [
+        "macOS",
+        "Linux",
+        "Windows"
+      ],
+      "stars": 2,
+      "githubUrl": "https://github.com/marcusziade/Pomme",
+      "category": "CLI Tools",
+      "highlights": [
+        "Appstore",
+        "Appstoreconnect"
+      ],
+      "updatedAt": "2025-07-08T18:11:21Z",
+      "createdAt": "2025-04-01T15:48:09Z",
+      "topics": [
+        "appstore",
+        "appstoreconnect",
+        "cli",
+        "go"
+      ],
+      "commitCount": 55,
+      "releaseCount": 3,
+      "homepageUrl": "https://marcusziade.github.io/Pomme/"
+    },
+    {
       "id": "xaikit",
       "name": "xAIKit",
       "description": "A comprehensive Swift SDK for the xAI API",
@@ -188,6 +217,34 @@
       "homepageUrl": "https://marcusziade.github.io/AnthropicKit/"
     },
     {
+      "id": "omnichat",
+      "name": "omnichat",
+      "description": "3rd place T3 Cloneathon Champion",
+      "language": "TypeScript",
+      "platforms": [],
+      "stars": 1,
+      "githubUrl": "https://github.com/marcusziade/omnichat",
+      "category": "Other Projects",
+      "highlights": [
+        "Ai",
+        "Clerk"
+      ],
+      "updatedAt": "2025-07-05T10:52:57Z",
+      "createdAt": "2025-06-08T08:09:24Z",
+      "topics": [
+        "ai",
+        "clerk",
+        "go",
+        "nextjs",
+        "ollama",
+        "stripe",
+        "typescript"
+      ],
+      "commitCount": 348,
+      "releaseCount": 1,
+      "homepageUrl": "https://omnichat-7pu.pages.dev/"
+    },
+    {
       "id": "starcraftkit",
       "name": "StarCraftKit",
       "description": "StarCraftKit aims to be the go-to Swift package for developers working with the StarCraft II pro scene.",
@@ -209,25 +266,30 @@
       "homepageUrl": "https://marcusziade.github.io/StarCraftKit/"
     },
     {
-      "id": "pomme",
-      "name": "Pomme",
-      "description": "App Store Connect CLI tool built with Go.",
-      "language": "Go",
-      "platforms": [
-        "macOS",
-        "Linux",
-        "Windows"
-      ],
+      "id": "lastfm-rs",
+      "name": "lastfm-rs",
+      "description": "A blazing-fast Rust SDK for last.fm",
+      "language": "Rust",
+      "platforms": [],
       "stars": 1,
-      "githubUrl": "https://github.com/marcusziade/Pomme",
-      "category": "CLI Tools",
-      "highlights": [],
-      "updatedAt": "2025-07-04T07:35:04Z",
-      "createdAt": "2025-04-01T15:48:09Z",
-      "topics": [],
-      "commitCount": 55,
-      "releaseCount": 3,
-      "homepageUrl": "https://marcusziade.github.io/Pomme/"
+      "githubUrl": "https://github.com/marcusziade/lastfm-rs",
+      "category": "Other Projects",
+      "highlights": [
+        "Cloudflare",
+        "Lastfm"
+      ],
+      "updatedAt": "2025-07-07T16:41:10Z",
+      "createdAt": "2025-07-07T08:08:04Z",
+      "topics": [
+        "cloudflare",
+        "lastfm",
+        "rust",
+        "sdk",
+        "wasm"
+      ],
+      "commitCount": 38,
+      "releaseCount": 2,
+      "homepageUrl": "https://marcusziade.github.io/lastfm-rs/"
     },
     {
       "id": "igscraper",
@@ -268,6 +330,32 @@
       "topics": [],
       "commitCount": 36,
       "releaseCount": 1
+    },
+    {
+      "id": "lastfmkit",
+      "name": "LastFMKit",
+      "description": "A comprehensive Swift SDK for last.fm",
+      "language": "Swift",
+      "platforms": [
+        "macOS"
+      ],
+      "stars": 0,
+      "githubUrl": "https://github.com/marcusziade/LastFMKit",
+      "category": "Swift Packages",
+      "highlights": [
+        "Lastfm",
+        "Sdk"
+      ],
+      "updatedAt": "2025-07-07T20:22:44Z",
+      "createdAt": "2025-07-07T18:48:55Z",
+      "topics": [
+        "lastfm",
+        "sdk",
+        "swift"
+      ],
+      "commitCount": 30,
+      "releaseCount": 1,
+      "homepageUrl": "https://marcusziade.github.io/LastFMKit/"
     },
     {
       "id": "speedrun-cli",
