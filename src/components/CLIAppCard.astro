@@ -109,13 +109,13 @@ const languageThemes = {
 // Get specific icons for each tool - removed emojis
 const toolIcons = {
   'songlink-cli': '',
-  'pomme': '',
+  pomme: '',
   'speedrun-cli': '',
   'apod-cli': '',
-  'starcraftcli': '',
-  'igscraper': '',
-  'geminicli': '',
-  'swollamacli': '',
+  starcraftcli: '',
+  igscraper: '',
+  geminicli: '',
+  swollamacli: '',
   'lastfm-rs': '',
 };
 
@@ -123,9 +123,12 @@ const toolIcons = {
 const langTheme = languageThemes[project.language] || languageThemes.Go;
 const getPattern = (language: string) => {
   switch (language) {
-    case 'Swift': return 'swift-pattern';
-    case 'Rust': return 'rust-pattern';
-    default: return 'go-pattern';
+    case 'Swift':
+      return 'swift-pattern';
+    case 'Rust':
+      return 'rust-pattern';
+    default:
+      return 'go-pattern';
   }
 };
 const toolTheme = {
@@ -161,7 +164,7 @@ const getTerminalDemo = (name: string) => {
   if (lowerName === 'apod-cli') {
     return [
       'apod-cli today',
-      'Fetching today\'s image...',
+      "Fetching today's image...",
       'Title: Pillars of Creation',
       'Date: 2025-07-05',
       'Opening in browser...',
@@ -244,8 +247,12 @@ const installCmd = getInstallCommand(project.name, project.language);
   data-theme={project.id}
 >
   <!-- Background pattern overlay -->
-  <div class="absolute inset-0 opacity-10 dark:opacity-5 pattern-overlay" data-pattern={toolTheme.pattern}></div>
-  
+  <div
+    class="absolute inset-0 opacity-10 dark:opacity-5 pattern-overlay"
+    data-pattern={toolTheme.pattern}
+  >
+  </div>
+
   <a href={targetUrl} target="_blank" rel="noopener noreferrer" class="relative block h-full">
     <!-- Card header -->
     <div class="relative z-10 p-4 pb-3">
@@ -256,22 +263,26 @@ const installCmd = getInstallCommand(project.name, project.language);
               {project.name}
             </h3>
             <div class="flex items-center gap-2 mt-1">
-              <span class="px-2 py-0.5 text-xs font-medium rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300">
+              <span
+                class="px-2 py-0.5 text-xs font-medium rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300"
+              >
                 {project.language}
               </span>
-              {project.stars > 0 && (
-                <span class="flex items-center gap-1 text-xs text-gray-300 dark:text-gray-400">
-                  <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                  {project.stars}
-                </span>
-              )}
+              {
+                project.stars > 0 && (
+                  <span class="flex items-center gap-1 text-xs text-gray-300 dark:text-gray-400">
+                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                    {project.stars}
+                  </span>
+                )
+              }
             </div>
           </div>
         </div>
       </div>
-      
+
       <!-- Description -->
       <p class="text-gray-200 dark:text-gray-300 text-sm mb-3 line-clamp-2">
         {project.description}
@@ -279,9 +290,13 @@ const installCmd = getInstallCommand(project.name, project.language);
     </div>
 
     <!-- Terminal section -->
-    <div class="relative z-10 bg-gray-900/90 dark:bg-gray-900/95 rounded-xl mx-4 mb-3 overflow-hidden border border-gray-700 dark:border-gray-600">
+    <div
+      class="relative z-10 bg-gray-900/90 dark:bg-gray-900/95 rounded-xl mx-4 mb-3 overflow-hidden border border-gray-700 dark:border-gray-600"
+    >
       <!-- Terminal header -->
-      <div class="flex items-center gap-2 px-3 py-1.5 bg-gray-800/50 dark:bg-gray-800/70 border-b border-gray-700 dark:border-gray-600">
+      <div
+        class="flex items-center gap-2 px-3 py-1.5 bg-gray-800/50 dark:bg-gray-800/70 border-b border-gray-700 dark:border-gray-600"
+      >
         <div class="flex gap-1.5">
           <div class="w-2 h-2 rounded-full bg-red-500"></div>
           <div class="w-2 h-2 rounded-full bg-yellow-500"></div>
@@ -289,41 +304,47 @@ const installCmd = getInstallCommand(project.name, project.language);
         </div>
         <span class="text-xs text-gray-400 dark:text-gray-500 ml-2 font-mono">terminal</span>
       </div>
-      
+
       <!-- Terminal content -->
       <div class="p-3 font-mono text-xs space-y-2">
         <!-- Installation -->
         <div>
           <p class="text-gray-500 dark:text-gray-400 text-xs"># Install</p>
           <p class="text-gray-100 dark:text-gray-200">
-            <span class="terminal-prompt">$</span> {installCmd}
+            <span class="terminal-prompt">$</span>
+            {installCmd}
           </p>
         </div>
-        
+
         <!-- Demo -->
         <div>
           <p class="text-gray-500 dark:text-gray-400 text-xs"># Demo</p>
           <p class="text-gray-100 dark:text-gray-200">
-            <span class="terminal-prompt">$</span> {terminalDemo[0]}
+            <span class="terminal-prompt">$</span>
+            {terminalDemo[0]}
           </p>
-          {terminalDemo.slice(1, 3).map((line) => (
-            <p class="text-gray-400 dark:text-gray-500 ml-2 text-xs">{line}</p>
-          ))}
+          {
+            terminalDemo
+              .slice(1, 3)
+              .map((line) => <p class="text-gray-400 dark:text-gray-500 ml-2 text-xs">{line}</p>)
+          }
         </div>
       </div>
     </div>
-    
+
     <!-- Platforms footer -->
     <div class="relative z-10 px-4 py-2">
       <div class="flex items-center gap-2 text-xs text-gray-300 dark:text-gray-400">
         <span>Runs on:</span>
         <div class="flex items-center gap-1.5">
-          {project.platforms.map((platform, index) => (
-            <>
-              <span class="text-gray-200 dark:text-gray-300">{platform}</span>
-              {index < project.platforms.length - 1 && <span class="text-gray-500">•</span>}
-            </>
-          ))}
+          {
+            project.platforms.map((platform, index) => (
+              <>
+                <span class="text-gray-200 dark:text-gray-300">{platform}</span>
+                {index < project.platforms.length - 1 && <span class="text-gray-500">•</span>}
+              </>
+            ))
+          }
         </div>
       </div>
     </div>
@@ -334,22 +355,22 @@ const installCmd = getInstallCommand(project.name, project.language);
   .cli-card {
     background: var(--gradient-light);
   }
-  
+
   :global(.dark) .cli-card {
     background: var(--gradient-dark);
   }
-  
+
   .terminal-prompt {
     color: var(--accent-light);
   }
-  
+
   :global(.dark) .terminal-prompt {
     color: var(--accent-dark);
   }
-  
+
   /* Pattern overlays for languages with language-specific colors */
-  .pattern-overlay[data-pattern="go-pattern"] {
-    background-image: 
+  .pattern-overlay[data-pattern='go-pattern'] {
+    background-image:
       repeating-linear-gradient(
         45deg,
         transparent,
@@ -365,9 +386,9 @@ const installCmd = getInstallCommand(project.name, project.language);
         rgba(0, 173, 216, 0.05) 22px
       );
   }
-  
-  .pattern-overlay[data-pattern="swift-pattern"] {
-    background-image: 
+
+  .pattern-overlay[data-pattern='swift-pattern'] {
+    background-image:
       repeating-linear-gradient(
         0deg,
         transparent,
@@ -383,9 +404,9 @@ const installCmd = getInstallCommand(project.name, project.language);
         rgba(250, 115, 67, 0.05) 31px
       );
   }
-  
-  .pattern-overlay[data-pattern="rust-pattern"] {
-    background-image: 
+
+  .pattern-overlay[data-pattern='rust-pattern'] {
+    background-image:
       repeating-linear-gradient(
         60deg,
         transparent,
@@ -401,26 +422,25 @@ const installCmd = getInstallCommand(project.name, project.language);
         rgba(206, 66, 43, 0.05) 27px
       );
   }
-  
-  
+
   /* Ensure consistent card heights */
   article {
     display: flex;
     flex-direction: column;
   }
-  
+
   article > a {
     flex: 1;
     display: flex;
     flex-direction: column;
   }
-  
+
   article > a > div:nth-child(2) {
     flex: 1;
     display: flex;
     flex-direction: column;
   }
-  
+
   /* Line clamp utility */
   .line-clamp-2 {
     display: -webkit-box;
