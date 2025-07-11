@@ -11,7 +11,7 @@ import openSourceData from '../data/opensource.json';
 const posts = (await getCollection('blog'))
   .filter((post) => !post.data.draft)
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
-  .slice(0, 10);
+  .slice(0, 4);
 
 // Add reading time to posts
 const postsWithReadingTime = await Promise.all(
@@ -360,7 +360,7 @@ const socialLinks = [{ name: 'GitHub', url: 'https://github.com/marcusziade', ic
     }
 
     {
-      postsWithReadingTime.length === 10 && (
+      postsWithReadingTime.length === 4 && (
         <div class="mt-12 text-center">
           <a
             href="/archive"
