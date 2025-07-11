@@ -17,7 +17,7 @@ const currencyData = {
     color: 'text-[#627EEA]',
   },
   BTC: {
-    name: 'Bitcoin', 
+    name: 'Bitcoin',
     icon: bitcoinSvg,
     color: 'text-[#F7931A]',
   },
@@ -39,7 +39,10 @@ const truncatedAddress = `${address.slice(0, 6)}...${address.slice(-4)}`;
     aria-label={`${data.name} wallet address`}
     title={address}
   >
-    <span class={`crypto-icon w-4 h-4 flex items-center justify-center ${data.color}`} set:html={data.icon} />
+    <span
+      class={`crypto-icon w-4 h-4 flex items-center justify-center ${data.color}`}
+      set:html={data.icon}
+    />
     <span class="text-xs font-medium text-gray-600 dark:text-gray-400">{data.name}</span>
   </button>
 
