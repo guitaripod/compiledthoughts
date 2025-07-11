@@ -1,7 +1,35 @@
 {
-  "lastUpdated": "2025-07-08T22:47:20+03:00",
+  "lastUpdated": "2025-07-11T10:24:29+03:00",
   "totalRepos": 100,
   "projects": [
+    {
+      "id": "omnichat",
+      "name": "omnichat",
+      "description": "3rd place T3 Cloneathon Champion",
+      "language": "TypeScript",
+      "platforms": [],
+      "stars": 30,
+      "githubUrl": "https://github.com/marcusziade/omnichat",
+      "category": "Other Projects",
+      "highlights": [
+        "Ai",
+        "Clerk"
+      ],
+      "updatedAt": "2025-07-11T07:23:33Z",
+      "createdAt": "2025-06-08T08:09:24Z",
+      "topics": [
+        "ai",
+        "clerk",
+        "go",
+        "nextjs",
+        "ollama",
+        "stripe",
+        "typescript"
+      ],
+      "commitCount": 349,
+      "releaseCount": 1,
+      "homepageUrl": "https://omnichat-7pu.pages.dev/"
+    },
     {
       "id": "swollama",
       "name": "Swollama",
@@ -153,16 +181,42 @@
         "Sdk",
         "Swift"
       ],
-      "updatedAt": "2025-06-30T19:47:19Z",
+      "updatedAt": "2025-07-10T05:50:47Z",
       "createdAt": "2025-06-29T12:35:09Z",
       "topics": [
         "sdk",
         "swift",
         "xai"
       ],
-      "commitCount": 50,
-      "releaseCount": 3,
+      "commitCount": 53,
+      "releaseCount": 4,
       "homepageUrl": "https://marcusziade.github.io/xAIKit/"
+    },
+    {
+      "id": "lastfm-rs",
+      "name": "lastfm-rs",
+      "description": "A blazing-fast Rust SDK for last.fm",
+      "language": "Rust",
+      "platforms": [],
+      "stars": 2,
+      "githubUrl": "https://github.com/marcusziade/lastfm-rs",
+      "category": "Other Projects",
+      "highlights": [
+        "Cloudflare",
+        "Lastfm"
+      ],
+      "updatedAt": "2025-07-09T20:21:00Z",
+      "createdAt": "2025-07-07T08:08:04Z",
+      "topics": [
+        "cloudflare",
+        "lastfm",
+        "rust",
+        "sdk",
+        "wasm"
+      ],
+      "commitCount": 52,
+      "releaseCount": 2,
+      "homepageUrl": "https://marcusziade.github.io/lastfm-rs/"
     },
     {
       "id": "deepseekkit",
@@ -217,37 +271,9 @@
       "homepageUrl": "https://marcusziade.github.io/AnthropicKit/"
     },
     {
-      "id": "omnichat",
-      "name": "omnichat",
-      "description": "3rd place T3 Cloneathon Champion",
-      "language": "TypeScript",
-      "platforms": [],
-      "stars": 1,
-      "githubUrl": "https://github.com/marcusziade/omnichat",
-      "category": "Other Projects",
-      "highlights": [
-        "Ai",
-        "Clerk"
-      ],
-      "updatedAt": "2025-07-05T10:52:57Z",
-      "createdAt": "2025-06-08T08:09:24Z",
-      "topics": [
-        "ai",
-        "clerk",
-        "go",
-        "nextjs",
-        "ollama",
-        "stripe",
-        "typescript"
-      ],
-      "commitCount": 348,
-      "releaseCount": 1,
-      "homepageUrl": "https://omnichat-7pu.pages.dev/"
-    },
-    {
       "id": "starcraftkit",
       "name": "StarCraftKit",
-      "description": "StarCraftKit aims to be the go-to Swift package for developers working with the StarCraft II pro scene.",
+      "description": "Swift SDK for StarCraft 2 Pro scene data",
       "language": "Swift",
       "platforms": [
         "macOS"
@@ -255,10 +281,8 @@
       "stars": 1,
       "githubUrl": "https://github.com/marcusziade/StarCraftKit",
       "category": "Swift Packages",
-      "highlights": [
-        "AI-powered"
-      ],
-      "updatedAt": "2025-07-04T20:52:41Z",
+      "highlights": [],
+      "updatedAt": "2025-07-09T20:42:04Z",
       "createdAt": "2024-02-25T16:47:08Z",
       "topics": [],
       "commitCount": 123,
@@ -266,30 +290,45 @@
       "homepageUrl": "https://marcusziade.github.io/StarCraftKit/"
     },
     {
-      "id": "lastfm-rs",
-      "name": "lastfm-rs",
-      "description": "A blazing-fast Rust SDK for last.fm",
+      "id": "nasa-rs",
+      "name": "nasa-rs",
+      "description": "Rust SDK for the NASA API",
       "language": "Rust",
       "platforms": [],
       "stars": 1,
-      "githubUrl": "https://github.com/marcusziade/lastfm-rs",
+      "githubUrl": "https://github.com/marcusziade/nasa-rs",
       "category": "Other Projects",
       "highlights": [
-        "Cloudflare",
-        "Lastfm"
+        "Nasa",
+        "Rust"
       ],
-      "updatedAt": "2025-07-07T16:41:10Z",
-      "createdAt": "2025-07-07T08:08:04Z",
+      "updatedAt": "2025-07-09T20:26:08Z",
+      "createdAt": "2025-07-08T13:17:55Z",
       "topics": [
-        "cloudflare",
-        "lastfm",
+        "nasa",
         "rust",
-        "sdk",
-        "wasm"
+        "sdk"
       ],
-      "commitCount": 38,
+      "commitCount": 58,
       "releaseCount": 2,
-      "homepageUrl": "https://marcusziade.github.io/lastfm-rs/"
+      "homepageUrl": "https://marcusziade.github.io/nasa-rs/"
+    },
+    {
+      "id": "compiledthoughts",
+      "name": "compiledthoughts",
+      "description": "Personal website ",
+      "language": "Astro",
+      "platforms": [],
+      "stars": 0,
+      "githubUrl": "https://github.com/marcusziade/compiledthoughts",
+      "category": "Other Projects",
+      "highlights": [],
+      "updatedAt": "2025-07-11T07:11:54Z",
+      "createdAt": "2025-06-05T17:16:02Z",
+      "topics": [],
+      "commitCount": 172,
+      "releaseCount": 1,
+      "homepageUrl": "https://compiledthoughts.pages.dev"
     },
     {
       "id": "igscraper",
@@ -311,6 +350,25 @@
       "commitCount": 63,
       "releaseCount": 2,
       "homepageUrl": "https://marcusziade.github.io/igscraper/"
+    },
+    {
+      "id": "speedrunkit",
+      "name": "SpeedrunKit",
+      "description": "A Swift SDK for the speedrun.com API",
+      "language": "Swift",
+      "platforms": [
+        "macOS"
+      ],
+      "stars": 0,
+      "githubUrl": "https://github.com/marcusziade/SpeedrunKit",
+      "category": "Swift Packages",
+      "highlights": [],
+      "updatedAt": "2025-07-09T19:56:21Z",
+      "createdAt": "2025-07-08T13:15:03Z",
+      "topics": [],
+      "commitCount": 49,
+      "releaseCount": 1,
+      "homepageUrl": "https://marcusziade.github.io/SpeedrunKit/"
     },
     {
       "id": "rawdog.ml.nvim",

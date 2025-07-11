@@ -1,4 +1,6 @@
 ---
+import CryptoWallet from './CryptoWallet.astro';
+
 const currentYear = new Date().getFullYear();
 ---
 
@@ -40,6 +42,15 @@ const currentYear = new Date().getFullYear();
               clip-rule="evenodd"></path>
           </svg>
         </a>
+      </div>
+    </div>
+
+    <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-800">
+      <div class="flex flex-wrap items-center justify-center gap-3">
+        <span class="text-xs text-gray-500 dark:text-gray-500 mr-2">Support:</span>
+        <CryptoWallet currency="ETH" address="0x9035F5D947Ef36478679f89Fe44a9041d3837e98" />
+        <CryptoWallet currency="BTC" address="bc1qsjzwcmyn9jk4fc32dr406hgc008mv30c9u4z6n" />
+        <CryptoWallet currency="DOGE" address="DH2r7M3pNwX5JG65v6p1PndkAQpCBMyGx2" />
       </div>
     </div>
   </div>
