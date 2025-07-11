@@ -16,8 +16,20 @@ export const GET: APIRoute = async (context) => {
   }
 
   // Optional: Use GitHub token for higher rate limits
-  const runtime = (context.locals as any).runtime;
-  const githubToken = runtime?.env?.GITHUB_TOKEN || import.meta.env.GITHUB_TOKEN;
+  let githubToken: string | undefined;
+
+  try {
+    // Try Cloudflare Workers environment first
+    const runtime = (context.locals as any).runtime;
+    githubToken = runtime?.env?.GITHUB_TOKEN;
+  } catch (e) {
+    // Fallback for local development
+  }
+
+  // If not found in runtime, try import.meta.env
+  if (!githubToken) {
+    githubToken = import.meta.env.GITHUB_TOKEN;
+  }
 
   const headers: HeadersInit = {
     Accept: 'application/vnd.github.v3+json',
@@ -37,13 +49,31 @@ export const GET: APIRoute = async (context) => {
 
     if (!userResponse.ok) {
       const rateLimitRemaining = userResponse.headers.get('X-RateLimit-Remaining');
+      const errorText = await userResponse.text();
       console.error(
         '[GitHub API] User fetch failed. Status:',
         userResponse.status,
         'Rate limit remaining:',
-        rateLimitRemaining
+        rateLimitRemaining,
+        'Error:',
+        errorText
       );
-      throw new Error(`GitHub API error: ${userResponse.status}`);
+
+      // Return a more informative error response
+      return new Response(
+        JSON.stringify({
+          error: 'GitHub API request failed',
+          status: userResponse.status,
+          rateLimitRemaining: rateLimitRemaining || 'unknown',
+        }),
+        {
+          status: userResponse.status === 403 ? 429 : userResponse.status,
+          headers: {
+            'Content-Type': 'application/json',
+            'Cache-Control': 'no-cache',
+          },
+        }
+      );
     }
 
     const userData = await userResponse.json();
@@ -65,10 +95,20 @@ export const GET: APIRoute = async (context) => {
     });
   } catch (error) {
     console.error('[GitHub API] Error:', error);
-    return new Response(JSON.stringify({ error: 'Failed to fetch GitHub data' }), {
+
+    // Provide more details about the error
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorDetails = {
+      error: 'Failed to fetch GitHub data',
+      message: errorMessage,
+      timestamp: new Date().toISOString(),
+    };
+
+    return new Response(JSON.stringify(errorDetails), {
       status: 500,
       headers: {
         'Content-Type': 'application/json',
+        'Cache-Control': 'no-cache',
       },
     });
   }

@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2025-07-11T10:24:29+03:00",
+  "lastUpdated": "2025-07-11T14:32:19+03:00",
   "totalRepos": 100,
   "projects": [
     {
@@ -8,14 +8,14 @@
       "description": "3rd place T3 Cloneathon Champion",
       "language": "TypeScript",
       "platforms": [],
-      "stars": 30,
+      "stars": 32,
       "githubUrl": "https://github.com/marcusziade/omnichat",
       "category": "Other Projects",
       "highlights": [
         "Ai",
         "Clerk"
       ],
-      "updatedAt": "2025-07-11T07:23:33Z",
+      "updatedAt": "2025-07-11T11:15:04Z",
       "createdAt": "2025-06-08T08:09:24Z",
       "topics": [
         "ai",
@@ -26,7 +26,7 @@
         "stripe",
         "typescript"
       ],
-      "commitCount": 349,
+      "commitCount": 351,
       "releaseCount": 1,
       "homepageUrl": "https://omnichat-7pu.pages.dev/"
     },
@@ -38,14 +38,14 @@
       "platforms": [
         "macOS"
       ],
-      "stars": 11,
+      "stars": 12,
       "githubUrl": "https://github.com/marcusziade/Swollama",
       "category": "Swift Projects",
       "highlights": [
         "Chat",
         "Cli"
       ],
-      "updatedAt": "2025-06-30T19:47:33Z",
+      "updatedAt": "2025-07-11T08:15:36Z",
       "createdAt": "2024-10-25T06:26:58Z",
       "topics": [
         "chat",
@@ -105,36 +105,6 @@
       "commitCount": 61,
       "releaseCount": 1,
       "homepageUrl": "https://marcusziade.github.io/GeminiKit/"
-    },
-    {
-      "id": "songlink-cli",
-      "name": "songlink-cli",
-      "description": "A Song.Link CLI app written in Go",
-      "language": "Go",
-      "platforms": [
-        "macOS",
-        "Linux",
-        "Windows"
-      ],
-      "stars": 5,
-      "githubUrl": "https://github.com/marcusziade/songlink-cli",
-      "category": "CLI Tools",
-      "highlights": [
-        "Cli",
-        "Go"
-      ],
-      "updatedAt": "2025-04-18T10:04:26Z",
-      "createdAt": "2022-09-01T17:50:57Z",
-      "topics": [
-        "cli",
-        "go",
-        "linux",
-        "macos",
-        "music",
-        "windows"
-      ],
-      "commitCount": 39,
-      "releaseCount": 9
     },
     {
       "id": "pomme",
@@ -323,10 +293,10 @@
       "githubUrl": "https://github.com/marcusziade/compiledthoughts",
       "category": "Other Projects",
       "highlights": [],
-      "updatedAt": "2025-07-11T07:11:54Z",
+      "updatedAt": "2025-07-11T07:50:12Z",
       "createdAt": "2025-06-05T17:16:02Z",
       "topics": [],
-      "commitCount": 172,
+      "commitCount": 173,
       "releaseCount": 1,
       "homepageUrl": "https://compiledthoughts.pages.dev"
     },
