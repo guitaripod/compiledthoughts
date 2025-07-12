@@ -22,8 +22,20 @@ export interface Props {
 
 const { project } = Astro.props;
 
-// URL selection: prefer docs, then homepage, then github
-const targetUrl = project.docsUrl || project.homepageUrl || project.githubUrl;
+// Generate GitHub Pages URL from repo name
+const getGitHubPagesUrl = (githubUrl: string) => {
+  // Extract repo name from GitHub URL
+  const match = githubUrl.match(/github\.com\/[^\/]+\/([^\/]+)$/);
+  if (match && match[1]) {
+    const repoName = match[1].replace(/\.git$/, '');
+    return `https://guitaripod.github.io/${repoName}/`;
+  }
+  return null;
+};
+
+// URL selection: prefer GitHub Pages (auto-generated), then docs, then homepage, then github
+const githubPagesUrl = project.githubUrl ? getGitHubPagesUrl(project.githubUrl) : null;
+const targetUrl = githubPagesUrl || project.docsUrl || project.homepageUrl || project.githubUrl;
 
 // Define language-based themes with muted language-specific colors
 const languageThemes = {
@@ -142,9 +154,9 @@ const getInstallCommand = (name: string, language: string) => {
   const lowerName = name.toLowerCase();
   if (lowerName === 'pomme') return 'brew install pomme';
   if (lowerName === 'nasa-rs') return 'cargo install nasa-rs';
-  if (lowerName === 'apod-cli') return 'brew install marcusziade/tap/apod-cli';
+  if (lowerName === 'apod-cli') return 'brew install guitaripod/tap/apod-cli';
   if (lowerName === 'lastfm-rs') return 'cargo install --path . --bin lastfm-cli';
-  if (language === 'Go') return `go install github.com/marcusziade/${lowerName}@latest`;
+  if (language === 'Go') return `go install github.com/guitaripod/${lowerName}@latest`;
   if (language === 'Swift') return `swift build -c release`;
   return `# Check README for installation`;
 };
