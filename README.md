@@ -47,7 +47,7 @@ A modern, performant blog built with Astro and optimized for Cloudflare Pages de
 
 ```bash
 # Clone the repository
-git clone https://github.com/marcusziade/compiledthoughts.git
+git clone https://github.com/guitaripod/compiledthoughts.git
 cd compiledthoughts
 
 # Install dependencies

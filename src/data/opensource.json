@@ -9,7 +9,7 @@
       "language": "TypeScript",
       "platforms": [],
       "stars": 32,
-      "githubUrl": "https://github.com/marcusziade/omnichat",
+      "githubUrl": "https://github.com/guitaripod/omnichat",
       "category": "Other Projects",
       "highlights": [
         "Ai",
@@ -39,7 +39,7 @@
         "macOS"
       ],
       "stars": 12,
-      "githubUrl": "https://github.com/marcusziade/Swollama",
+      "githubUrl": "https://github.com/guitaripod/Swollama",
       "category": "Swift Projects",
       "highlights": [
         "Chat",
@@ -57,7 +57,7 @@
       ],
       "commitCount": 86,
       "releaseCount": 4,
-      "homepageUrl": "https://marcusziade.github.io/Swollama/"
+      "homepageUrl": "https://guitaripod.github.io/Swollama/"
     },
     {
       "id": "openaikit",
@@ -68,7 +68,7 @@
         "macOS"
       ],
       "stars": 9,
-      "githubUrl": "https://github.com/marcusziade/OpenAIKit",
+      "githubUrl": "https://github.com/guitaripod/OpenAIKit",
       "category": "Swift Packages",
       "highlights": [
         "AI-powered",
@@ -85,7 +85,7 @@
       ],
       "commitCount": 68,
       "releaseCount": 7,
-      "homepageUrl": "https://marcusziade.github.io/OpenAIKit/"
+      "homepageUrl": "https://guitaripod.github.io/OpenAIKit/"
     },
     {
       "id": "geminikit",
@@ -96,7 +96,7 @@
         "macOS"
       ],
       "stars": 5,
-      "githubUrl": "https://github.com/marcusziade/GeminiKit",
+      "githubUrl": "https://github.com/guitaripod/GeminiKit",
       "category": "Swift Packages",
       "highlights": [],
       "updatedAt": "2025-07-03T03:45:13Z",
@@ -104,7 +104,7 @@
       "topics": [],
       "commitCount": 61,
       "releaseCount": 1,
-      "homepageUrl": "https://marcusziade.github.io/GeminiKit/"
+      "homepageUrl": "https://guitaripod.github.io/GeminiKit/"
     },
     {
       "id": "songlink-cli",
@@ -117,7 +117,7 @@
         "Windows"
       ],
       "stars": 5,
-      "githubUrl": "https://github.com/marcusziade/songlink-cli",
+      "githubUrl": "https://github.com/guitaripod/songlink-cli",
       "category": "CLI Tools",
       "highlights": [
         "Cli",
@@ -147,7 +147,7 @@
         "Windows"
       ],
       "stars": 2,
-      "githubUrl": "https://github.com/marcusziade/Pomme",
+      "githubUrl": "https://github.com/guitaripod/Pomme",
       "category": "CLI Tools",
       "highlights": [
         "Appstore",
@@ -163,7 +163,7 @@
       ],
       "commitCount": 55,
       "releaseCount": 3,
-      "homepageUrl": "https://marcusziade.github.io/Pomme/"
+      "homepageUrl": "https://guitaripod.github.io/Pomme/"
     },
     {
       "id": "xaikit",
@@ -174,7 +174,7 @@
         "macOS"
       ],
       "stars": 2,
-      "githubUrl": "https://github.com/marcusziade/xAIKit",
+      "githubUrl": "https://github.com/guitaripod/xAIKit",
       "category": "Swift Packages",
       "highlights": [
         "AI-powered",
@@ -190,7 +190,7 @@
       ],
       "commitCount": 53,
       "releaseCount": 4,
-      "homepageUrl": "https://marcusziade.github.io/xAIKit/"
+      "homepageUrl": "https://guitaripod.github.io/xAIKit/"
     },
     {
       "id": "lastfm-rs",
@@ -199,7 +199,7 @@
       "language": "Rust",
       "platforms": [],
       "stars": 2,
-      "githubUrl": "https://github.com/marcusziade/lastfm-rs",
+      "githubUrl": "https://github.com/guitaripod/lastfm-rs",
       "category": "Other Projects",
       "highlights": [
         "Cloudflare",
@@ -216,7 +216,7 @@
       ],
       "commitCount": 52,
       "releaseCount": 2,
-      "homepageUrl": "https://marcusziade.github.io/lastfm-rs/"
+      "homepageUrl": "https://guitaripod.github.io/lastfm-rs/"
     },
     {
       "id": "deepseekkit",
@@ -227,7 +227,7 @@
         "macOS"
       ],
       "stars": 2,
-      "githubUrl": "https://github.com/marcusziade/DeepSeekKit",
+      "githubUrl": "https://github.com/guitaripod/DeepSeekKit",
       "category": "Swift Packages",
       "highlights": [
         "Deepseek",
@@ -242,7 +242,7 @@
       ],
       "commitCount": 38,
       "releaseCount": 2,
-      "homepageUrl": "https://marcusziade.github.io/DeepSeekKit/"
+      "homepageUrl": "https://guitaripod.github.io/DeepSeekKit/"
     },
     {
       "id": "anthropickit",
@@ -253,7 +253,7 @@
         "macOS"
       ],
       "stars": 2,
-      "githubUrl": "https://github.com/marcusziade/AnthropicKit",
+      "githubUrl": "https://github.com/guitaripod/AnthropicKit",
       "category": "Swift Packages",
       "highlights": [
         "Anthropic",
@@ -268,7 +268,7 @@
       ],
       "commitCount": 34,
       "releaseCount": 2,
-      "homepageUrl": "https://marcusziade.github.io/AnthropicKit/"
+      "homepageUrl": "https://guitaripod.github.io/AnthropicKit/"
     },
     {
       "id": "starcraftkit",
@@ -279,7 +279,7 @@
         "macOS"
       ],
       "stars": 1,
-      "githubUrl": "https://github.com/marcusziade/StarCraftKit",
+      "githubUrl": "https://github.com/guitaripod/StarCraftKit",
       "category": "Swift Packages",
       "highlights": [],
       "updatedAt": "2025-07-09T20:42:04Z",
@@ -287,7 +287,7 @@
       "topics": [],
       "commitCount": 123,
       "releaseCount": 2,
-      "homepageUrl": "https://marcusziade.github.io/StarCraftKit/"
+      "homepageUrl": "https://guitaripod.github.io/StarCraftKit/"
     },
     {
       "id": "nasa-rs",
@@ -296,7 +296,7 @@
       "language": "Rust",
       "platforms": [],
       "stars": 1,
-      "githubUrl": "https://github.com/marcusziade/nasa-rs",
+      "githubUrl": "https://github.com/guitaripod/nasa-rs",
       "category": "Other Projects",
       "highlights": [
         "Nasa",
@@ -311,7 +311,7 @@
       ],
       "commitCount": 58,
       "releaseCount": 2,
-      "homepageUrl": "https://marcusziade.github.io/nasa-rs/"
+      "homepageUrl": "https://guitaripod.github.io/nasa-rs/"
     },
     {
       "id": "compiledthoughts",
@@ -320,7 +320,7 @@
       "language": "Astro",
       "platforms": [],
       "stars": 0,
-      "githubUrl": "https://github.com/marcusziade/compiledthoughts",
+      "githubUrl": "https://github.com/guitaripod/compiledthoughts",
       "category": "Other Projects",
       "highlights": [],
       "updatedAt": "2025-07-11T11:46:54Z",
@@ -341,7 +341,7 @@
         "Windows"
       ],
       "stars": 0,
-      "githubUrl": "https://github.com/marcusziade/igscraper",
+      "githubUrl": "https://github.com/guitaripod/igscraper",
       "category": "Go Projects",
       "highlights": [],
       "updatedAt": "2025-07-04T07:40:55Z",
@@ -349,7 +349,7 @@
       "topics": [],
       "commitCount": 63,
       "releaseCount": 2,
-      "homepageUrl": "https://marcusziade.github.io/igscraper/"
+      "homepageUrl": "https://guitaripod.github.io/igscraper/"
     },
     {
       "id": "speedrunkit",
@@ -360,7 +360,7 @@
         "macOS"
       ],
       "stars": 0,
-      "githubUrl": "https://github.com/marcusziade/SpeedrunKit",
+      "githubUrl": "https://github.com/guitaripod/SpeedrunKit",
       "category": "Swift Packages",
       "highlights": [],
       "updatedAt": "2025-07-09T19:56:21Z",
@@ -368,7 +368,7 @@
       "topics": [],
       "commitCount": 49,
       "releaseCount": 1,
-      "homepageUrl": "https://marcusziade.github.io/SpeedrunKit/"
+      "homepageUrl": "https://guitaripod.github.io/SpeedrunKit/"
     },
     {
       "id": "rawdog.ml.nvim",
@@ -377,7 +377,7 @@
       "language": "Lua",
       "platforms": [],
       "stars": 0,
-      "githubUrl": "https://github.com/marcusziade/rawdog.ml.nvim",
+      "githubUrl": "https://github.com/guitaripod/rawdog.ml.nvim",
       "category": "Other Projects",
       "highlights": [
         "Cross-platform",
@@ -398,7 +398,7 @@
         "macOS"
       ],
       "stars": 0,
-      "githubUrl": "https://github.com/marcusziade/LastFMKit",
+      "githubUrl": "https://github.com/guitaripod/LastFMKit",
       "category": "Swift Packages",
       "highlights": [
         "Lastfm",
@@ -413,7 +413,7 @@
       ],
       "commitCount": 30,
       "releaseCount": 1,
-      "homepageUrl": "https://marcusziade.github.io/LastFMKit/"
+      "homepageUrl": "https://guitaripod.github.io/LastFMKit/"
     },
     {
       "id": "speedrun-cli",
@@ -426,7 +426,7 @@
         "Windows"
       ],
       "stars": 0,
-      "githubUrl": "https://github.com/marcusziade/speedrun-cli",
+      "githubUrl": "https://github.com/guitaripod/speedrun-cli",
       "category": "CLI Tools",
       "highlights": [],
       "updatedAt": "2025-06-17T07:54:21Z",
