@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/marcusziade/compiledthoughts/internal/appstore"
-	"github.com/marcusziade/compiledthoughts/internal/github"
-	"github.com/marcusziade/compiledthoughts/internal/build"
+	"github.com/guitaripod/compiledthoughts/internal/appstore"
+	"github.com/guitaripod/compiledthoughts/internal/github"
+	"github.com/guitaripod/compiledthoughts/internal/build"
 )
 
 func main() {

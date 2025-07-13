@@ -24,7 +24,7 @@ const links = [
   },
   {
     title: 'Last.fm',
-    url: 'https://www.last.fm/user/marcusziade/library/artists',
+    url: 'https://www.last.fm/user/guitaripod/library/artists',
     description: 'My music listening history',
     icon: '🎵',
     iconPath: '/icons/lastfm.svg',
@@ -36,7 +36,7 @@ const links = [
   },
   {
     title: 'Trakt.tv',
-    url: 'https://trakt.tv/users/marcusziade',
+    url: 'https://trakt.tv/users/guitaripod',
     description: "Track what I'm watching",
     icon: '📺',
     iconPath: '/icons/trakt.svg',
@@ -73,7 +73,7 @@ const links = [
   },
   {
     title: 'WakaTime',
-    url: 'https://wakatime.com/@marcusziade',
+    url: 'https://wakatime.com/@guitaripod',
     description: 'My coding activity and stats',
     icon: '⏱️',
     iconPath: '/icons/wakatime.svg',
@@ -85,7 +85,7 @@ const links = [
   },
   {
     title: 'YouTube',
-    url: 'https://youtube.com/@marcusziadev',
+    url: 'https://youtube.com/@guitaripodev',
     description: 'Tech tutorials and coding content',
     icon: '📹',
     iconPath: '/icons/youtube.svg',
@@ -118,7 +118,7 @@ const links = [
   },
   {
     title: 'LeetCode',
-    url: 'https://leetcode.com/marcusziade/',
+    url: 'https://leetcode.com/guitaripod/',
     description: 'Coding challenges and solutions',
     icon: '💻',
     iconPath: '/icons/leetcode.svg',
@@ -129,7 +129,7 @@ const links = [
   },
   {
     title: 'Apple Music',
-    url: 'https://music.apple.com/profile/marcusziade',
+    url: 'https://music.apple.com/profile/guitaripod',
     description: 'Curated playlists and music',
     icon: '🎶',
     iconPath: '/icons/applemusic.svg',
@@ -233,13 +233,13 @@ const sortedLinks = links.sort((a, b) => a.priority - b.priority);
                       class={`mt-auto ${link.widget !== 'lastfm' ? 'pt-3 border-t border-gray-200 dark:border-gray-700' : ''}`}
                     >
                       {link.widget === 'lastfm' && (
-                        <LastFmNowPlaying username="marcusziade" size="large" />
+                        <LastFmNowPlaying username="guitaripod" size="large" />
                       )}
-                      {link.widget === 'wakatime' && <WakaTimeStats username="marcusziade" />}
-                      {link.widget === 'github' && <GitHubStats username="marcusziade" />}
+                      {link.widget === 'wakatime' && <WakaTimeStats username="guitaripod" />}
+                      {link.widget === 'github' && <GitHubStats username="guitaripod" />}
                       {link.widget === 'steam' && <SteamStatus />}
                       {link.widget === 'trakt' && (
-                        <TraktStatus username="marcusziade" size="large" />
+                        <TraktStatus username="guitaripod" size="large" />
                       )}
                     </div>
                   )}

@@ -1,3 +1,3 @@
-module github.com/marcusziade/compiledthoughts
+module github.com/guitaripod/compiledthoughts
 
 go 1.24.3

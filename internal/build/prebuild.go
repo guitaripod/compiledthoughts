@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os/exec"
 
-	"github.com/marcusziade/compiledthoughts/internal/appstore"
-	"github.com/marcusziade/compiledthoughts/internal/github"
+	"github.com/guitaripod/compiledthoughts/internal/appstore"
+	"github.com/guitaripod/compiledthoughts/internal/github"
 )
 
 func PreBuild() error {

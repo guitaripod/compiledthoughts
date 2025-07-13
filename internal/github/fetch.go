@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	githubUsername = "marcusziade"
+	githubUsername = "guitaripod"
 	githubAPIURL   = "https://api.github.com/users/%s/repos?per_page=100&sort=updated"
 	graphQLURL     = "https://api.github.com/graphql"
 )
@@ -21,7 +21,7 @@ const (
 var hasGitHubToken bool
 
 var excludeRepos = []string{
-	"marcusziade",                   // profile repo
+	"guitaripod",                   // profile repo
 	"isowords",                      // fork
 	"swift-composable-architecture", // fork
 	"homebrew-apod-cli",             // homebrew tap
@@ -297,7 +297,7 @@ func fetchGitHubRepos() ([]GitHubRepo, error) {
 	}
 	
 	req.Header.Set("Accept", "application/vnd.github.v3+json")
-	req.Header.Set("User-Agent", "marcusziade-website")
+	req.Header.Set("User-Agent", "guitaripod-website")
 	
 	// Add token if available
 	if token := os.Getenv("GITHUB_TOKEN"); token != "" {
@@ -338,7 +338,7 @@ func getCommitCount(repo GitHubRepo) (int, error) {
 	}
 	
 	req.Header.Set("Accept", "application/vnd.github.v3+json")
-	req.Header.Set("User-Agent", "marcusziade-website")
+	req.Header.Set("User-Agent", "guitaripod-website")
 	
 	if token := os.Getenv("GITHUB_TOKEN"); token != "" {
 		req.Header.Set("Authorization", "token "+token)
@@ -585,7 +585,7 @@ func getPlatforms(repo GitHubRepo) []string {
 
 func fetchPinnedRepos() ([]string, error) {
 	query := `{
-		user(login: "marcusziade") {
+		user(login: "guitaripod") {
 			pinnedItems(first: 6, types: REPOSITORY) {
 				nodes {
 					... on Repository {
@@ -609,7 +609,7 @@ func fetchPinnedRepos() ([]string, error) {
 
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Accept", "application/json")
-	req.Header.Set("User-Agent", "marcusziade-website")
+	req.Header.Set("User-Agent", "guitaripod-website")
 	
 	if token := os.Getenv("GITHUB_TOKEN"); token != "" {
 		req.Header.Set("Authorization", "Bearer "+token)
