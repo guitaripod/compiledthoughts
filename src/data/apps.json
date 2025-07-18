@@ -86,7 +86,7 @@
       "id": "dream-eater",
       "name": "Dream Eater",
       "tagline": "ML-Powered Dream Journaling",
-      "description": "Dream Eater: ML-Powered Dream Journal \u0026 Interpreter\n\nDive into the fascinating world of your subconscious with Dream Eater, the ultimate ML-powered dream journal and interpretation app. Unlock the mysteries of your nightly adventures and gain deeper insights into your mind.",
+      "description": "Dream Eater: AI-Powered Dream Journal \u0026 Interpreter\n\nDiscover the hidden meanings in your dreams with Dream Eater – the ultimate dream journal powered by advanced AI and lunar wisdom. Whether you're seeking self-discovery, tracking patterns, or exploring your subconscious, Dream Eater transforms your nightly adventures into profound insights.",
       "platforms": [
         "iPhone",
         "iPad"
@@ -94,7 +94,7 @@
       "category": "Lifestyle",
       "price": "Free",
       "appStoreUrl": "https://apps.apple.com/us/app/dream-eater/id6661019277?uo=4\u0026platform=iphone",
-      "icon": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/74/80/3f/74803f7c-a6ad-dcf0-dbc9-72657667cd8c/AppIcon-0-0-1x_U007epad-0-1-85-220.png/512x512bb.jpg",
+      "icon": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/d9/4c/f9/d94cf94d-64b6-d6f0-cb77-90f2234a3acc/AppIcon-0-0-1x_U007epad-0-1-85-220.png/512x512bb.jpg",
       "primaryColor": "#6366F1",
       "features": [
         "Dream pattern analysis",
