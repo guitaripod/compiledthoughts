@@ -23,9 +23,10 @@ func PreBuild() error {
 		// Don't fail the build if GitHub fetch fails
 	}
 
-	// Generate OG images (still using Node.js scripts for now)
-	fmt.Println("Generating OG images...")
+	// Live-data snapshots and OG images (still using Node.js scripts for now)
+	fmt.Println("Refreshing snapshots and generating OG images...")
 	for _, script := range []string{
+		"scripts/fetch-github-activity.mjs",
 		"scripts/fetch-webb-live.mjs",
 		"scripts/generate-screenshot-variants.mjs",
 		"scripts/generate-main-og-image.js",

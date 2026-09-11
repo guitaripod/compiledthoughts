@@ -1,0 +1,80 @@
+---
+import { renderActivityBoard, type ActivitySnapshot } from '../lib/activity-board';
+import snapshotData from '../data/github-activity.json';
+
+const snapshot = snapshotData as ActivitySnapshot;
+const html = renderActivityBoard(snapshot, new Date());
+const embedded = JSON.stringify(snapshot).replace(/</g, '\\u003c');
+---
+
+<div id="activity-board" set:html={html} />
+<script type="application/json" id="activity-snapshot" set:html={embedded} />
+
+<script>
+  import { renderActivityBoard, type ActivitySnapshot } from '../lib/activity-board';
+
+  const REFRESH_MS = 5 * 60 * 1000;
+  const TYPE_DELAY_MS = 260;
+
+  /// Types the focus commit headline out under the cursor; the full text is already in
+  /// the DOM (and in `data-text`) so nothing depends on the animation finishing.
+  function typewrite(root: HTMLElement) {
+    root.querySelectorAll<HTMLElement>('.act-type').forEach((el) => {
+      const full = el.dataset.text ?? el.textContent ?? '';
+      let shown = 0;
+      el.textContent = '';
+      const tick = () => {
+        if (!el.isConnected) return;
+        shown++;
+        el.textContent = full.slice(0, shown);
+        if (shown < full.length) setTimeout(tick, 12 + Math.random() * 22);
+      };
+      setTimeout(tick, TYPE_DELAY_MS);
+    });
+  }
+
+  function focusCommitUrl(data: ActivitySnapshot): string | undefined {
+    return data.repos?.[0]?.latest?.url;
+  }
+
+  function initActivityBoard() {
+    const root = document.getElementById('activity-board');
+    const raw = document.getElementById('activity-snapshot')?.textContent;
+    if (!root || !raw || root.dataset.live) return;
+    root.dataset.live = 'true';
+
+    let current: ActivitySnapshot = JSON.parse(raw);
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const paint = (data: ActivitySnapshot, animate: boolean) => {
+      root.innerHTML = renderActivityBoard(data, new Date());
+      if (animate && !reducedMotion) typewrite(root);
+    };
+
+    paint(current, true);
+
+    const refresh = async () => {
+      try {
+        const response = await fetch('/api/activity.json', {
+          signal: AbortSignal.timeout(15000),
+        });
+        if (!response.ok) return;
+        const data = (await response.json()) as ActivitySnapshot & { error?: string };
+        if (data.error || !Array.isArray(data.repos)) return;
+        const headlineChanged = focusCommitUrl(data) !== focusCommitUrl(current);
+        current = data;
+        paint(data, headlineChanged);
+      } catch {
+        // The build-time snapshot stays on screen when the live feed is unavailable.
+      }
+    };
+
+    refresh();
+    setInterval(() => {
+      if (!document.hidden) refresh();
+    }, REFRESH_MS);
+  }
+
+  initActivityBoard();
+  document.addEventListener('astro:after-swap', initActivityBoard);
+</script>

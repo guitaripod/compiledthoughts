@@ -226,6 +226,67 @@
   }
 }
 
+.act-spark {
+  font-variant-ligatures: none;
+  letter-spacing: -0.04em;
+}
+
+.act-heatmap {
+  max-height: 7.5rem;
+}
+
+.act-hm-label {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 7.5px;
+  fill: #54686f;
+}
+
+.dark .act-hm-label {
+  fill: #7d8590;
+}
+
+.act-c {
+  fill: #eee8d5;
+  transition: fill 0.2s;
+}
+
+.act-c1 {
+  fill: rgba(0, 95, 0, 0.28);
+}
+
+.act-c2 {
+  fill: rgba(0, 95, 0, 0.5);
+}
+
+.act-c3 {
+  fill: rgba(0, 95, 0, 0.74);
+}
+
+.act-c4 {
+  fill: #005f00;
+}
+
+.dark .act-c {
+  fill: #1c2128;
+}
+
+.dark .act-c1 {
+  fill: rgba(51, 255, 102, 0.22);
+}
+
+.dark .act-c2 {
+  fill: rgba(51, 255, 102, 0.45);
+}
+
+.dark .act-c3 {
+  fill: rgba(51, 255, 102, 0.7);
+}
+
+.dark .act-c4 {
+  fill: #33ff66;
+  filter: drop-shadow(0 0 2px rgba(51, 255, 102, 0.55));
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

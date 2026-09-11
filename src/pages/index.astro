@@ -5,6 +5,7 @@ import OpenSourceCard from '@components/OpenSourceCard.astro';
 import CLIAppCard from '@components/CLIAppCard.astro';
 import LinuxAppCard from '@components/LinuxAppCard.astro';
 import MatrixRain from '@components/MatrixRain.astro';
+import ActivityBoard from '@components/ActivityBoard.astro';
 import { getCollection } from 'astro:content';
 import { calculateReadingTime } from '@utils/reading-time';
 import appsData from '../data/apps.json';
@@ -70,55 +71,63 @@ const engagements = careerData.entries.slice(0, 3);
   title="Midgar Corp — guitaripod"
   description={`Independent engineer. Seven years shipping production iOS, backend, and AI for category-leading consumer products. ${appsData.apps.length} apps live on the App Store, ${openSourceData.projects.length} open-source projects.`}
 >
-  <!-- Hero -->
-  <section class="relative pt-12 sm:pt-20 pb-12 overflow-hidden">
+  <!-- Hero: live GitHub activity board -->
+  <section class="relative pt-10 sm:pt-14 pb-10 overflow-hidden">
     <MatrixRain />
-    <div class="relative max-w-3xl">
-      <p class="prompt-line mb-4">whoami</p>
+    <div class="relative">
+      <ActivityBoard />
+    </div>
+  </section>
 
-      <h1
-        class="text-4xl sm:text-6xl md:text-7xl font-bold mb-6 leading-[1.05] tracking-tight text-paper-text dark:text-term-text"
-      >
-        Engineer who<br />
-        <span class="phosphor cursor-blink">ships.</span>
-      </h1>
-
-      <p
-        class="text-base sm:text-lg text-paper-muted dark:text-term-muted mb-4 leading-relaxed max-w-2xl"
-      >
-        <span class="text-paper-text dark:text-term-text font-semibold">guitaripod</span> — seven years
-        shipping production iOS, backend, and AI for category-leading consumer products. Now building
-        my own: {appsData.apps.length} apps live on the App Store, {openSourceData.projects.length} open-source
-        projects.
-      </p>
-
-      <p
-        class="inline-flex items-center gap-2 text-xs text-paper-greendim dark:text-term-greendim mb-8"
-      >
-        <span class="relative flex w-1.5 h-1.5">
-          <span
-            class="animate-ping absolute inline-flex h-full w-full rounded-full bg-paper-green dark:bg-term-green opacity-75"
-          ></span>
-          <span
-            class="relative inline-flex rounded-full h-1.5 w-1.5 bg-paper-green dark:bg-term-green"
-          ></span>
-        </span>
-        STATUS: available — open to new engagements
-      </p>
-
-      <div class="flex flex-wrap gap-3">
-        <a
-          href="/services"
-          class="inline-flex items-center gap-2 px-5 py-2.5 bg-paper-green dark:bg-term-green text-paper-bg dark:text-term-bg rounded-sm text-sm font-bold hover:opacity-90 transition-opacity"
+  <!-- Who -->
+  <section class="mb-16">
+    <div
+      class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 border-t border-paper-border dark:border-term-border pt-8"
+    >
+      <div class="max-w-2xl">
+        <p class="prompt-line mb-3">whoami</p>
+        <h2
+          class="text-2xl sm:text-4xl font-bold tracking-tight leading-tight text-paper-text dark:text-term-text mb-3"
         >
-          ./work-with-me
-        </a>
-        <a
-          href="/apps"
-          class="inline-flex items-center gap-2 px-5 py-2.5 border border-paper-border2 dark:border-term-border2 text-paper-text dark:text-term-text rounded-sm text-sm font-semibold hover:border-paper-green dark:hover:border-term-green hover:text-paper-green dark:hover:text-term-green transition-colors"
+          Engineer who <span class="phosphor">ships.</span>
+        </h2>
+        <p class="text-sm sm:text-base text-paper-muted dark:text-term-muted leading-relaxed">
+          <span class="text-paper-text dark:text-term-text font-semibold">guitaripod</span> — seven years
+          shipping production iOS, backend, and AI for category-leading consumer products. Now building
+          my own: {appsData.apps.length} apps live on the App Store, {
+            openSourceData.projects.length
+          } open-source projects.
+        </p>
+      </div>
+
+      <div class="flex flex-col items-start lg:items-end gap-4 flex-shrink-0">
+        <p
+          class="inline-flex items-center gap-2 text-xs text-paper-greendim dark:text-term-greendim"
         >
-          ./see-the-work
-        </a>
+          <span class="relative flex w-1.5 h-1.5">
+            <span
+              class="motion-safe:animate-ping absolute inline-flex h-full w-full rounded-full bg-paper-green dark:bg-term-green opacity-75"
+            ></span>
+            <span
+              class="relative inline-flex rounded-full h-1.5 w-1.5 bg-paper-green dark:bg-term-green"
+            ></span>
+          </span>
+          STATUS: available — open to new engagements
+        </p>
+        <div class="flex flex-wrap gap-3">
+          <a
+            href="/services"
+            class="inline-flex items-center gap-2 px-5 py-2.5 bg-paper-green dark:bg-term-green text-paper-bg dark:text-term-bg rounded-sm text-sm font-bold hover:opacity-90 transition-opacity"
+          >
+            ./work-with-me
+          </a>
+          <a
+            href="/apps"
+            class="inline-flex items-center gap-2 px-5 py-2.5 border border-paper-border2 dark:border-term-border2 text-paper-text dark:text-term-text rounded-sm text-sm font-semibold hover:border-paper-green dark:hover:border-term-green hover:text-paper-green dark:hover:text-term-green transition-colors"
+          >
+            ./see-the-work
+          </a>
+        </div>
       </div>
     </div>
   </section>

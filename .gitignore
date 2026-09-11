@@ -35,3 +35,6 @@ public/pagefind/
 /ct-*
 # astro dev output
 dev.log
+
+# wrangler local secrets
+.dev.vars
