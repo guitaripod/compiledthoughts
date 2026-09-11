@@ -118,6 +118,7 @@ function contributionsQuery(slices) {
   const parts = slices.map(
     (_, i) => `
     w${i}: contributionsCollection(from: $from${i}, to: $to${i}) {
+      contributionCalendar { weeks { contributionDays { date contributionCount } } }
       commitContributionsByRepository(maxRepositories: 100) {
         repository { ${REPO_FIELDS} }
         contributions(first: 100, orderBy: { field: OCCURRED_AT, direction: DESC }) {
@@ -144,12 +145,20 @@ function contributionSlices(now) {
   return slices;
 }
 
+/// Per-repo days come from public commit contributions (they name repos); the day totals
+/// come from GitHub's contribution calendar, which counts private work too without naming it.
 function mergeContributions(user, slices) {
   const repos = new Map();
   const dayCounts = new Map();
   const seenDays = new Set();
   for (let i = 0; i < slices.length; i++) {
-    for (const entry of user[`w${i}`].commitContributionsByRepository) {
+    const collection = user[`w${i}`];
+    for (const week of collection.contributionCalendar?.weeks ?? []) {
+      for (const day of week.contributionDays) {
+        if (!dayCounts.has(day.date)) dayCounts.set(day.date, day.contributionCount);
+      }
+    }
+    for (const entry of collection.commitContributionsByRepository) {
       const repo = entry.repository;
       if (repo.isPrivate) continue;
       let rec = repos.get(repo.nameWithOwner);
@@ -163,7 +172,6 @@ function mergeContributions(user, slices) {
         if (seenDays.has(dedupe)) continue;
         seenDays.add(dedupe);
         rec.days.set(date, (rec.days.get(date) ?? 0) + node.commitCount);
-        dayCounts.set(date, (dayCounts.get(date) ?? 0) + node.commitCount);
       }
     }
   }
@@ -271,9 +279,9 @@ export async function buildActivitySnapshot({ token, fetchImpl = fetch, now = ne
     lastPush,
     calendar,
     totals: {
-      commits7d: sumSince(dayCounts, since7),
-      commits30d: sumSince(dayCounts, since30),
-      commitsWindow: calendar.reduce((a, d) => a + d.count, 0),
+      contributions7d: sumSince(dayCounts, since7),
+      contributions30d: sumSince(dayCounts, since30),
+      contributionsWindow: calendar.reduce((a, d) => a + d.count, 0),
       activeRepos7d: repoRecords.filter((r) => r.commits7d > 0).length,
       activeRepos30d: repoRecords.filter((r) => r.commits30d > 0).length,
       streak: streak.current,

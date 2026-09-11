@@ -29,7 +29,7 @@ async function main() {
   fs.writeFileSync(OUT, JSON.stringify(snapshot, null, 2) + '\n');
   const focus = snapshot.repos[0];
   console.log(
-    `✓ github-activity.json: ${snapshot.totals.commits7d} commits / 7d across ${snapshot.totals.activeRepos7d} repos, focus ${focus?.name ?? '—'}, streak ${snapshot.totals.streak}d`
+    `✓ github-activity.json: ${snapshot.totals.contributions7d} contributions / 7d across ${snapshot.totals.activeRepos7d} repos, focus ${focus?.name ?? '—'}, streak ${snapshot.totals.streak}d`
   );
 }
 

@@ -26,9 +26,9 @@ export interface ActivitySnapshot {
   lastPush: string | null;
   calendar: { date: string; count: number }[];
   totals: {
-    commits7d: number;
-    commits30d: number;
-    commitsWindow: number;
+    contributions7d: number;
+    contributions30d: number;
+    contributionsWindow: number;
     activeRepos7d: number;
     activeRepos30d: number;
     streak: number;
@@ -122,7 +122,7 @@ function renderHeatmap(calendar: ActivitySnapshot['calendar']): string {
       }
       lastMonth = month;
     }
-    const label = `${day.date} · ${day.count} commit${day.count === 1 ? '' : 's'}`;
+    const label = `${day.date} · ${day.count} contribution${day.count === 1 ? '' : 's'}`;
     cells.push(
       `<rect x="${x}" y="${y}" width="${CELL}" height="${CELL}" rx="2" class="act-c act-c${level(day.count, thresholds)}"><title>${esc(label)}</title></rect>`
     );
@@ -138,7 +138,7 @@ function renderHeatmap(calendar: ActivitySnapshot['calendar']): string {
     )
     .join('');
 
-  return `<svg viewBox="0 0 ${width} ${height}" width="100%" role="img" aria-label="Commits per day over the last ${calendar.length} days" class="block act-heatmap">${monthLabels.join('')}${dayLabels}${cells.join('')}</svg>`;
+  return `<svg viewBox="0 0 ${width} ${height}" width="100%" role="img" aria-label="Contributions per day over the last ${calendar.length} days" class="block act-heatmap">${monthLabels.join('')}${dayLabels}${cells.join('')}</svg>`;
 }
 
 function languageDot(language: ActivityRepo['language']): string {
@@ -229,16 +229,16 @@ function renderCalendarPanel(data: ActivitySnapshot, now: Date): string {
     <div class="term-frame p-4 sm:p-5">
       <div class="flex items-baseline justify-between gap-3 mb-3">
         <p class="prompt-line truncate">git log --since=${weeks}.weeks</p>
-        <span class="text-[11px] ${faint} whitespace-nowrap">${num(t.commitsWindow)} commits</span>
+        <span class="text-[11px] ${faint} whitespace-nowrap">${num(t.contributionsWindow)} contributions</span>
       </div>
       ${renderHeatmap(data.calendar)}
       <dl class="grid grid-cols-3 gap-x-4 gap-y-3 mt-4">
         ${statTile(`${num(t.streak)}d`, 'streak', true)}
-        ${statTile(num(t.commits30d), 'commits · 30d')}
+        ${statTile(num(t.contributions30d), 'contributions · 30d')}
         ${statTile(num(t.activeRepos30d), 'repos · 30d')}
       </dl>
       ${renderLanguages(data.languages, windowLabel)}
-      <p class="mt-4 text-[10px] ${faint}">public repos · synced ${ago(data.generatedAt, now)}</p>
+      <p class="mt-4 text-[10px] ${faint}">counts include private work · repos shown are public · synced ${ago(data.generatedAt, now)}</p>
     </div>`;
 }
 
