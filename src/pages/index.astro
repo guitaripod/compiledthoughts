@@ -13,6 +13,7 @@ import openSourceData from '../data/opensource.json';
 import careerData from '../data/career.json';
 import { landingApps } from '@data/landing';
 import { featuredLinuxApps, linuxStats } from '@data/linux';
+import activity from '../data/github-activity.json';
 
 const landingByTrack = new Map(landingApps.map((a) => [String(a.trackId), a]));
 const trackIdFor = (appStoreUrl: string): string | undefined => appStoreUrl.match(/id(\d+)/)?.[1];
@@ -55,13 +56,20 @@ const featuredOpenSource = openSourceData.projects
   .slice(0, 6);
 
 const totalStars = openSourceData.projects.reduce((sum, project) => sum + project.stars, 0);
+const totalReleases = openSourceData.projects.reduce(
+  (sum, project) => sum + (project.releaseCount ?? 0),
+  0
+);
+const languageCount = new Set(
+  openSourceData.projects.map((project) => project.language).filter(Boolean)
+).size;
 const stats = [
-  { key: 'years_shipping', value: String(careerData.summary.yearsActive) },
-  { key: 'production_commits', value: careerData.summary.totalCommits },
-  { key: 'lines_shipped', value: careerData.summary.totalLocLabel },
   { key: 'apps_live', value: String(appsData.apps.length) },
-  { key: 'oss_projects', value: String(openSourceData.projects.length) },
-  { key: 'github_stars', value: String(totalStars) },
+  { key: 'oss_repos', value: String(openSourceData.projects.length) },
+  { key: 'releases_cut', value: totalReleases.toLocaleString('en-US') },
+  { key: 'github_stars', value: totalStars.toLocaleString('en-US') },
+  { key: 'contributions_365d', value: activity.totals.contributionsYear.toLocaleString('en-US') },
+  { key: 'languages', value: String(languageCount) },
 ];
 
 const engagements = careerData.entries.slice(0, 3);
@@ -111,10 +119,8 @@ const engagements = careerData.entries.slice(0, 3);
           Engineer who <span class="phosphor">ships.</span>
         </h2>
         <p class="text-sm sm:text-base text-paper-muted dark:text-term-muted leading-relaxed">
-          Seven years shipping production iOS, backend, and AI for category-leading consumer
-          products. Now building my own: {appsData.apps.length} apps live on the App Store, {
-            openSourceData.projects.length
-          } open-source projects.
+          Seven years shipping production software for category-leading consumer products. Now
+          building my own, for Linux, Apple, the web and the terminal.
         </p>
       </div>
 
@@ -151,7 +157,7 @@ const engagements = careerData.entries.slice(0, 3);
   </section>
 
   <!-- Stats -->
-  <section class="mb-16">
+  <section class="mb-16 -mt-8">
     <div class="term-frame p-5 sm:p-6">
       <p class="prompt-line mb-4">midgar --stats</p>
       <dl class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-x-6 gap-y-4">

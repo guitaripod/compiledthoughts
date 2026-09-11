@@ -29,6 +29,7 @@ export interface ActivitySnapshot {
     contributions7d: number;
     contributions30d: number;
     contributionsWindow: number;
+    contributionsYear: number;
     activeRepos7d: number;
     activeRepos30d: number;
     streak: number;

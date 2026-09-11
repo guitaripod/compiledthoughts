@@ -128,8 +128,14 @@ function contributionsQuery(slices) {
     }`
   );
   const vars = slices.map((_, i) => `$from${i}: DateTime!, $to${i}: DateTime!`).join(', ');
-  return `query($login: String!, ${vars}) {
-    user(login: $login) { login url ${parts.join('')} }
+  return `query($login: String!, $yearFrom: DateTime!, $yearTo: DateTime!, ${vars}) {
+    user(login: $login) {
+      login url
+      year: contributionsCollection(from: $yearFrom, to: $yearTo) {
+        contributionCalendar { totalContributions }
+      }
+      ${parts.join('')}
+    }
   }`;
 }
 
@@ -195,7 +201,11 @@ function releasesQuery(repoNames) {
 export async function buildActivitySnapshot({ token, fetchImpl = fetch, now = new Date() }) {
   if (!token) throw new Error('GITHUB_TOKEN is required');
   const slices = contributionSlices(now);
-  const variables = { login: LOGIN };
+  const variables = {
+    login: LOGIN,
+    yearFrom: daysAgo(now, 365).toISOString(),
+    yearTo: now.toISOString(),
+  };
   slices.forEach((s, i) => {
     variables[`from${i}`] = s.from;
     variables[`to${i}`] = s.to;
@@ -282,6 +292,7 @@ export async function buildActivitySnapshot({ token, fetchImpl = fetch, now = ne
       contributions7d: sumSince(dayCounts, since7),
       contributions30d: sumSince(dayCounts, since30),
       contributionsWindow: calendar.reduce((a, d) => a + d.count, 0),
+      contributionsYear: user.year?.contributionCalendar?.totalContributions ?? 0,
       activeRepos7d: repoRecords.filter((r) => r.commits7d > 0).length,
       activeRepos30d: repoRecords.filter((r) => r.commits30d > 0).length,
       streak: streak.current,
