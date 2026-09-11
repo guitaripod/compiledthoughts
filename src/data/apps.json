@@ -15,7 +15,7 @@
       "category": "Photo \u0026 Video",
       "price": "Free",
       "appStoreUrl": "https://apps.apple.com/us/app/solar-beam/id6705124497",
-      "icon": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/bf/73/53/bf7353ef-8559-35ae-600c-b1a121c4fba7/AppIcon-0-0-1x_U007epad-0-1-85-220.png/512x512bb.jpg",
+      "icon": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/45/b2/40/45b24081-f804-463a-c141-22f5e798e551/AppIcon-0-0-1x_U007epad-0-1-85-220.png/512x512bb.jpg",
       "primaryColor": "#F59E0B",
       "features": [
         "Curated Webb image gallery",
@@ -134,13 +134,12 @@
       "tagline": "Learn Flags \u0026 Capitals",
       "description": "Master of Flags is FREE. No ads.",
       "platforms": [
-        "iPhone",
-        "iPad"
+        "Mac"
       ],
       "category": "Education",
       "price": "Free",
       "appStoreUrl": "https://apps.apple.com/us/app/master-of-flags-world-quiz/id1484270248",
-      "icon": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/63/a2/06/63a206fb-c43d-4b30-b973-e1d2cab4840b/AppIcon-0-0-1x_U007epad-0-1-85-220.png/512x512bb.jpg",
+      "icon": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/fb/89/b6/fb89b62c-4eba-84a6-876c-417ca3dfd4a6/AppIcon-0-0-1x_U007epad-0-1-85-220.png/512x512bb.jpg",
       "primaryColor": "#EF4444",
       "features": [
         "Flags and capitals, six regions",
@@ -213,28 +212,30 @@
       "releaseDate": "2026-07-06T07:00:00Z"
     },
     {
-      "id": "tailscode",
-      "name": "Tailscode",
-      "tagline": "The Remote for Your Coding Agents",
-      "description": "Tailscode turns your iPhone into the remote control for the coding agents already running on your machines. Send a prompt from anywhere, pocket your phone, and watch the turn finish on your Lock Screen.",
+      "id": "flaccy",
+      "name": "Flaccy – Lossless FLAC Player",
+      "tagline": "The Player for the Music You Own",
+      "description": "Flaccy is a beautiful player for the music you own. Drop in your FLAC, ALAC, AAC, or MP3 files and get a fast, gorgeous library with gapless playback, synced lyrics, and scrobbling — no streaming subscription, no upload, no account.",
       "platforms": [
-        "iPhone"
+        "iPhone",
+        "Apple Watch",
+        "Mac"
       ],
-      "category": "Developer Tools",
+      "category": "Music",
       "price": "Free",
-      "appStoreUrl": "https://apps.apple.com/us/app/tailscode/id6791660932",
-      "icon": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/30/2f/92/302f9203-4bfa-12ad-9326-aa1abcdb0350/AppIcon-0-0-1x_U007ephone-0-1-85-220.png/512x512bb.jpg",
-      "primaryColor": "#546BFF",
+      "appStoreUrl": "https://apps.apple.com/us/app/flaccy-lossless-flac-player/id6787493695",
+      "icon": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/a1/86/18/a18618f8-2819-e43c-def3-18f05b862690/AppIcon-0-0-1x_U007ephone-0-1-85-220.png/512x512bb.jpg",
+      "primaryColor": "#FF4D6D",
       "features": [
-        "Drive Claude Code, Oh My Pi \u0026 opencode from your phone",
-        "Point-to-point over your own Tailscale network",
-        "Watch the turn land on your Lock Screen"
+        "Gapless FLAC playback with quality badges",
+        "AI-organized library, no manual tagging",
+        "Last.fm scrobbling, charts \u0026 Year in Music"
       ],
-      "releaseDate": "2026-07-28T07:00:00Z"
+      "releaseDate": "2026-07-09T07:00:00Z"
     },
     {
       "id": "psybeam",
-      "name": "Psybeam: Live Translator",
+      "name": "Psybeam: AI Voice Translator",
       "tagline": "Hold Up Your Phone and Talk",
       "description": "A real-time voice interpreter for travel. Hold your button and speak — it says it out loud in their language. The person across from you never touches the screen.",
       "platforms": [
@@ -243,8 +244,8 @@
       ],
       "category": "Travel",
       "price": "Free",
-      "appStoreUrl": "https://apps.apple.com/us/app/psybeam-live-translator/id6777952645",
-      "icon": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/f7/3e/c3/f73ec3c4-6a23-cc17-dacf-c5f6ec933ecd/AppIcon-0-0-1x_U007ephone-0-1-85-220.png/512x512bb.jpg",
+      "appStoreUrl": "https://apps.apple.com/us/app/psybeam-ai-voice-translator/id6777952645",
+      "icon": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/98/53/e8/9853e8a4-8a76-df1c-177c-2155d407e38d/AppIcon-0-0-1x_U007ephone-0-1-85-220.png/512x512bb.jpg",
       "primaryColor": "#06B6D4",
       "features": [
         "Real-time voice-to-voice in 20+ languages",
@@ -257,14 +258,14 @@
       "id": "helia",
       "name": "Helia: UV Index \u0026 Sun Safety",
       "tagline": "The Honest Solar Coach",
-      "description": "Helia is the honest solar coach. Most sun apps either push you to maximize a tan or just show a raw UV number.",
+      "description": "How long can you stay in the sun today before you burn? Helia answers that in minutes — for your skin type and the live UV index where you stand — and that answer is free, forever.",
       "platforms": [
         "iPhone"
       ],
       "category": "Health \u0026 Fitness",
       "price": "Free",
       "appStoreUrl": "https://apps.apple.com/us/app/helia-uv-index-sun-safety/id6785542220",
-      "icon": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/96/5a/16/965a168c-422b-3aa4-5c20-3602a93448fd/AppIcon-0-0-1x_U007emarketing-0-8-0-85-220.png/512x512bb.jpg",
+      "icon": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/1d/ab/28/1dab283c-5464-be5c-37a7-96925b61bdbf/AppIcon-0-0-1x_U007emarketing-0-8-0-85-220.png/512x512bb.jpg",
       "primaryColor": "#F5A623",
       "features": [
         "A live sunburn budget tuned to your skin",
@@ -295,26 +296,24 @@
       "releaseDate": "2026-07-14T07:00:00Z"
     },
     {
-      "id": "flaccy",
-      "name": "Flaccy",
-      "tagline": "The Player for the Music You Own",
-      "description": "Flaccy is a beautiful player for the music you own. Drop in your FLAC, ALAC, AAC, or MP3 files and get a fast, gorgeous library with gapless playback, synced lyrics, and scrobbling — no streaming subscription, no upload, no account.",
+      "id": "tailscode",
+      "name": "Tailscode",
+      "tagline": "The Remote for Your Coding Agents",
+      "description": "Send a prompt to Claude Code, opencode or Oh My Pi from your phone, pocket it, and watch the turn finish on your Lock Screen. Approve the risky command, answer the agent's question, read every diff — from anywhere on your own Tailscale network.",
       "platforms": [
-        "iPhone",
-        "Apple Watch",
-        "Mac"
+        "iPhone"
       ],
-      "category": "Music",
+      "category": "Developer Tools",
       "price": "Free",
-      "appStoreUrl": "https://apps.apple.com/us/app/flaccy/id6787493695",
-      "icon": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/bd/13/ed/bd13ede9-4e8f-91c5-0f03-37653396d61d/AppIcon-0-0-1x_U007ephone-0-1-85-220.png/512x512bb.jpg",
-      "primaryColor": "#FF4D6D",
+      "appStoreUrl": "https://apps.apple.com/us/app/tailscode/id6791660932",
+      "icon": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/1f/63/c1/1f63c177-4142-759d-b9cd-68ab6e364918/AppIcon-0-0-1x_U007epad-0-1-85-220.png/512x512bb.jpg",
+      "primaryColor": "#546BFF",
       "features": [
-        "Gapless FLAC playback with quality badges",
-        "AI-organized library, no manual tagging",
-        "Last.fm scrobbling, charts \u0026 Year in Music"
+        "Drive Claude Code \u0026 opencode from your phone",
+        "Point-to-point over your own Tailscale network",
+        "Watch the turn land on your Lock Screen"
       ],
-      "releaseDate": "2026-07-09T07:00:00Z"
+      "releaseDate": "2026-07-28T07:00:00Z"
     }
   ]
 }

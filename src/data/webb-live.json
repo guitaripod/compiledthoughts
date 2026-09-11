@@ -1,211 +1,13 @@
 {
   "schedule": {
-    "reportUrl": "https://www.stsci.edu/files/live/sites/www/files/home/jwst/science-execution/observing-schedules/_documents/20260824_report_20260820.txt",
+    "reportUrl": "https://www.stsci.edu/files/live/sites/www/files/home/jwst/science-execution/observing-schedules/_documents/20260907_report_20260908.txt",
     "sourceUrl": "https://www.stsci.edu/jwst/science-execution/observing-schedules",
-    "coversFrom": "2026-08-24T00:37:02.000Z",
-    "coversTo": "2026-08-30T23:56:01.000Z",
+    "coversFrom": "2026-09-07T05:20:40.000Z",
+    "coversTo": "2026-09-14T10:59:04.000Z",
     "observations": [
       {
-        "visit": "7169:19:1",
-        "start": "2026-08-24T00:37:02.000Z",
-        "seconds": 17507,
-        "instrument": "NIRSpec IFU Spectroscopy",
-        "target": "CenterIFUArches",
-        "category": "Stellar Cluster",
-        "keywords": "O clusters, Open star clusters,"
-      },
-      {
-        "visit": "7169:20:1",
-        "start": "2026-08-24T05:30:14.000Z",
-        "seconds": 17507,
-        "instrument": "NIRSpec IFU Spectroscopy",
-        "target": "CenterIFUArches",
-        "category": "Stellar Cluster",
-        "keywords": "O clusters, Open star clusters,"
-      },
-      {
-        "visit": "6927:22:1",
-        "start": "2026-08-24T15:53:58.000Z",
-        "seconds": 10370,
-        "instrument": "NIRSpec MultiObject Spectroscopy",
-        "target": "20260714_m7_MPT_catalog",
-        "category": "Observation",
-        "keywords": ""
-      },
-      {
-        "visit": "6927:28:1",
-        "start": "2026-08-24T18:52:43.000Z",
-        "seconds": 10757,
-        "instrument": "NIRSpec MultiObject Spectroscopy",
-        "target": "20260714_m7_MPT_catalog.v4",
-        "category": "Observation",
-        "keywords": ""
-      },
-      {
-        "visit": "10764:11:1",
-        "start": "2026-08-24T22:27:08.000Z",
-        "seconds": 2773,
-        "instrument": "NIRCam Imaging",
-        "target": "2MASS-J20004841-7523070",
-        "category": "Star",
-        "keywords": "M stars"
-      },
-      {
-        "visit": "12581:1:1",
-        "start": "2026-08-24T23:46:04.000Z",
-        "seconds": 12724,
-        "instrument": "NIRSpec MultiObject Spectroscopy",
-        "target": "pg004_gaiashift_noTA4_wsynth",
-        "category": "Observation",
-        "keywords": ""
-      },
-      {
-        "visit": "9314:1:1",
-        "start": "2026-08-25T03:46:17.000Z",
-        "seconds": 40786,
-        "instrument": "NIRCam Imaging",
-        "target": "NGC-6440",
-        "category": "Stellar Cluster",
-        "keywords": "Globular star clusters"
-      },
-      {
-        "visit": "12524:47:1",
-        "start": "2026-08-25T15:41:10.000Z",
-        "seconds": 1640,
-        "instrument": "NIRSpec Fixed Slit Spectroscopy",
-        "target": "GSPC-P330-E",
-        "category": "Star",
-        "keywords": "G dwarfs"
-      },
-      {
-        "visit": "10786:1:1",
-        "start": "2026-08-25T17:41:51.000Z",
-        "seconds": 32715,
-        "instrument": "NIRSpec Bright Object Time Series",
-        "target": "HAT-P-1",
-        "category": "Star",
-        "keywords": "Exoplanet Systems"
-      },
-      {
-        "visit": "8106:3:1",
-        "start": "2026-08-26T03:41:35.000Z",
-        "seconds": 4262,
-        "instrument": "NIRSpec Fixed Slit Spectroscopy",
-        "target": "DJ16081299-2304316",
-        "category": "Star",
-        "keywords": "Brown dwarfs, L dwarfs, Young st"
-      },
-      {
-        "visit": "8106:5:1",
-        "start": "2026-08-26T05:03:32.000Z",
-        "seconds": 5412,
-        "instrument": "NIRSpec Fixed Slit Spectroscopy",
-        "target": "DJ16091010-1930376",
-        "category": "Star",
-        "keywords": "Brown dwarfs, L dwarfs, Young st"
-      },
-      {
-        "visit": "8106:7:1",
-        "start": "2026-08-26T06:46:51.000Z",
-        "seconds": 5793,
-        "instrument": "NIRSpec Fixed Slit Spectroscopy",
-        "target": "DJ16135217-2443562",
-        "category": "Star",
-        "keywords": "Brown dwarfs, L dwarfs, Young st"
-      },
-      {
-        "visit": "8106:14:1",
-        "start": "2026-08-26T08:43:15.000Z",
-        "seconds": 4643,
-        "instrument": "NIRSpec Fixed Slit Spectroscopy",
-        "target": "DJ16140756-2211524",
-        "category": "Star",
-        "keywords": "Brown dwarfs, L dwarfs, Young st"
-      },
-      {
-        "visit": "8106:22:1",
-        "start": "2026-08-26T10:12:18.000Z",
-        "seconds": 2150,
-        "instrument": "NIRSpec Fixed Slit Spectroscopy",
-        "target": "2J16213210-2557393",
-        "category": "Star",
-        "keywords": "Brown dwarfs, M dwarfs, Young st"
-      },
-      {
-        "visit": "8106:29:1",
-        "start": "2026-08-26T11:02:39.000Z",
-        "seconds": 1916,
-        "instrument": "NIRSpec Fixed Slit Spectroscopy",
-        "target": "2J16120089-1940419",
-        "category": "Star",
-        "keywords": "Brown dwarfs, M dwarfs, Young st"
-      },
-      {
-        "visit": "8106:30:1",
-        "start": "2026-08-26T11:54:53.000Z",
-        "seconds": 1916,
-        "instrument": "NIRSpec Fixed Slit Spectroscopy",
-        "target": "2J16072382-2211018",
-        "category": "Star",
-        "keywords": "Brown dwarfs, M dwarfs, Young st"
-      },
-      {
-        "visit": "12640:1:1",
-        "start": "2026-08-26T12:39:41.000Z",
-        "seconds": 1719,
-        "instrument": "WFSC NIRCam Fine Phasing",
-        "target": "2MASS-15585507-2620433",
-        "category": "Calibration",
-        "keywords": "Focus test"
-      },
-      {
-        "visit": "7729:2:1",
-        "start": "2026-08-26T14:01:30.000Z",
-        "seconds": 51363,
-        "instrument": "NIRSpec MultiObject Spectroscopy",
-        "target": "gds_dr5_omega_targets",
-        "category": "Observation",
-        "keywords": ""
-      },
-      {
-        "visit": "7073:64:1",
-        "start": "2026-08-27T05:55:55.000Z",
-        "seconds": 15252,
-        "instrument": "NIRSpec Bright Object Time Series",
-        "target": "LP-890-9",
-        "category": "Star",
-        "keywords": "Exoplanet Systems, M dwarfs"
-      },
-      {
-        "visit": "12159:1:1",
-        "start": "2026-08-27T10:50:05.000Z",
-        "seconds": 3885,
-        "instrument": "NIRCam Imaging",
-        "target": "SDSS-J0100_lensing_system",
-        "category": "Galaxy",
-        "keywords": "Elliptical galaxies"
-      },
-      {
-        "visit": "12159:2:1",
-        "start": "2026-08-27T12:02:55.000Z",
-        "seconds": 19804,
-        "instrument": "NIRSpec IFU Spectroscopy",
-        "target": "D1",
-        "category": "Galaxy",
-        "keywords": "Emission line galaxies, High-red"
-      },
-      {
-        "visit": "12159:3:1",
-        "start": "2026-08-27T17:39:55.000Z",
-        "seconds": 3399,
-        "instrument": "NIRSpec IFU Spectroscopy",
-        "target": "SDSS-J010049.18+181827.7_BGG",
-        "category": "Galaxy",
-        "keywords": "Elliptical galaxies"
-      },
-      {
         "visit": "7988:1:1",
-        "start": "2026-08-27T19:07:32.000Z",
+        "start": "2026-09-07T05:20:40.000Z",
         "seconds": 38562,
         "instrument": "NIRISS Aperture Masking Interferometry",
         "target": "IC348-Fld1",
@@ -213,157 +15,778 @@
         "keywords": "Open star clusters, Stellar asso"
       },
       {
-        "visit": "7729:2:2",
-        "start": "2026-08-28T06:27:06.000Z",
-        "seconds": 51363,
-        "instrument": "NIRSpec MultiObject Spectroscopy",
-        "target": "gds_dr5_omega_targets",
-        "category": "Observation",
-        "keywords": ""
-      },
-      {
-        "visit": "12429:3:1",
-        "start": "2026-08-28T21:09:49.000Z",
-        "seconds": 4057,
-        "instrument": "NIRCam Imaging",
-        "target": "RCP16",
-        "category": "Galaxy",
-        "keywords": "Dwarf galaxies"
-      },
-      {
-        "visit": "12429:5:1",
-        "start": "2026-08-28T22:28:58.000Z",
-        "seconds": 3943,
-        "instrument": "NIRCam Imaging",
-        "target": "DF7",
-        "category": "Galaxy",
-        "keywords": "Dwarf galaxies"
-      },
-      {
-        "visit": "12476:5:1",
-        "start": "2026-08-29T00:06:01.000Z",
-        "seconds": 9648,
-        "instrument": "NIRCam Grism Time Series",
-        "target": "V-CC-Eri",
-        "category": "Star",
-        "keywords": "Flare stars, K dwarfs, Low-mass"
-      },
-      {
-        "visit": "12476:6:1",
-        "start": "2026-08-29T02:54:45.000Z",
-        "seconds": 9454,
-        "instrument": "NIRCam Grism Time Series",
-        "target": "V-CC-Eri",
-        "category": "Star",
-        "keywords": "Flare stars, K dwarfs, Low-mass"
-      },
-      {
-        "visit": "12562:1:1",
-        "start": "2026-08-29T06:01:42.000Z",
-        "seconds": 34212,
+        "visit": "12563:2:1",
+        "start": "2026-09-07T16:50:42.000Z",
+        "seconds": 1399,
         "instrument": "NIRISS External Calibration",
-        "target": "LMC-NIRISS-FGS-ALIGNMENT",
+        "target": "ASTROMETRIC-FIELD",
         "category": "Calibration",
         "keywords": "Astrometric"
       },
       {
-        "visit": "12637:43:1",
-        "start": "2026-08-29T15:43:51.000Z",
+        "visit": "12786:1:1",
+        "start": "2026-09-07T18:08:57.000Z",
+        "seconds": 4568,
+        "instrument": "NIRSpec IFU Spectroscopy",
+        "target": "SN2026OBC",
+        "category": "Star",
+        "keywords": "Supernovae"
+      },
+      {
+        "visit": "11831:1:1",
+        "start": "2026-09-07T20:13:51.000Z",
+        "seconds": 49343,
+        "instrument": "NIRISS Single-Object Slitless Spectroscopy",
+        "target": "V-V1298-Tau",
+        "category": "Star",
+        "keywords": "Exoplanet Systems, Exoplanets"
+      },
+      {
+        "visit": "12525:83:1",
+        "start": "2026-09-08T10:41:33.000Z",
+        "seconds": 2106,
+        "instrument": "MIRI Medium Resolution Spectroscopy",
+        "target": "HD-163466-bkg",
+        "category": "Unidentified",
+        "keywords": "Blank field"
+      },
+      {
+        "visit": "12525:84:1",
+        "start": "2026-09-08T11:22:20.000Z",
+        "seconds": 3378,
+        "instrument": "MIRI Medium Resolution Spectroscopy",
+        "target": "HD-163466-wbkg",
+        "category": "Star",
+        "keywords": "A dwarfs"
+      },
+      {
+        "visit": "12640:139:1",
+        "start": "2026-09-08T12:57:09.000Z",
         "seconds": 1719,
         "instrument": "WFSC NIRCam Fine Phasing",
-        "target": "2MASS-04365862-6904162",
+        "target": "2MASS-19124326-0220128",
         "category": "Calibration",
         "keywords": "Focus test"
       },
       {
-        "visit": "6927:23:1",
-        "start": "2026-08-29T16:55:07.000Z",
-        "seconds": 10370,
-        "instrument": "NIRSpec MultiObject Spectroscopy",
-        "target": "20260714_m7_MPT_catalog.v3",
-        "category": "Observation",
-        "keywords": ""
+        "visit": "9305:1:1",
+        "start": "2026-09-08T13:42:27.000Z",
+        "seconds": 5761,
+        "instrument": "MIRI Imaging",
+        "target": "Kes73",
+        "category": "Ism",
+        "keywords": "Supernova remnants"
       },
       {
-        "visit": "10683:1:1",
-        "start": "2026-08-29T20:05:35.000Z",
-        "seconds": 7034,
+        "visit": "9305:1:2",
+        "start": "2026-09-08T15:23:44.000Z",
+        "seconds": 11317,
+        "instrument": "MIRI Imaging",
+        "target": "Kes73",
+        "category": "Ism",
+        "keywords": "Supernova remnants"
+      },
+      {
+        "visit": "9305:1:3",
+        "start": "2026-09-08T18:37:53.000Z",
+        "seconds": 11317,
+        "instrument": "MIRI Imaging",
+        "target": "Kes73",
+        "category": "Ism",
+        "keywords": "Supernova remnants"
+      },
+      {
+        "visit": "6852:1:1",
+        "start": "2026-09-08T22:36:50.000Z",
+        "seconds": 17298,
+        "instrument": "MIRI Medium Resolution Spectroscopy",
+        "target": "M31-CLUSTER-2710",
+        "category": "Stellar Cluster",
+        "keywords": "Globular star clusters"
+      },
+      {
+        "visit": "6852:2:1",
+        "start": "2026-09-09T03:33:58.000Z",
+        "seconds": 17298,
+        "instrument": "MIRI Medium Resolution Spectroscopy",
+        "target": "M31-CLUSTER-1282",
+        "category": "Stellar Cluster",
+        "keywords": "Globular star clusters"
+      },
+      {
+        "visit": "6852:3:1",
+        "start": "2026-09-09T08:31:08.000Z",
+        "seconds": 17298,
+        "instrument": "MIRI Medium Resolution Spectroscopy",
+        "target": "M31-CLUSTER-445",
+        "category": "Stellar Cluster",
+        "keywords": "Globular star clusters"
+      },
+      {
+        "visit": "6852:4:1",
+        "start": "2026-09-09T13:28:06.000Z",
+        "seconds": 17010,
+        "instrument": "MIRI Medium Resolution Spectroscopy",
+        "target": "M31-CLUSTER-881",
+        "category": "Stellar Cluster",
+        "keywords": "Globular star clusters"
+      },
+      {
+        "visit": "6852:5:1",
+        "start": "2026-09-09T18:20:21.000Z",
+        "seconds": 17010,
+        "instrument": "MIRI Medium Resolution Spectroscopy",
+        "target": "M31-CLUSTER-1969",
+        "category": "Stellar Cluster",
+        "keywords": "Globular star clusters"
+      },
+      {
+        "visit": "6852:6:1",
+        "start": "2026-09-09T23:17:42.000Z",
+        "seconds": 9081,
+        "instrument": "MIRI Medium Resolution Spectroscopy",
+        "target": "BACKGROUND-FIELD",
+        "category": "Calibration",
+        "keywords": "Telescope/sky background"
+      },
+      {
+        "visit": "12786:4:1",
+        "start": "2026-09-10T02:07:44.000Z",
+        "seconds": 3708,
+        "instrument": "MIRI Imaging",
+        "target": "SN2026OBC",
+        "category": "Star",
+        "keywords": "Supernovae"
+      },
+      {
+        "visit": "9305:1:4",
+        "start": "2026-09-10T05:53:19.000Z",
+        "seconds": 5761,
+        "instrument": "MIRI Imaging",
+        "target": "Kes73",
+        "category": "Ism",
+        "keywords": "Supernova remnants"
+      },
+      {
+        "visit": "9305:1:5",
+        "start": "2026-09-10T07:34:36.000Z",
+        "seconds": 11337,
+        "instrument": "MIRI Imaging",
+        "target": "Kes73",
+        "category": "Ism",
+        "keywords": "Supernova remnants"
+      },
+      {
+        "visit": "9305:1:6",
+        "start": "2026-09-10T10:49:05.000Z",
+        "seconds": 11317,
+        "instrument": "MIRI Imaging",
+        "target": "Kes73",
+        "category": "Ism",
+        "keywords": "Supernova remnants"
+      },
+      {
+        "visit": "12502:3:1",
+        "start": "2026-09-10T16:31:25.000Z",
+        "seconds": 3720,
         "instrument": "NIRSpec IFU Spectroscopy",
-        "target": "SGR1806-20",
-        "category": "Star",
-        "keywords": "Neutron stars"
+        "target": "1FXT1",
+        "category": "Unidentified",
+        "keywords": "X-ray sources"
       },
       {
-        "visit": "10778:2:1",
-        "start": "2026-08-29T22:28:29.000Z",
-        "seconds": 3290,
-        "instrument": "NIRSpec IFU Spectroscopy",
-        "target": "OPH-163131",
-        "category": "Star",
-        "keywords": "Pre-main sequence stars, Protopl"
+        "visit": "9305:1:7",
+        "start": "2026-09-10T18:25:15.000Z",
+        "seconds": 11337,
+        "instrument": "MIRI Imaging",
+        "target": "Kes73",
+        "category": "Ism",
+        "keywords": "Supernova remnants"
       },
       {
-        "visit": "10778:3:1",
-        "start": "2026-08-29T23:36:55.000Z",
-        "seconds": 3290,
-        "instrument": "NIRSpec IFU Spectroscopy",
-        "target": "FLYING-SAUCER",
-        "category": "Star",
-        "keywords": "Pre-main sequence stars, Protopl"
+        "visit": "9305:1:8",
+        "start": "2026-09-10T21:40:31.000Z",
+        "seconds": 5761,
+        "instrument": "MIRI Imaging",
+        "target": "Kes73",
+        "category": "Ism",
+        "keywords": "Supernova remnants"
       },
       {
-        "visit": "10778:4:1",
-        "start": "2026-08-30T01:08:46.000Z",
-        "seconds": 3290,
-        "instrument": "NIRSpec IFU Spectroscopy",
-        "target": "ESO-HA-574",
-        "category": "Star",
-        "keywords": "Pre-main sequence stars, Protopl"
+        "visit": "9305:1:9",
+        "start": "2026-09-10T23:21:48.000Z",
+        "seconds": 5761,
+        "instrument": "MIRI Imaging",
+        "target": "Kes73",
+        "category": "Ism",
+        "keywords": "Supernova remnants"
       },
       {
-        "visit": "9881:1:1",
-        "start": "2026-08-30T02:45:20.000Z",
-        "seconds": 63984,
-        "instrument": "NIRSpec IFU Spectroscopy",
-        "target": "J1658-0739",
-        "category": "Galaxy",
-        "keywords": "Quasars"
+        "visit": "9305:1:10",
+        "start": "2026-09-11T01:03:05.000Z",
+        "seconds": 5761,
+        "instrument": "MIRI Imaging",
+        "target": "Kes73",
+        "category": "Ism",
+        "keywords": "Supernova remnants"
       },
       {
-        "visit": "11608:16:1",
-        "start": "2026-08-30T21:13:38.000Z",
-        "seconds": 1846,
-        "instrument": "NIRSpec Fixed Slit Spectroscopy",
-        "target": "Cha1107-7742",
+        "visit": "7306:12:1",
+        "start": "2026-09-11T03:13:21.000Z",
+        "seconds": 1962,
+        "instrument": "MIRI Medium Resolution Spectroscopy",
+        "target": "IRAS16279-4757-SKY",
         "category": "Star",
-        "keywords": "Brown dwarfs, Exoplanets, Young"
+        "keywords": "Circumstellar disks, Circumstell"
       },
       {
-        "visit": "11608:17:1",
-        "start": "2026-08-30T21:52:55.000Z",
-        "seconds": 1852,
-        "instrument": "NIRSpec Fixed Slit Spectroscopy",
-        "target": "Cha1110-7738",
+        "visit": "7306:4:1",
+        "start": "2026-09-11T03:52:16.000Z",
+        "seconds": 9684,
+        "instrument": "MIRI Medium Resolution Spectroscopy",
+        "target": "IRAS16279-4757",
         "category": "Star",
-        "keywords": "Brown dwarfs, Exoplanets, Young"
+        "keywords": "Circumstellar disks, Circumstell"
       },
       {
-        "visit": "11608:18:1",
-        "start": "2026-08-30T22:38:47.000Z",
-        "seconds": 1852,
-        "instrument": "NIRSpec Fixed Slit Spectroscopy",
-        "target": "Cha1111-7636",
-        "category": "Star",
-        "keywords": "Brown dwarfs, Exoplanets, Young"
+        "visit": "10678:139:1",
+        "start": "2026-09-11T06:59:43.000Z",
+        "seconds": 2367,
+        "instrument": "NIRCam Imaging",
+        "target": "GC_139",
+        "category": "Unidentified",
+        "keywords": "Infrared sources"
       },
       {
-        "visit": "11608:19:1",
-        "start": "2026-08-30T23:25:15.000Z",
-        "seconds": 1846,
-        "instrument": "NIRSpec Fixed Slit Spectroscopy",
-        "target": "Cha1106-7745",
+        "visit": "8587:2:1",
+        "start": "2026-09-11T08:07:22.000Z",
+        "seconds": 2468,
+        "instrument": "MIRI Imaging",
+        "target": "G28.333+0.063-CENTER",
+        "category": "Stellar Cluster",
+        "keywords": "Protoclusters, Young star cluste"
+      },
+      {
+        "visit": "8587:2:2",
+        "start": "2026-09-11T08:53:46.000Z",
+        "seconds": 4737,
+        "instrument": "MIRI Imaging",
+        "target": "G28.333+0.063-CENTER",
+        "category": "Stellar Cluster",
+        "keywords": "Protoclusters, Young star cluste"
+      },
+      {
+        "visit": "10678:138:1",
+        "start": "2026-09-11T10:40:53.000Z",
+        "seconds": 2367,
+        "instrument": "NIRCam Imaging",
+        "target": "GC_138",
+        "category": "Unidentified",
+        "keywords": "Infrared sources"
+      },
+      {
+        "visit": "10678:137:1",
+        "start": "2026-09-11T11:35:16.000Z",
+        "seconds": 2367,
+        "instrument": "NIRCam Imaging",
+        "target": "GC_137",
+        "category": "Unidentified",
+        "keywords": "Infrared sources"
+      },
+      {
+        "visit": "11793:1:1",
+        "start": "2026-09-11T12:34:34.000Z",
+        "seconds": 4278,
+        "instrument": "MIRI Medium Resolution Spectroscopy",
+        "target": "175_Andromache",
+        "category": "Solar System",
+        "keywords": "Asteroid"
+      },
+      {
+        "visit": "10678:136:1",
+        "start": "2026-09-11T14:05:44.000Z",
+        "seconds": 2367,
+        "instrument": "NIRCam Imaging",
+        "target": "GC_136",
+        "category": "Unidentified",
+        "keywords": "Infrared sources"
+      },
+      {
+        "visit": "8887:40:1",
+        "start": "2026-09-11T15:11:45.000Z",
+        "seconds": 3204,
+        "instrument": "MIRI Medium Resolution Spectroscopy",
+        "target": "IRAS16272-bkg-repeat",
+        "category": "Calibration",
+        "keywords": "Telescope/sky background"
+      },
+      {
+        "visit": "8887:41:1",
+        "start": "2026-09-11T16:10:31.000Z",
+        "seconds": 3204,
+        "instrument": "MIRI Medium Resolution Spectroscopy",
+        "target": "IRAS16272-4837_mm-repeat",
         "category": "Star",
-        "keywords": "Brown dwarfs, Exoplanets, Young"
+        "keywords": "Protostars"
+      },
+      {
+        "visit": "8887:39:1",
+        "start": "2026-09-11T17:19:18.000Z",
+        "seconds": 2836,
+        "instrument": "MIRI Medium Resolution Spectroscopy",
+        "target": "IRAS16547-4247_IR-repeat",
+        "category": "Star",
+        "keywords": "Protostars"
+      },
+      {
+        "visit": "8887:37:1",
+        "start": "2026-09-11T18:11:36.000Z",
+        "seconds": 2836,
+        "instrument": "MIRI Medium Resolution Spectroscopy",
+        "target": "IRAS16547-bkg-repeat",
+        "category": "Calibration",
+        "keywords": "Telescope/sky background"
+      },
+      {
+        "visit": "8887:38:1",
+        "start": "2026-09-11T19:03:54.000Z",
+        "seconds": 2836,
+        "instrument": "MIRI Medium Resolution Spectroscopy",
+        "target": "IRAS16547-4247_mm-repeat",
+        "category": "Star",
+        "keywords": "Protostars"
+      },
+      {
+        "visit": "12640:46:1",
+        "start": "2026-09-11T20:11:03.000Z",
+        "seconds": 1719,
+        "instrument": "WFSC NIRCam Fine Phasing",
+        "target": "2MASS-16471490-3056026",
+        "category": "Calibration",
+        "keywords": "Focus test"
+      },
+      {
+        "visit": "10758:2:1",
+        "start": "2026-09-11T21:15:20.000Z",
+        "seconds": 9509,
+        "instrument": "MIRI Coronagraphic Imaging",
+        "target": "GJ-832-seq2",
+        "category": "Star",
+        "keywords": "M dwarfs"
+      },
+      {
+        "visit": "10758:12:1",
+        "start": "2026-09-12T00:02:08.000Z",
+        "seconds": 9077,
+        "instrument": "MIRI Coronagraphic Imaging",
+        "target": "GJ-832-bkg-seq2",
+        "category": "Calibration",
+        "keywords": "Telescope/sky background"
+      },
+      {
+        "visit": "10758:22:1",
+        "start": "2026-09-12T02:52:48.000Z",
+        "seconds": 25587,
+        "instrument": "MIRI Coronagraphic Imaging",
+        "target": "HD-203010-seq2",
+        "category": "Star",
+        "keywords": "F stars"
+      },
+      {
+        "visit": "10758:32:1",
+        "start": "2026-09-12T10:09:08.000Z",
+        "seconds": 5539,
+        "instrument": "MIRI Coronagraphic Imaging",
+        "target": "HD-203101-bkg-seq2",
+        "category": "Calibration",
+        "keywords": "Telescope/sky background"
+      },
+      {
+        "visit": "10678:135:1",
+        "start": "2026-09-12T12:14:52.000Z",
+        "seconds": 2367,
+        "instrument": "NIRCam Imaging",
+        "target": "GC_135",
+        "category": "Unidentified",
+        "keywords": "Infrared sources"
+      },
+      {
+        "visit": "10678:134:1",
+        "start": "2026-09-12T13:00:05.000Z",
+        "seconds": 2367,
+        "instrument": "NIRCam Imaging",
+        "target": "GC_134",
+        "category": "Unidentified",
+        "keywords": "Infrared sources"
+      },
+      {
+        "visit": "10678:133:1",
+        "start": "2026-09-12T13:45:18.000Z",
+        "seconds": 2367,
+        "instrument": "NIRCam Imaging",
+        "target": "GC_133",
+        "category": "Unidentified",
+        "keywords": "Infrared sources"
+      },
+      {
+        "visit": "10678:132:1",
+        "start": "2026-09-12T14:30:31.000Z",
+        "seconds": 2367,
+        "instrument": "NIRCam Imaging",
+        "target": "GC_132",
+        "category": "Unidentified",
+        "keywords": "Infrared sources"
+      },
+      {
+        "visit": "10678:131:1",
+        "start": "2026-09-12T15:19:18.000Z",
+        "seconds": 2367,
+        "instrument": "NIRCam Imaging",
+        "target": "GC_131",
+        "category": "Unidentified",
+        "keywords": "Infrared sources"
+      },
+      {
+        "visit": "10678:130:1",
+        "start": "2026-09-12T16:04:31.000Z",
+        "seconds": 2367,
+        "instrument": "NIRCam Imaging",
+        "target": "GC_130",
+        "category": "Unidentified",
+        "keywords": "Infrared sources"
+      },
+      {
+        "visit": "10678:129:1",
+        "start": "2026-09-12T16:49:44.000Z",
+        "seconds": 2367,
+        "instrument": "NIRCam Imaging",
+        "target": "GC_129",
+        "category": "Unidentified",
+        "keywords": "Infrared sources"
+      },
+      {
+        "visit": "10678:128:1",
+        "start": "2026-09-12T17:34:57.000Z",
+        "seconds": 2367,
+        "instrument": "NIRCam Imaging",
+        "target": "GC_128",
+        "category": "Unidentified",
+        "keywords": "Infrared sources"
+      },
+      {
+        "visit": "10678:127:1",
+        "start": "2026-09-12T18:20:10.000Z",
+        "seconds": 2367,
+        "instrument": "NIRCam Imaging",
+        "target": "GC_127",
+        "category": "Unidentified",
+        "keywords": "Infrared sources"
+      },
+      {
+        "visit": "10678:126:1",
+        "start": "2026-09-12T19:05:23.000Z",
+        "seconds": 2367,
+        "instrument": "NIRCam Imaging",
+        "target": "GC_126",
+        "category": "Unidentified",
+        "keywords": "Infrared sources"
+      },
+      {
+        "visit": "10678:124:1",
+        "start": "2026-09-12T19:53:40.000Z",
+        "seconds": 2367,
+        "instrument": "NIRCam Imaging",
+        "target": "GC_124",
+        "category": "Unidentified",
+        "keywords": "Infrared sources"
+      },
+      {
+        "visit": "10678:123:1",
+        "start": "2026-09-12T20:38:53.000Z",
+        "seconds": 2367,
+        "instrument": "NIRCam Imaging",
+        "target": "GC_123",
+        "category": "Unidentified",
+        "keywords": "Infrared sources"
+      },
+      {
+        "visit": "10678:122:1",
+        "start": "2026-09-12T21:24:06.000Z",
+        "seconds": 2367,
+        "instrument": "NIRCam Imaging",
+        "target": "GC_122",
+        "category": "Unidentified",
+        "keywords": "Infrared sources"
+      },
+      {
+        "visit": "10678:121:1",
+        "start": "2026-09-12T22:09:20.000Z",
+        "seconds": 2367,
+        "instrument": "NIRCam Imaging",
+        "target": "GC_121",
+        "category": "Unidentified",
+        "keywords": "Infrared sources"
+      },
+      {
+        "visit": "12786:52:1",
+        "start": "2026-09-12T23:46:34.000Z",
+        "seconds": 3082,
+        "instrument": "MIRI Low Resolution Spectroscopy",
+        "target": "SN2026OBC",
+        "category": "Star",
+        "keywords": "Supernovae"
+      },
+      {
+        "visit": "12786:53:1",
+        "start": "2026-09-13T00:43:13.000Z",
+        "seconds": 832,
+        "instrument": "MIRI Low Resolution Spectroscopy",
+        "target": "SN2026OBC_background",
+        "category": "Star",
+        "keywords": "Supernovae"
+      },
+      {
+        "visit": "10678:125:1",
+        "start": "2026-09-13T01:54:52.000Z",
+        "seconds": 2367,
+        "instrument": "NIRCam Imaging",
+        "target": "GC_125",
+        "category": "Unidentified",
+        "keywords": "Infrared sources"
+      },
+      {
+        "visit": "10678:120:1",
+        "start": "2026-09-13T02:43:26.000Z",
+        "seconds": 2367,
+        "instrument": "NIRCam Imaging",
+        "target": "GC_120",
+        "category": "Unidentified",
+        "keywords": "Infrared sources"
+      },
+      {
+        "visit": "10678:119:1",
+        "start": "2026-09-13T03:32:14.000Z",
+        "seconds": 2367,
+        "instrument": "NIRCam Imaging",
+        "target": "GC_119",
+        "category": "Unidentified",
+        "keywords": "Infrared sources"
+      },
+      {
+        "visit": "10678:118:1",
+        "start": "2026-09-13T04:17:28.000Z",
+        "seconds": 2367,
+        "instrument": "NIRCam Imaging",
+        "target": "GC_118",
+        "category": "Unidentified",
+        "keywords": "Infrared sources"
+      },
+      {
+        "visit": "10678:117:1",
+        "start": "2026-09-13T05:02:42.000Z",
+        "seconds": 2367,
+        "instrument": "NIRCam Imaging",
+        "target": "GC_117",
+        "category": "Unidentified",
+        "keywords": "Infrared sources"
+      },
+      {
+        "visit": "10678:116:1",
+        "start": "2026-09-13T05:47:56.000Z",
+        "seconds": 2367,
+        "instrument": "NIRCam Imaging",
+        "target": "GC_116",
+        "category": "Unidentified",
+        "keywords": "Infrared sources"
+      },
+      {
+        "visit": "10678:115:1",
+        "start": "2026-09-13T06:33:10.000Z",
+        "seconds": 2367,
+        "instrument": "NIRCam Imaging",
+        "target": "GC_115",
+        "category": "Unidentified",
+        "keywords": "Infrared sources"
+      },
+      {
+        "visit": "10758:23:1",
+        "start": "2026-09-13T07:45:56.000Z",
+        "seconds": 25587,
+        "instrument": "MIRI Coronagraphic Imaging",
+        "target": "HD-203010-seq3",
+        "category": "Star",
+        "keywords": "F stars"
+      },
+      {
+        "visit": "10758:3:1",
+        "start": "2026-09-13T15:11:31.000Z",
+        "seconds": 9509,
+        "instrument": "MIRI Coronagraphic Imaging",
+        "target": "GJ-832-seq3",
+        "category": "Star",
+        "keywords": "M dwarfs"
+      },
+      {
+        "visit": "10758:13:1",
+        "start": "2026-09-13T17:57:04.000Z",
+        "seconds": 8894,
+        "instrument": "MIRI Coronagraphic Imaging",
+        "target": "GJ-832-bkg-seq3",
+        "category": "Calibration",
+        "keywords": "Telescope/sky background"
+      },
+      {
+        "visit": "10758:33:1",
+        "start": "2026-09-13T20:44:49.000Z",
+        "seconds": 5539,
+        "instrument": "MIRI Coronagraphic Imaging",
+        "target": "HD-203101-bkg-seq3",
+        "category": "Calibration",
+        "keywords": "Telescope/sky background"
+      },
+      {
+        "visit": "10678:114:1",
+        "start": "2026-09-13T22:50:25.000Z",
+        "seconds": 2367,
+        "instrument": "NIRCam Imaging",
+        "target": "GC_114",
+        "category": "Unidentified",
+        "keywords": "Infrared sources"
+      },
+      {
+        "visit": "10678:113:1",
+        "start": "2026-09-13T23:39:13.000Z",
+        "seconds": 2367,
+        "instrument": "NIRCam Imaging",
+        "target": "GC_113",
+        "category": "Unidentified",
+        "keywords": "Infrared sources"
+      },
+      {
+        "visit": "10678:112:1",
+        "start": "2026-09-14T00:24:27.000Z",
+        "seconds": 2367,
+        "instrument": "NIRCam Imaging",
+        "target": "GC_112",
+        "category": "Unidentified",
+        "keywords": "Infrared sources"
+      },
+      {
+        "visit": "10678:111:1",
+        "start": "2026-09-14T01:09:41.000Z",
+        "seconds": 2367,
+        "instrument": "NIRCam Imaging",
+        "target": "GC_111",
+        "category": "Unidentified",
+        "keywords": "Infrared sources"
+      },
+      {
+        "visit": "10678:110:1",
+        "start": "2026-09-14T01:54:55.000Z",
+        "seconds": 2367,
+        "instrument": "NIRCam Imaging",
+        "target": "GC_110",
+        "category": "Unidentified",
+        "keywords": "Infrared sources"
+      },
+      {
+        "visit": "10678:109:1",
+        "start": "2026-09-14T02:40:09.000Z",
+        "seconds": 2367,
+        "instrument": "NIRCam Imaging",
+        "target": "GC_109",
+        "category": "Unidentified",
+        "keywords": "Infrared sources"
+      },
+      {
+        "visit": "10678:108:1",
+        "start": "2026-09-14T03:25:23.000Z",
+        "seconds": 2367,
+        "instrument": "NIRCam Imaging",
+        "target": "GC_108",
+        "category": "Unidentified",
+        "keywords": "Infrared sources"
+      },
+      {
+        "visit": "10678:107:1",
+        "start": "2026-09-14T04:14:11.000Z",
+        "seconds": 2367,
+        "instrument": "NIRCam Imaging",
+        "target": "GC_107",
+        "category": "Unidentified",
+        "keywords": "Infrared sources"
+      },
+      {
+        "visit": "10678:106:1",
+        "start": "2026-09-14T04:59:25.000Z",
+        "seconds": 2367,
+        "instrument": "NIRCam Imaging",
+        "target": "GC_106",
+        "category": "Unidentified",
+        "keywords": "Infrared sources"
+      },
+      {
+        "visit": "10678:105:1",
+        "start": "2026-09-14T05:44:39.000Z",
+        "seconds": 2367,
+        "instrument": "NIRCam Imaging",
+        "target": "GC_105",
+        "category": "Unidentified",
+        "keywords": "Infrared sources"
+      },
+      {
+        "visit": "10678:104:1",
+        "start": "2026-09-14T06:29:53.000Z",
+        "seconds": 2367,
+        "instrument": "NIRCam Imaging",
+        "target": "GC_104",
+        "category": "Unidentified",
+        "keywords": "Infrared sources"
+      },
+      {
+        "visit": "10678:103:1",
+        "start": "2026-09-14T07:15:07.000Z",
+        "seconds": 2367,
+        "instrument": "NIRCam Imaging",
+        "target": "GC_103",
+        "category": "Unidentified",
+        "keywords": "Infrared sources"
+      },
+      {
+        "visit": "10678:102:1",
+        "start": "2026-09-14T08:00:21.000Z",
+        "seconds": 2367,
+        "instrument": "NIRCam Imaging",
+        "target": "GC_102",
+        "category": "Unidentified",
+        "keywords": "Infrared sources"
+      },
+      {
+        "visit": "10678:100:1",
+        "start": "2026-09-14T08:49:09.000Z",
+        "seconds": 2367,
+        "instrument": "NIRCam Imaging",
+        "target": "GC_100",
+        "category": "Unidentified",
+        "keywords": "Infrared sources"
+      },
+      {
+        "visit": "10678:99:1",
+        "start": "2026-09-14T09:34:23.000Z",
+        "seconds": 2367,
+        "instrument": "NIRCam Imaging",
+        "target": "GC_99",
+        "category": "Unidentified",
+        "keywords": "Infrared sources"
+      },
+      {
+        "visit": "10678:98:1",
+        "start": "2026-09-14T10:19:37.000Z",
+        "seconds": 2367,
+        "instrument": "NIRCam Imaging",
+        "target": "GC_98",
+        "category": "Unidentified",
+        "keywords": "Infrared sources"
       }
     ]
   },
@@ -379,5 +802,5 @@
     "deployIndex": 47,
     "source": "NASA / STScI — Where Is Webb"
   },
-  "fetchedAt": "2026-08-22T20:52:11.126Z"
+  "fetchedAt": "2026-09-11T15:02:26.677Z"
 }
