@@ -6,7 +6,6 @@ import {
   pickFocusWindow,
   relativeTime,
   sumSince,
-  commitHeadline,
 } from '../../src/lib/github-activity.mjs';
 import { renderActivityBoard, type ActivitySnapshot } from '../../src/lib/activity-board';
 import snapshot from '../../src/data/github-activity.json';
@@ -72,23 +71,6 @@ describe('repo ranking', () => {
   });
 });
 
-describe('commit headline', () => {
-  it('keeps the whole first paragraph and drops the body', () => {
-    expect(commitHeadline('one line that runs\nonto a second line\n\nbody text')).toBe(
-      'one line that runs onto a second line'
-    );
-  });
-
-  it('caps a runaway subject at a word boundary', () => {
-    const long = Array.from({ length: 60 }, (_, i) => `word${i}`).join(' ');
-    const headline = commitHeadline(long);
-    expect(headline.length).toBeLessThanOrEqual(160);
-    expect(headline.endsWith('…')).toBe(true);
-    const lastWord = headline.slice(0, -1).split(' ').pop();
-    expect(long.split(' ')).toContain(lastWord);
-  });
-});
-
 describe('relative time', () => {
   it('uses compact units', () => {
     expect(relativeTime('2026-09-11T11:58:30Z', now)).toBe('1m ago');
@@ -106,7 +88,7 @@ describe('activity board renderer', () => {
     expect(html).toContain('<h1');
     expect(html).toContain(data.repos[0].name);
     expect(html).toContain('act-heatmap');
-    const sparkRects = data.repos.reduce((n, r, i) => n + r.spark.length * (i === 0 ? 1 : 2), 0);
+    const sparkRects = data.repos.reduce((n, r) => n + r.spark.length, 0);
     expect((html.match(/<rect /g) ?? []).length).toBe(data.calendar.length + sparkRects);
   });
 
@@ -118,10 +100,9 @@ describe('activity board renderer', () => {
           ...data.repos[0],
           name: '<img src=x onerror=alert(1)>',
           description: '"><script>alert(2)</script>',
-          latest: { ...data.repos[0].latest!, headline: '<b>bold</b> & "quoted"' },
         },
+        { ...data.repos[1], name: '<b>bold</b> & "quoted"' },
       ],
-      commits: [{ ...data.commits[0], headline: '</a><script>x</script>' }],
     };
     const html = renderActivityBoard(hostile, now);
     expect(html).not.toContain('<script>');
@@ -130,7 +111,7 @@ describe('activity board renderer', () => {
   });
 
   it('still renders when nothing was pushed', () => {
-    const idle: ActivitySnapshot = { ...data, repos: [], commits: [], releases: [] };
+    const idle: ActivitySnapshot = { ...data, repos: [], languages: [] };
     const html = renderActivityBoard(idle, now);
     expect(html).toContain('Between');
     expect(html).toContain('act-heatmap');

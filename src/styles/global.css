@@ -240,13 +240,6 @@
   filter: drop-shadow(0 0 3px rgba(51, 255, 102, 0.35));
 }
 
-.act-clamp-3 {
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
 .act-heatmap {
   max-height: 7.5rem;
 }

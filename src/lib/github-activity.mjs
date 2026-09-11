@@ -2,16 +2,10 @@ export const LOGIN = 'guitaripod';
 export const WINDOW_DAYS = 168;
 export const SPARK_DAYS = 28;
 export const MAX_REPOS = 7;
-export const MAX_COMMITS = 8;
-const HEADLINE_MAX = 160;
-export const MAX_RELEASES = 5;
+export const RELEASE_FRESH_DAYS = 30;
 
 const SLICE_DAYS = 56;
-const MAX_REPO_LOOKUPS = 40;
-const MAX_PUSH_HEADS = 16;
-const EVENT_PAGES = 3;
 const GRAPHQL_URL = 'https://api.github.com/graphql';
-const REST_URL = 'https://api.github.com';
 const USER_AGENT = 'midgarcorp.cc (https://midgarcorp.cc)';
 const TIMEOUT_MS = 20000;
 const DAY_MS = 86400000;
@@ -116,22 +110,9 @@ async function graphql(token, fetchImpl, query, variables) {
   return body.data;
 }
 
-async function rest(token, fetchImpl, path) {
-  const headers = { Accept: 'application/vnd.github+json', 'User-Agent': USER_AGENT };
-  if (token) headers.Authorization = `Bearer ${token}`;
-  const res = await fetchImpl(`${REST_URL}${path}`, {
-    headers,
-    signal: AbortSignal.timeout(TIMEOUT_MS),
-  });
-  if (!res.ok) throw new Error(`GitHub REST ${res.status} for ${path}`);
-  return res.json();
-}
-
 const REPO_FIELDS = `
   nameWithOwner name url description isPrivate isFork isArchived stargazerCount pushedAt homepageUrl
   primaryLanguage { name color }`;
-
-const COMMIT_FIELDS = `oid message committedDate url additions deletions`;
 
 function contributionsQuery(slices) {
   const parts = slices.map(
@@ -147,7 +128,7 @@ function contributionsQuery(slices) {
   );
   const vars = slices.map((_, i) => `$from${i}: DateTime!, $to${i}: DateTime!`).join(', ');
   return `query($login: String!, ${vars}) {
-    user(login: $login) { id login avatarUrl url ${parts.join('')} }
+    user(login: $login) { login url ${parts.join('')} }
   }`;
 }
 
@@ -189,101 +170,18 @@ function mergeContributions(user, slices) {
   return { repos, dayCounts };
 }
 
-/// The public events feed is the only place a push to a feature branch shows up; it carries
-/// the branch and head sha (no commit details any more), which the lookup query resolves.
-async function fetchPushHeads(token, fetchImpl) {
-  const pages = Array.from({ length: EVENT_PAGES }, (_, i) =>
-    rest(token, fetchImpl, `/users/${LOGIN}/events/public?per_page=100&page=${i + 1}`).catch(
-      () => []
-    )
-  );
-  const heads = [];
-  for (const events of await Promise.all(pages)) {
-    for (const event of events) {
-      if (event.type !== 'PushEvent' || !event.payload?.head) continue;
-      heads.push({
-        fullName: event.repo.name,
-        branch: String(event.payload.ref ?? '').replace(/^refs\/heads\//, ''),
-        oid: event.payload.head,
-        pushedAt: event.created_at,
-      });
-    }
-  }
-  return heads;
-}
-
-function lookupQuery(repoNames, extraHeads, userId) {
-  const parts = [];
-  repoNames.forEach((fullName, i) => {
+/// One aliased query for the latest release of every repo on the board.
+function releasesQuery(repoNames) {
+  const parts = repoNames.map((fullName, i) => {
     const [owner, name] = fullName.split('/');
-    const head = extraHeads.latestByRepo.get(fullName);
-    parts.push(`
+    return `
     r${i}: repository(owner: ${JSON.stringify(owner)}, name: ${JSON.stringify(name)}) {
-      ${head ? `pushed: object(oid: ${JSON.stringify(head.oid)}) { ... on Commit { ${COMMIT_FIELDS} } }` : ''}
-      defaultBranchRef { name target { ... on Commit {
-        history(first: 1, author: { id: ${JSON.stringify(userId)} }) { nodes { ${COMMIT_FIELDS} } }
-      } } }
       releases(first: 1, orderBy: { field: CREATED_AT, direction: DESC }) {
-        nodes { tagName name publishedAt url isPrerelease isDraft }
+        nodes { tagName publishedAt url isPrerelease isDraft }
       }
-    }`);
-  });
-  extraHeads.ticker.forEach((head, i) => {
-    const [owner, name] = head.fullName.split('/');
-    parts.push(`
-    p${i}: repository(owner: ${JSON.stringify(owner)}, name: ${JSON.stringify(name)}) {
-      pushed: object(oid: ${JSON.stringify(head.oid)}) { ... on Commit { ${COMMIT_FIELDS} } }
-    }`);
+    }`;
   });
   return `query { ${parts.join('')} }`;
-}
-
-/// The newest push per repo rides along with that repo's lookup; every other recent head
-/// (older pushes, repos outside the lookup) is resolved on its own for the commit ticker.
-function splitPushHeads(pushHeads, lookupSet) {
-  const latestByRepo = new Map();
-  const ticker = [];
-  const seenOids = new Set();
-  for (const head of pushHeads) {
-    if (QUIET_REPOS.has(head.fullName.split('/')[1]) || seenOids.has(head.oid)) continue;
-    seenOids.add(head.oid);
-    const isRepoLatest = !latestByRepo.has(head.fullName);
-    if (isRepoLatest) latestByRepo.set(head.fullName, head);
-    const ridesWithLookup = isRepoLatest && lookupSet.has(head.fullName);
-    if (!ridesWithLookup && ticker.length < MAX_PUSH_HEADS) ticker.push(head);
-  }
-  return { latestByRepo, ticker };
-}
-
-/// GitHub's own messageHeadline cuts a long subject at ~72 characters; these commit
-/// subjects are sentences, so take the first paragraph whole and cap it ourselves.
-export function commitHeadline(message) {
-  const paragraph = String(message ?? '')
-    .split(/\n\s*\n/)[0]
-    .replace(/\s+/g, ' ')
-    .trim();
-  if (paragraph.length <= HEADLINE_MAX) return paragraph;
-  return `${paragraph.slice(0, HEADLINE_MAX - 1).replace(/\s+\S*$/, '')}…`;
-}
-
-function commitRecord(commit, fullName, branch) {
-  if (!commit?.oid) return null;
-  return {
-    repo: fullName.split('/')[1],
-    fullName,
-    headline: commitHeadline(commit.message),
-    date: commit.committedDate,
-    url: commit.url,
-    branch,
-    additions: commit.additions ?? 0,
-    deletions: commit.deletions ?? 0,
-  };
-}
-
-function newer(a, b) {
-  if (!a) return b;
-  if (!b) return a;
-  return a.date >= b.date ? a : b;
 }
 
 export async function buildActivitySnapshot({ token, fetchImpl = fetch, now = new Date() }) {
@@ -294,10 +192,7 @@ export async function buildActivitySnapshot({ token, fetchImpl = fetch, now = ne
     variables[`from${i}`] = s.from;
     variables[`to${i}`] = s.to;
   });
-  const [data, pushHeads] = await Promise.all([
-    graphql(token, fetchImpl, contributionsQuery(slices), variables),
-    fetchPushHeads(token, fetchImpl),
-  ]);
+  const data = await graphql(token, fetchImpl, contributionsQuery(slices), variables);
   const user = data.user;
   const { repos, dayCounts } = mergeContributions(user, slices);
 
@@ -322,79 +217,36 @@ export async function buildActivitySnapshot({ token, fetchImpl = fetch, now = ne
       commits30d: sumSince(days, since30),
       commitsWindow: [...days.values()].reduce((a, b) => a + b, 0),
       spark: buildCalendar(days, now, SPARK_DAYS).map((d) => d.count),
-      latest: null,
       release: null,
     }));
 
   const focusWindow = pickFocusWindow(repoRecords);
-  const ranked = rankRepos(repoRecords, focusWindow);
-  const lookupNames = ranked.slice(0, MAX_REPO_LOOKUPS).map((r) => r.fullName);
-  const lookupSet = new Set(lookupNames);
+  const focusKey = focusWindow === 7 ? 'commits7d' : 'commits30d';
+  const board = rankRepos(repoRecords, focusWindow)
+    .filter((r) => r[focusKey] > 0)
+    .slice(0, MAX_REPOS + 1);
 
-  const { latestByRepo, ticker } = splitPushHeads(pushHeads, lookupSet);
-
-  const lookup = await graphql(
-    token,
-    fetchImpl,
-    lookupQuery(lookupNames, { latestByRepo, ticker }, user.id),
-    {}
-  );
-
-  const commits = [];
-  const releases = [];
-  const byName = new Map(ranked.map((r) => [r.fullName, r]));
-  lookupNames.forEach((fullName, i) => {
-    const node = lookup[`r${i}`];
-    const rec = byName.get(fullName);
-    if (!node || !rec) return;
-    const head = latestByRepo.get(fullName);
-    const pushed = head ? commitRecord(node.pushed, fullName, head.branch) : null;
-    const defaultHead = commitRecord(
-      node.defaultBranchRef?.target?.history?.nodes?.[0],
-      fullName,
-      node.defaultBranchRef?.name ?? 'master'
-    );
-    rec.latest = newer(pushed, defaultHead);
-    for (const c of [pushed, defaultHead]) if (c) commits.push(c);
-    const release = node.releases?.nodes?.[0];
-    if (release && !release.isDraft && release.publishedAt) {
-      rec.release = { tag: release.tagName, url: release.url, publishedAt: release.publishedAt };
-      releases.push({
-        repo: rec.name,
-        fullName,
+  if (board.length) {
+    const lookup = await graphql(token, fetchImpl, releasesQuery(board.map((r) => r.fullName)), {});
+    const freshSince = dayKey(daysAgo(now, RELEASE_FRESH_DAYS - 1));
+    board.forEach((rec, i) => {
+      const release = lookup[`r${i}`]?.releases?.nodes?.[0];
+      if (!release || release.isDraft || !release.publishedAt) return;
+      if (release.publishedAt.slice(0, 10) < freshSince) return;
+      rec.release = {
         tag: release.tagName,
-        name: release.name || release.tagName,
         url: release.url,
         publishedAt: release.publishedAt,
         prerelease: release.isPrerelease,
-      });
-    }
-  });
-  ticker.forEach((head, i) => {
-    const c = commitRecord(lookup[`p${i}`]?.pushed, head.fullName, head.branch);
-    if (c) commits.push(c);
-  });
-
-  const seenCommitUrls = new Set();
-  const recentCommits = commits
-    .sort((a, b) => b.date.localeCompare(a.date))
-    .filter((c) => (seenCommitUrls.has(c.url) ? false : seenCommitUrls.add(c.url)))
-    .slice(0, MAX_COMMITS);
-
-  const windowStart = dayKey(daysAgo(now, WINDOW_DAYS - 1));
-  const recentReleases = releases
-    .filter((r) => r.publishedAt.slice(0, 10) >= windowStart)
-    .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt))
-    .slice(0, MAX_RELEASES);
+      };
+    });
+  }
 
   const calendar = buildCalendar(dayCounts, now);
   const streak = computeStreak(calendar);
-  const busiestDay = calendar.reduce((best, d) => (d.count > best.count ? d : best), calendar[0]);
-  const focusKey = focusWindow === 7 ? 'commits7d' : 'commits30d';
-  const active = ranked.filter((r) => r[focusKey] > 0);
 
   const languageTotals = new Map();
-  for (const r of active) {
+  for (const r of board) {
     if (!r.language) continue;
     const cur = languageTotals.get(r.language.name) ?? { ...r.language, commits: 0 };
     cur.commits += r[focusKey];
@@ -405,12 +257,14 @@ export async function buildActivitySnapshot({ token, fetchImpl = fetch, now = ne
     .sort((a, b) => b.commits - a.commits)
     .map((l) => ({ ...l, share: languageCommits ? l.commits / languageCommits : 0 }));
 
-  const lastPush = recentCommits[0]?.date ?? ranked[0]?.pushedAt ?? null;
+  const lastPush = repoRecords.reduce(
+    (latest, r) => (r.pushedAt && (!latest || r.pushedAt > latest) ? r.pushedAt : latest),
+    null
+  );
 
   return {
     generatedAt: now.toISOString(),
     login: user.login,
-    avatarUrl: user.avatarUrl,
     profileUrl: user.url,
     windowDays: WINDOW_DAYS,
     focusWindow,
@@ -424,11 +278,8 @@ export async function buildActivitySnapshot({ token, fetchImpl = fetch, now = ne
       activeRepos30d: repoRecords.filter((r) => r.commits30d > 0).length,
       streak: streak.current,
       longestStreak: streak.longest,
-      busiestDay,
     },
-    repos: active.slice(0, MAX_REPOS + 1),
-    commits: recentCommits,
-    releases: recentReleases,
+    repos: board,
     languages,
   };
 }
