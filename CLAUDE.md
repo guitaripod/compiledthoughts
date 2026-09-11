@@ -96,6 +96,7 @@ This is an Astro-based static blog with the following key architectural patterns
 - Tokens in `tailwind.config.mjs`: `term.*` (dark: `#0d1117` bg, `#33ff66` phosphor green, `#ffb000` amber) and `paper.*` (light: `#fdf6e3` warm paper, `#073642` ink, `#005f00` green). Use token classes, never raw `blue-*`/`gray-*`.
 - Utilities in `src/styles/global.css`: `.term-frame`, `.term-frame-hover`, `.term-label`, `.prompt-line` (renders `$ ` prefix), `.phosphor`, `.cursor-blink`, `.crt-overlay`. Corners are `rounded-sm`/square.
 - Safari color-scheme triad must stay in sync when changing canvas colors: `html`/`html.dark` background in global.css, `theme-color` metas in BaseHead.astro, and the inline pre-paint theme script.
+- `MatrixRain.astro` (homepage, dark mode, motion allowed) is a **fixed, full-viewport canvas at `z-index: -1`** that fades from 0.16 to 0.05 opacity over the first 900px of scroll. It paints behind everything only because `<body>` carries **no background** — the canvas colour lives on `html` alone. Giving body a background again would hide the rain entirely; panels stay readable because `.term-frame` has its own opaque background.
 - Font: self-hosted JetBrains Mono variable (`public/fonts/jetbrains-mono-var.woff2`); blog prose body falls back to sans via `.prose` rules in global.css.
 
 ### Testing Strategy

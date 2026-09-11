@@ -230,10 +230,10 @@ function renderCalendarPanel(data: ActivitySnapshot, now: Date): string {
     <div class="term-frame p-4 sm:p-5">
       <div class="flex items-baseline justify-between gap-3 mb-3">
         <p class="prompt-line truncate">git log --since=${weeks}.weeks</p>
-        <span class="text-[11px] ${faint} whitespace-nowrap">${num(t.contributionsWindow)} contributions</span>
+        <span class="text-[11px] ${faint} whitespace-nowrap">${num(t.contributionsWindow)} total</span>
       </div>
       ${renderHeatmap(data.calendar)}
-      <dl class="grid grid-cols-3 gap-x-4 gap-y-3 mt-4">
+      <dl class="flex flex-wrap justify-between gap-x-6 gap-y-3 mt-4">
         ${statTile(`${num(t.streak)}d`, 'streak', true)}
         ${statTile(num(t.contributions30d), 'contributions · 30d')}
         ${statTile(num(t.activeRepos30d), 'repos · 30d')}
@@ -273,7 +273,7 @@ function renderBench(data: ActivitySnapshot, now: Date): string {
         <p class="prompt-line truncate">ls ~/bench --sort=commits</p>
         <span class="text-[11px] ${faint} whitespace-nowrap">${num(active)} active · ${data.focusWindow}d</span>
       </div>
-      <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 sm:gap-x-8">${cells}</ul>
+      <ul class="grid grid-cols-1 sm:grid-cols-2 sm:gap-x-8">${cells}</ul>
     </div>`;
 }
 
@@ -295,8 +295,10 @@ export function renderActivityBoard(data: ActivitySnapshot, now: Date): string {
       }
     </div>
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
-      <div class="lg:col-span-7 min-w-0">${renderFocus(data, now)}</div>
+      <div class="lg:col-span-7 min-w-0">
+        ${renderFocus(data, now)}
+        <div class="mt-8">${renderBench(data, now)}</div>
+      </div>
       <div class="lg:col-span-5 min-w-0">${renderCalendarPanel(data, now)}</div>
-    </div>
-    <div class="mt-6 lg:mt-8">${renderBench(data, now)}</div>`;
+    </div>`;
 }

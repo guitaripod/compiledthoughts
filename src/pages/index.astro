@@ -80,27 +80,23 @@ const engagements = careerData.entries.slice(0, 3);
   description={`Independent engineer. Seven years shipping production iOS, backend, and AI for category-leading consumer products. ${appsData.apps.length} apps live on the App Store, ${openSourceData.projects.length} open-source projects.`}
 >
   <!-- Hero: live GitHub activity board -->
-  <section class="relative pt-10 sm:pt-14 pb-10 overflow-hidden">
+  <section class="relative pt-10 sm:pt-14 pb-10">
     <MatrixRain />
     <div class="relative">
       <p class="prompt-line mb-1">whoami</p>
-      <p
-        class="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-paper-muted dark:text-term-muted mb-8"
-      >
-        <span class="text-paper-text dark:text-term-text font-semibold">guitaripod</span>
-        <span>· independent engineer · Linux · Apple · web · terminal</span>
+      <p class="text-xs text-paper-muted dark:text-term-muted mb-8 leading-relaxed">
+        <span class="text-paper-text dark:text-term-text font-semibold">guitaripod</span> · independent
+        engineer · Linux · Apple · web · terminal ·
         <a
           href="#whoami"
-          class="text-paper-greendim dark:text-term-greendim hover:text-paper-green dark:hover:text-term-green transition-colors"
-        >
-          · about ↓
-        </a>
+          class="text-paper-greendim dark:text-term-greendim hover:text-paper-green dark:hover:text-term-green transition-colors whitespace-nowrap"
+          >about ↓</a
+        > ·
         <a
           href="/services"
-          class="text-paper-greendim dark:text-term-greendim hover:text-paper-green dark:hover:text-term-green transition-colors"
+          class="text-paper-greendim dark:text-term-greendim hover:text-paper-green dark:hover:text-term-green transition-colors whitespace-nowrap"
+          >hire →</a
         >
-          · hire →
-        </a>
       </p>
       <ActivityBoard />
     </div>
