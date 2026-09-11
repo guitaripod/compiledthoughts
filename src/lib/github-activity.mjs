@@ -2,7 +2,8 @@ export const LOGIN = 'guitaripod';
 export const WINDOW_DAYS = 168;
 export const SPARK_DAYS = 28;
 export const MAX_REPOS = 7;
-export const MAX_COMMITS = 10;
+export const MAX_COMMITS = 8;
+const HEADLINE_MAX = 160;
 export const MAX_RELEASES = 5;
 
 const SLICE_DAYS = 56;
@@ -25,8 +26,6 @@ export const QUIET_REPOS = new Set([
   'opencodeconfig',
   'ghostty-config',
 ]);
-
-const SPARK_GLYPHS = '▁▂▃▄▅▆▇█';
 
 export function dayKey(date) {
   return new Date(date).toISOString().slice(0, 10);
@@ -60,14 +59,6 @@ export function computeStreak(calendar) {
   const start = calendar[last]?.count > 0 ? last : last - 1;
   for (let i = start; i >= 0 && calendar[i].count > 0; i--) current++;
   return { current, longest };
-}
-
-export function sparkline(counts) {
-  const max = Math.max(0, ...counts);
-  if (max === 0) return SPARK_GLYPHS[0].repeat(counts.length);
-  return counts
-    .map((c) => (c === 0 ? SPARK_GLYPHS[0] : SPARK_GLYPHS[Math.ceil((c / max) * 7)]))
-    .join('');
 }
 
 export function sumSince(days, sinceKey) {
@@ -140,7 +131,7 @@ const REPO_FIELDS = `
   nameWithOwner name url description isPrivate isFork isArchived stargazerCount pushedAt homepageUrl
   primaryLanguage { name color }`;
 
-const COMMIT_FIELDS = `oid messageHeadline committedDate url additions deletions`;
+const COMMIT_FIELDS = `oid message committedDate url additions deletions`;
 
 function contributionsQuery(slices) {
   const parts = slices.map(
@@ -264,12 +255,23 @@ function splitPushHeads(pushHeads, lookupSet) {
   return { latestByRepo, ticker };
 }
 
+/// GitHub's own messageHeadline cuts a long subject at ~72 characters; these commit
+/// subjects are sentences, so take the first paragraph whole and cap it ourselves.
+export function commitHeadline(message) {
+  const paragraph = String(message ?? '')
+    .split(/\n\s*\n/)[0]
+    .replace(/\s+/g, ' ')
+    .trim();
+  if (paragraph.length <= HEADLINE_MAX) return paragraph;
+  return `${paragraph.slice(0, HEADLINE_MAX - 1).replace(/\s+\S*$/, '')}…`;
+}
+
 function commitRecord(commit, fullName, branch) {
   if (!commit?.oid) return null;
   return {
     repo: fullName.split('/')[1],
     fullName,
-    headline: commit.messageHeadline,
+    headline: commitHeadline(commit.message),
     date: commit.committedDate,
     url: commit.url,
     branch,

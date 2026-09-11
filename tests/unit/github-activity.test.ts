@@ -2,11 +2,11 @@ import { describe, it, expect } from 'vitest';
 import {
   buildCalendar,
   computeStreak,
-  sparkline,
   rankRepos,
   pickFocusWindow,
   relativeTime,
   sumSince,
+  commitHeadline,
 } from '../../src/lib/github-activity.mjs';
 import { renderActivityBoard, type ActivitySnapshot } from '../../src/lib/activity-board';
 import snapshot from '../../src/data/github-activity.json';
@@ -54,16 +54,6 @@ describe('github activity calendar', () => {
   });
 });
 
-describe('sparkline', () => {
-  it('scales to the busiest day and floors zeros', () => {
-    expect(sparkline([0, 4, 8])).toBe('▁▅█');
-  });
-
-  it('renders a flat line for an idle repo', () => {
-    expect(sparkline([0, 0, 0])).toBe('▁▁▁');
-  });
-});
-
 describe('repo ranking', () => {
   const repos = [
     { name: 'a', commits7d: 2, commits30d: 40, pushedAt: '2026-09-01T00:00:00Z' },
@@ -79,6 +69,23 @@ describe('repo ranking', () => {
     const quiet = repos.map((r) => ({ ...r, commits7d: 0 }));
     expect(pickFocusWindow(quiet)).toBe(30);
     expect(rankRepos(quiet, 30).map((r) => r.name)).toEqual(['a', 'c', 'b']);
+  });
+});
+
+describe('commit headline', () => {
+  it('keeps the whole first paragraph and drops the body', () => {
+    expect(commitHeadline('one line that runs\nonto a second line\n\nbody text')).toBe(
+      'one line that runs onto a second line'
+    );
+  });
+
+  it('caps a runaway subject at a word boundary', () => {
+    const long = Array.from({ length: 60 }, (_, i) => `word${i}`).join(' ');
+    const headline = commitHeadline(long);
+    expect(headline.length).toBeLessThanOrEqual(160);
+    expect(headline.endsWith('…')).toBe(true);
+    const lastWord = headline.slice(0, -1).split(' ').pop();
+    expect(long.split(' ')).toContain(lastWord);
   });
 });
 
@@ -99,7 +106,8 @@ describe('activity board renderer', () => {
     expect(html).toContain('<h1');
     expect(html).toContain(data.repos[0].name);
     expect(html).toContain('act-heatmap');
-    expect((html.match(/<rect /g) ?? []).length).toBe(data.calendar.length);
+    const sparkRects = data.repos.reduce((n, r, i) => n + r.spark.length * (i === 0 ? 1 : 2), 0);
+    expect((html.match(/<rect /g) ?? []).length).toBe(data.calendar.length + sparkRects);
   });
 
   it('escapes everything that came from GitHub', () => {

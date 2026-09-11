@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-11T14:52:26.019Z",
+  "generatedAt": "2026-09-11T15:02:16.958Z",
   "login": "guitaripod",
   "avatarUrl": "https://avatars.githubusercontent.com/u/47460844?u=91c9a91a81e2082580ca3f41e5e63a26d53bd92b&v=4",
   "profileUrl": "https://github.com/guitaripod",
@@ -743,7 +743,7 @@
       "latest": {
         "repo": "Tailscode",
         "fullName": "guitaripod/Tailscode",
-        "headline": "release 1.43: tables keep their last row, and an answer no longer arr…",
+        "headline": "release 1.43: tables keep their last row, and an answer no longer arrives twice — 143 mac / linux, ios 145 once 1.42 clears review",
         "date": "2026-09-11T12:01:26Z",
         "url": "https://github.com/guitaripod/Tailscode/commit/81e6bdc323c6d6fd16f803382985a68e8523c64b",
         "branch": "master",
@@ -805,7 +805,7 @@
       "latest": {
         "repo": "claude-bridge",
         "fullName": "guitaripod/claude-bridge",
-        "headline": "A gap between the two records is a gap, not the end of the pairing: o…",
+        "headline": "A gap between the two records is a gap, not the end of the pairing: one early turn the store and the transcript disagreed about renamed every answer after it,…",
         "date": "2026-09-11T11:46:03Z",
         "url": "https://github.com/guitaripod/claude-bridge/commit/8f792ba11feea10962b0eb24d2afc33493faf593",
         "branch": "master",
@@ -867,7 +867,7 @@
       "latest": {
         "repo": "CodingAgentKit",
         "fullName": "guitaripod/CodingAgentKit",
-        "headline": "An answer arriving a second time under a name the transcript has neve…",
+        "headline": "An answer arriving a second time under a name the transcript has never seen is the same answer, not a new one: a server that leaks its other record's ids no…",
         "date": "2026-09-11T11:49:44Z",
         "url": "https://github.com/guitaripod/CodingAgentKit/commit/31ed2585b16ab0ccd7999181135eb9d411aca088",
         "branch": "master",
@@ -929,7 +929,7 @@
       "latest": {
         "repo": "mbench",
         "fullName": "guitaripod/mbench",
-        "headline": "Public release: drop machine-specific paths and the legacy importer, …",
+        "headline": "Public release: drop machine-specific paths and the legacy importer, clone the LiveCodeBench harness at its pinned commit, record the commit of git installs,…",
         "date": "2026-09-11T08:16:44Z",
         "url": "https://github.com/guitaripod/mbench/commit/de8e5b998d081d5bf7f5aa8b2a014c565f246366",
         "branch": "master",
@@ -987,7 +987,7 @@
       "latest": {
         "repo": "omp-bridge",
         "fullName": "guitaripod/omp-bridge",
-        "headline": "The slash catalog answers without a chat: GET /commands with no sessi…",
+        "headline": "The slash catalog answers without a chat: GET /commands with no session asks a scratch omp in the requested directory (or the bridge workdir) and caches the…",
         "date": "2026-09-05T18:47:44Z",
         "url": "https://github.com/guitaripod/omp-bridge/commit/8aa88ac9c27928bb27df279db0ad2c7b519f363d",
         "branch": "master",
@@ -1049,7 +1049,7 @@
       "latest": {
         "repo": "delegate",
         "fullName": "guitaripod/delegate",
-        "headline": "The daemon trusts the tailnet the way the bridges do: a peer on the t…",
+        "headline": "The daemon trusts the tailnet the way the bridges do: a peer on the tailnet or loopback needs no password, everyone else still does, and the capabilities say…",
         "date": "2026-09-05T20:32:43Z",
         "url": "https://github.com/guitaripod/delegate/commit/e28b7c6b3582ae3e01b256657684f67c63f4a17b",
         "branch": "master",
@@ -1063,7 +1063,7 @@
     {
       "repo": "Tailscode",
       "fullName": "guitaripod/Tailscode",
-      "headline": "release 1.43: tables keep their last row, and an answer no longer arr…",
+      "headline": "release 1.43: tables keep their last row, and an answer no longer arrives twice — 143 mac / linux, ios 145 once 1.42 clears review",
       "date": "2026-09-11T12:01:26Z",
       "url": "https://github.com/guitaripod/Tailscode/commit/81e6bdc323c6d6fd16f803382985a68e8523c64b",
       "branch": "master",
@@ -1073,7 +1073,7 @@
     {
       "repo": "CodingAgentKit",
       "fullName": "guitaripod/CodingAgentKit",
-      "headline": "An answer arriving a second time under a name the transcript has neve…",
+      "headline": "An answer arriving a second time under a name the transcript has never seen is the same answer, not a new one: a server that leaks its other record's ids no…",
       "date": "2026-09-11T11:49:44Z",
       "url": "https://github.com/guitaripod/CodingAgentKit/commit/31ed2585b16ab0ccd7999181135eb9d411aca088",
       "branch": "master",
@@ -1083,7 +1083,7 @@
     {
       "repo": "claude-bridge",
       "fullName": "guitaripod/claude-bridge",
-      "headline": "A gap between the two records is a gap, not the end of the pairing: o…",
+      "headline": "A gap between the two records is a gap, not the end of the pairing: one early turn the store and the transcript disagreed about renamed every answer after it,…",
       "date": "2026-09-11T11:46:03Z",
       "url": "https://github.com/guitaripod/claude-bridge/commit/8f792ba11feea10962b0eb24d2afc33493faf593",
       "branch": "master",
@@ -1093,7 +1093,7 @@
     {
       "repo": "mbench",
       "fullName": "guitaripod/mbench",
-      "headline": "Public release: drop machine-specific paths and the legacy importer, …",
+      "headline": "Public release: drop machine-specific paths and the legacy importer, clone the LiveCodeBench harness at its pinned commit, record the commit of git installs,…",
       "date": "2026-09-11T08:16:44Z",
       "url": "https://github.com/guitaripod/mbench/commit/de8e5b998d081d5bf7f5aa8b2a014c565f246366",
       "branch": "master",
@@ -1103,7 +1103,7 @@
     {
       "repo": "Tailscode",
       "fullName": "guitaripod/Tailscode",
-      "headline": "The five translations that ran past App Store Connect's four thousand…",
+      "headline": "The five translations that ran past App Store Connect's four thousand characters are cut to fit: a localization over the limit is refused with a bare 409, and…",
       "date": "2026-09-10T23:27:13Z",
       "url": "https://github.com/guitaripod/Tailscode/commit/f9bdad90df11fec786896eabcf970c6fcdac482b",
       "branch": "model-chooser-refresh",
@@ -1113,7 +1113,7 @@
     {
       "repo": "claude-bridge",
       "fullName": "guitaripod/claude-bridge",
-      "headline": "Work a process is no longer carrying is not still work: a task's own …",
+      "headline": "Work a process is no longer carrying is not still work: a task's own end stamp retires it beside the level and the notification, and a process let go for…",
       "date": "2026-09-09T17:00:47Z",
       "url": "https://github.com/guitaripod/claude-bridge/commit/e34566db2926d22d44bbce0a44110c41c3a9ff66",
       "branch": "master",
@@ -1123,7 +1123,7 @@
     {
       "repo": "Tailscode",
       "fullName": "guitaripod/Tailscode",
-      "headline": "The driver's transcript line says what the transcript is made of: a c…",
+      "headline": "The driver's transcript line says what the transcript is made of: a count alone cannot tell a growing answer from the same answer arriving twice under two names",
       "date": "2026-09-08T19:10:23Z",
       "url": "https://github.com/guitaripod/Tailscode/commit/e4d128c7fc4ab7709b757caf22e53d0224b41586",
       "branch": "master",
@@ -1133,32 +1133,12 @@
     {
       "repo": "Tailscode",
       "fullName": "guitaripod/Tailscode",
-      "headline": "The Linux client says 1.40 too: the one number the three clients shar…",
+      "headline": "The Linux client says 1.40 too: the one number the three clients share was left at 1.39, so the desktop stamped its own tarball, its update check and its…",
       "date": "2026-09-08T11:24:40Z",
       "url": "https://github.com/guitaripod/Tailscode/commit/5e94fc79c5024a39a540c444877bee3343c2c7b5",
       "branch": "master",
       "additions": 1,
       "deletions": 1
-    },
-    {
-      "repo": "Tailscode",
-      "fullName": "guitaripod/Tailscode",
-      "headline": "The pinned Kit is the one the release was built against: both package…",
-      "date": "2026-09-08T11:23:47Z",
-      "url": "https://github.com/guitaripod/Tailscode/commit/fefee3f9749bd6e7b9145e7f665be71e3b130b5b",
-      "branch": "master",
-      "additions": 14,
-      "deletions": 14
-    },
-    {
-      "repo": "claude-bridge",
-      "fullName": "guitaripod/claude-bridge",
-      "headline": "Background work is what a process carries between turns, so a turn th…",
-      "date": "2026-09-08T11:13:34Z",
-      "url": "https://github.com/guitaripod/claude-bridge/commit/93708ac5fb8f804fda86a1e0c500256f6d6d7ba3",
-      "branch": "master",
-      "additions": 11,
-      "deletions": 4
     }
   ],
   "releases": [
